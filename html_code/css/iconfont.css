@@ -1,0 +1,25 @@
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot?t=1608024074075'); /* IE9 */
+  src: url('iconfont.eot?t=1608024074075#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAARIAAsAAAAACJgAAAP5AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDBgqFAIQmATYCJAMMCwgABCAFhG0HOBtuB1FUTipkX2DbsCeB4WydY+MwuNQbGAOOXQOgGZSlRoAEAADi4b/9WPfNzB9EJKl2P51kkkg0QqGSoARKoJHCVpO2ebemYw5hc75lSdSaavqOfLvTS1PGeZxGKYQE4fjRv/dP3nNSixM1LMxtnXSSPNV//B61w7a87sIPE+i8yzjhKOABJTyk0QC3DqQM/efzXE7vrik4v2W5jLV1bzvqBRhHYWBjLO1FWcAFFAbCDWM3EYdxmkC7aZr80epwztUUYFIgHjzHyNViDqWkPLQKNWdlEa8arek5vcKL+/n4ZSsUJE0Gzjq+X9q5yVdvMP1PXWXqqT8fpHVkrMgpxE1u4EzRT6woajcMpfL8qgipr/AfV2Ga6kz/eImogKGTZS3o004psZjgb8hZo/1fR0UPPhP/WNbgnDZ1xba/Td7W1tWv0YD7TDZ1lt6lFXSYjyLx6ChR58MgoUNYjY3oIWGEDQH0dc6cW2PpxE0xPcPMDi0vV5wrjIycrEwgYZPwZV2DkRXl2XR42HZ5PR/o2hFmFwgReFrnkwjl0le4HRF+HSJgDB132VfsRrjl1zl03ZYLmK2V4DwdKO4GE9EkpzGxKZtfw5WBZPzaVn11Drn1w5QJRpxYPYewnQdF+5YM6eARhLCI6qhM+9ZRfTIMAPEoIVzXV3S3qLqhs2JDY0PhLJ9QDvg2RQQvc2PydeW6Bvu6hmA4YACKCDn8OnpmblJortel917R5J2oqVCi99dErev1xRdtXZNLfUfsmc1eeU2/kaq+VZFJtW2ZNth90y77kmZG7l4L/i7/K9xbp0ajWOOjw86Evz7P2hDsjWsz1hpd9et865zcov8H2S3YJX364xQa/zW+D64tjAXvrJ+1o4lrseYcX225uadvoP+oMgq8/cQg0CZGpdyurxuw57mnEpo8RvYc5/A/PF575GJbK1a5kw64w45lJroTAPmx8PNf+I6lP1RRN+R3Kwr49GpzbUW9EK13Khi8eWXNpmKqgTMXXYEVdjp703Zf7dpNo/ddCf1+7U1DtUsJrYZCJC2mkLWaIQtrBY0OO6ha7aLdsvX6DgNYUZQ2LHkxCL3eSLp9IOv1IQvri8awP6reEKPdSWjv2GEuahrRjIagDeYTPItihdzS8MqP6GShwVG1y7sip14YhmsbyfQaY+Q+5qQ3ZySiQDFFsGLOwzAkSJh8tKTniiTj/vp93oN6FkW5hkMMGQSyAdMT8FhITNH2opF6/xFyZEIGLqE1JK8QS3m9g6GeQQ1ybYhr0c6lf+rGMSKE4scpjETAivWhECYISPKH+ZBF9LgtYomxPtdK1TX0xjdF17cD2oFDc6TIUdTHzKYgK2fHRoC5HAAAAA==') format('woff2'),
+  url('iconfont.woff?t=1608024074075') format('woff'),
+  url('iconfont.ttf?t=1608024074075') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('iconfont.svg?t=1608024074075#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-sudoku:before {
+  content: "\e694";
+}
+
+.icon-Snake:before {
+  content: "\ee36";
+}
+
