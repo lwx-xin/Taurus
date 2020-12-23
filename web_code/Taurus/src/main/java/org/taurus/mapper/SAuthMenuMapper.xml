@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.SAuthMenuDao">
+ 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="entity" type="org.taurus.entity.SAuthMenuEntity">
+        <!-- 菜单权限id -->
+        <id column="AUTH_MENU_ID" property="authMenuId"/>
+    	<!-- 权限id -->
+        <result column="AUTH_ID" property="authId"/>
+    	<!-- 菜单id -->
+        <result column="MENU_ID" property="menuId"/>
+    	<!-- 删除标识 -->
+        <result column="AUTH_MENU_DEL_FLG" property="authMenuDelFlg"/>
+    	<!-- 创建时间 -->
+        <result column="AUTH_MENU_CREATE_TIME" property="authMenuCreateTime"/>
+    	<!-- 创建者 -->
+        <result column="AUTH_MENU_CREATE_USER" property="authMenuCreateUser"/>
+    	<!-- 编辑时间 -->
+        <result column="AUTH_MENU_MODIFY_TIME" property="authMenuModifyTime"/>
+    	<!-- 编辑者 -->
+        <result column="AUTH_MENU_MODIFY_USER" property="authMenuModifyUser"/>
+    </resultMap>
+    
+</mapper>

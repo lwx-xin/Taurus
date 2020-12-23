@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.SMenuDao">
+ 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="entity" type="org.taurus.entity.SMenuEntity">
+        <!-- 菜单id -->
+        <id column="MENU_ID" property="menuId"/>
+    	<!-- 文本 -->
+        <result column="MENU_TEXT" property="menuText"/>
+    	<!-- 父菜单 -->
+        <result column="MENU_PARENT" property="menuParent"/>
+    	<!-- 顺序 -->
+        <result column="MENU_ORDER" property="menuOrder"/>
+    	<!-- 点击菜单发出的请求(请求id) -->
+        <result column="MENU_URL" property="menuUrl"/>
+    	<!-- 菜单图标 -->
+        <result column="MENU_ICON" property="menuIcon"/>
+    	<!-- 删除标识 -->
+        <result column="MENU_DEL_FLG" property="menuDelFlg"/>
+    	<!-- 创建时间 -->
+        <result column="MENU_CREATE_TIME" property="menuCreateTime"/>
+    	<!-- 创建者 -->
+        <result column="MENU_CREATE_USER" property="menuCreateUser"/>
+    	<!-- 编辑时间 -->
+        <result column="MENU_MODIFY_TIME" property="menuModifyTime"/>
+    	<!-- 编辑者 -->
+        <result column="MENU_MODIFY_USER" property="menuModifyUser"/>
+    </resultMap>
+    
+    <select id="getMenuListByUser" parameterType="java.lang.String" resultMap="entity">
+		SELECT 
+			m.*
+		FROM s_auth_menu am
+		LEFT JOIN s_menu m ON m.MENU_ID=am.MENU_ID
+		LEFT JOIN s_auth a ON a.AUTH_ID=am.AUTH_ID
+		WHERE EXISTS (
+			SELECT 1 FROM s_auth_user WHERE AUTH_ID = am.AUTH_ID AND USER_ID = '1'
+		) ORDER BY m.MENU_ORDER
+    </select>
+    
+</mapper>

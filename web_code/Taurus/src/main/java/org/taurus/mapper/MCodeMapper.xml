@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.MCodeDao">
+ 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="entity" type="org.taurus.entity.MCodeEntity">
+        <!-- code id -->
+        <id column="CODE_ID" property="codeId"/>
+    	<!-- 分组 -->
+        <result column="CODE_GROUP" property="codeGroup"/>
+    	<!-- 名称 -->
+        <result column="CODE_NAME" property="codeName"/>
+    	<!-- 值 -->
+        <result column="CODE_VALUE" property="codeValue"/>
+    	<!-- 顺序 -->
+        <result column="CODE_ORDER" property="codeOrder"/>
+    	<!-- 删除标识 -->
+        <result column="CODE_DEL_FLG" property="codeDelFlg"/>
+    	<!-- 创建时间 -->
+        <result column="CODE_CREATE_TIME" property="codeCreateTime"/>
+    	<!-- 创建者 -->
+        <result column="CODE_CREATE_USER" property="codeCreateUser"/>
+    	<!-- 编辑时间 -->
+        <result column="CODE_MODIFY_TIME" property="codeModifyTime"/>
+    	<!-- 编辑者 -->
+        <result column="CODE_MODIFY_USER" property="codeModifyUser"/>
+    </resultMap>
+    
+</mapper>

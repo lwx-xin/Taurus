@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.SUrlDao">
+
+	<!--实体映射-->
+	<resultMap id="entity" type="org.taurus.entity.SUrlEntity">
+		<!--请求id-->
+		<id property="urlId" column="URL_ID" />
+		<!--请求地址-->
+		<result property="urlPath" column="URL_PATH" />
+		<!--请求方式(get,post)-->
+		<result property="urlType" column="URL_TYPE" />
+		<!--请求参数(json格式)-->
+		<result property="urlParams" column="URL_PARAMS" />
+		<!--系统平台(pc,移动端)-->
+		<result property="urlPlatform" column="URL_PLATFORM" />
+		<!--备注-->
+		<result property="urlRemarks" column="URL_REMARKS" />
+		<!--删除标识-->
+		<result property="urlDelFlg" column="URL_DEL_FLG" />
+		<!--创建时间-->
+		<result property="urlCreateTime" column="URL_CREATE_TIME" />
+		<!--创建者-->
+		<result property="urlCreateUser" column="URL_CREATE_USER" />
+		<!--编辑时间-->
+		<result property="urlModifyTime" column="URL_MODIFY_TIME" />
+		<!--编辑者-->
+		<result property="urlModifyUser" column="URL_MODIFY_USER" />
+	</resultMap>
+	
+	<!-- 查询当前权限下能够访问的请求 -->
+	<select id="getUrlByAuth" resultMap="entity" parameterType="java.lang.String">
+		SELECT
+			u.* 
+		FROM
+			s_auth_url au
+			LEFT JOIN s_url u ON au.URL_ID = u.URL_ID 
+		WHERE au.AUTH_ID = '#{authId}'
+	</select>
+	
+	<!-- 查询当前权限下能够访问的请求 -->
+	<select id="getUrlByAuths" resultMap="entity" parameterType="java.util.List">
+		SELECT
+			u.* 
+		FROM
+			s_auth_url au
+			LEFT JOIN s_url u ON au.URL_ID = u.URL_ID 
+		WHERE au.AUTH_ID = 
+		<foreach collection="authIds" open="(" close=")" separator="," item="authId">
+			#{authId}
+		</foreach>
+	</select>
+	
+	<!-- 查询当前用户能够访问的请求 -->
+	<select id="getUrlByUser" resultMap="entity" parameterType="java.lang.String">
+		SELECT
+			DISTINCT u.* 
+		FROM
+			s_auth_url au
+			LEFT JOIN s_url u ON au.URL_ID = u.URL_ID 
+		WHERE EXISTS (
+			SELECT 1 FROM s_auth_user WHERE AUTH_ID = au.AUTH_ID AND USER_ID = '#{userId}'
+		)
+	</select>
+
+</mapper>

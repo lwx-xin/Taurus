@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.SAuthDao">
+ 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="entity" type="org.taurus.entity.SAuthEntity">
+        <!-- 权限id -->
+        <id column="AUTH_ID" property="authId"/>
+    	<!-- 权限名称 -->
+        <result column="AUTH_NAME" property="authName"/>
+    	<!-- 权限级别 -->
+        <result column="AUTH_LEVEL" property="authLevel"/>
+    	<!-- 删除标识 -->
+        <result column="AUTH_DEL_FLG" property="authDelFlg"/>
+    	<!-- 创建时间 -->
+        <result column="AUTH_CREATE_TIME" property="authCreateTime"/>
+    	<!-- 创建者 -->
+        <result column="AUTH_CREATE_USER" property="authCreateUser"/>
+    	<!-- 编辑时间 -->
+        <result column="AUTH_MODIFY_TIME" property="authModifyTime"/>
+    	<!-- 编辑者 -->
+        <result column="UAUTH_MODIFY_USER" property="uauthModifyUser"/>
+    </resultMap>
+
+	<select id="getAuthByUserId" parameterType="java.lang.String" resultMap="entity">
+		SELECT
+			a.*
+		FROM s_auth_user au
+		LEFT JOIN s_auth a on au.AUTH_ID = a.AUTH_ID
+		where au.USER_ID = #{userId} 
+		and au.AUTH_USER_DEL_FLG = #{delFlg}
+	</select>
+    
+</mapper>

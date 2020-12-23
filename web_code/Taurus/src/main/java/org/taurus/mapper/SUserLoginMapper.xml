@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.SUserLoginDao">
+ 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="entity" type="org.taurus.entity.SUserLoginEntity">
+        <!-- id -->
+        <id column="LOGIN_ID" property="loginId"/>
+    	<!-- 用户id -->
+        <result column="LOGIN_USER" property="loginUser"/>
+    	<!-- 登录时间 -->
+        <result column="LOGIN_TIME" property="loginTime"/>
+    	<!-- 登录地点 -->
+        <result column="LOGIN_ADDRESS" property="loginAddress"/>
+    	<!-- 登录平台(PC端,移动端) -->
+        <result column="LOGIN_PLATFORM" property="loginPlatform"/>
+    </resultMap>
+    
+</mapper>

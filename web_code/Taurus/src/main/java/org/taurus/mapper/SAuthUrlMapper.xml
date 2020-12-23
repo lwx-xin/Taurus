@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.SAuthUrlDao">
+ 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="entity" type="org.taurus.entity.SAuthUrlEntity">
+        <!-- 请求权限id -->
+        <id column="AUTH_URL_ID" property="authUrlId"/>
+    	<!-- 权限id -->
+        <result column="AUTH_ID" property="authId"/>
+    	<!-- 请求id -->
+        <result column="URL_ID" property="urlId"/>
+    	<!-- 删除标识 -->
+        <result column="AUTH_URL_DEL_FLG" property="authUrlDelFlg"/>
+    	<!-- 创建时间 -->
+        <result column="AUTH_URL_CREATE_TIME" property="authUrlCreateTime"/>
+    	<!-- 创建者 -->
+        <result column="AUTH_URL_CREATE_USER" property="authUrlCreateUser"/>
+    	<!-- 编辑时间 -->
+        <result column="AUTH_URL_MODIFY_TIME" property="authUrlModifyTime"/>
+    	<!-- 编辑者 -->
+        <result column="AUTH_URL_MODIFY_USER" property="authUrlModifyUser"/>
+    </resultMap>
+    
+</mapper>

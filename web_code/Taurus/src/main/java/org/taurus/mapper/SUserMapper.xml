@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.SUserDao">
+ 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="entity" type="org.taurus.entity.SUserEntity">
+        <!-- 用户id -->
+        <id column="USER_ID" property="userId"/>
+    	<!-- 账号 -->
+        <result column="USER_NUMBER" property="userNumber"/>
+    	<!-- 密码 -->
+        <result column="USER_PWD" property="userPwd"/>
+    	<!-- 昵称 -->
+        <result column="USER_NAME" property="userName"/>
+    	<!-- 头像(文件id) -->
+        <result column="USER_HEAD" property="userHead"/>
+    	<!-- 账号能登陆的平台(pc,移动端) -->
+        <result column="USER_PLATFORM" property="userPlatform"/>
+    	<!-- QQ -->
+        <result column="USER_QQ" property="userQq"/>
+    	<!-- 邮箱 -->
+        <result column="USER_EMAIL" property="userEmail"/>
+    	<!-- 删除标识 -->
+        <result column="USER_DEL_FLG" property="userDelFlg"/>
+    	<!-- 创建时间 -->
+        <result column="USER_CREATE_TIME" property="userCreateTime"/>
+    	<!-- 创建者 -->
+        <result column="USER_CREATE_USER" property="userCreateUser"/>
+    	<!-- 编辑时间 -->
+        <result column="USER_MODIFY_TIME" property="userModifyTime"/>
+    	<!-- 编辑者 -->
+        <result column="USER_MODIFY_USER" property="userModifyUser"/>
+    </resultMap>
+    
+    <resultMap id="entityEx" type="org.taurus.extendEntity.SUserEntityEx" extends="entity">
+    	<collection property="authList" ofType="org.taurus.entity.SAuthEntity">
+	        <!-- 权限id -->
+	        <id column="AUTH_ID" property="authId"/>
+	    	<!-- 权限名称 -->
+	        <result column="AUTH_NAME" property="authName"/>
+	    	<!-- 权限级别 -->
+	        <result column="AUTH_LEVEL" property="authLevel"/>
+	    	<!-- 删除标识 -->
+	        <result column="AUTH_DEL_FLG" property="authDelFlg"/>
+	    	<!-- 创建时间 -->
+	        <result column="AUTH_CREATE_TIME" property="authCreateTime"/>
+	    	<!-- 创建者 -->
+	        <result column="AUTH_CREATE_USER" property="authCreateUser"/>
+	    	<!-- 编辑时间 -->
+	        <result column="AUTH_MODIFY_TIME" property="authModifyTime"/>
+	    	<!-- 编辑者 -->
+	        <result column="UAUTH_MODIFY_USER" property="uauthModifyUser"/>
+		</collection>
+    </resultMap>
+    
+    <select id="getUserList" resultMap="entityEx">
+		SELECT 
+			u.*,a.*
+		FROM s_user u
+		LEFT JOIN s_auth_user au ON au.USER_ID = u.USER_ID AND au.AUTH_USER_DEL_FLG = '1'
+		LEFT JOIN s_auth a ON au.AUTH_ID = a.AUTH_ID AND a.AUTH_DEL_FLG = '1'
+		<where>
+			<if test="userId!='' and userId!=null">
+				u.USER_ID = #{userId}
+			</if>
+		</where>
+    </select>
+    
+    <select id="getUserDetail" resultMap="entityEx" parameterType="java.lang.String">
+		SELECT 
+			u.*,a.*
+		FROM s_user u
+		LEFT JOIN s_auth_user au ON au.USER_ID = u.USER_ID
+		LEFT JOIN s_auth a ON au.AUTH_ID = a.AUTH_ID
+		WHERE u.USER_ID = #{userId}
+    </select>
+    
+</mapper>
