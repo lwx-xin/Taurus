@@ -143,6 +143,9 @@ public class AuthFilter implements Filter {
 		SUserEntity userInfo_cookie = null;
 		if (userInfoObj != null) {
 			userInfo_cookie = (SUserEntity) parseUserInfoToken.get("userInfo");
+			if (userInfo_session==null) {
+				SessionUtil.setUser(request, userInfo_cookie);
+			}
 		}
 
 		// 从cookie中获取权限列表

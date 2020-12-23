@@ -128,7 +128,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 					SAuthUserEntity authUserEntity = new SAuthUserEntity();
 					authUserEntity.setAuthUserId(StrUtil.getUUID());
 					authUserEntity.setAuthId(auth.getAuthId());
-					authUserEntity.setAuthUserId(willAddUserId);
+					authUserEntity.setUserId(willAddUserId);
 					authUserEntity.setAuthUserDelFlg(Code.DEL_FLG_1.getValue());
 					authUserEntity.setAuthUserCreateUser(operator);
 					authUserEntity.setAuthUserCreateTime(nowTime);
