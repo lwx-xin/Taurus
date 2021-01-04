@@ -8,8 +8,8 @@ public class LoggerUtil {
 		logger.info(key + ":" + param);
 	}
 
-	public static void saveErrorLog(Exception exception, Class<?> c, String methodName, Object methodParam) {
-
-	}
+//	public static void saveErrorLog(Exception exception, Class<?> c, String methodName, Object methodParam) {
+//
+//	}
 
 }

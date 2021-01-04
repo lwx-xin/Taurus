@@ -12,6 +12,8 @@ public class SUserEntityEx extends SUserEntity {
 	private List<SAuthEntityEx> authList;
 	
 	private List<SUrlEntity> urlList;
+	
+	private String headFilePath;
 
 	public List<SAuthEntityEx> getAuthList() {
 		return authList;
@@ -27,6 +29,14 @@ public class SUserEntityEx extends SUserEntity {
 
 	public void setUrlList(List<SUrlEntity> urlList) {
 		this.urlList = urlList;
+	}
+
+	public String getHeadFilePath() {
+		return headFilePath;
+	}
+
+	public void setHeadFilePath(String headFilePath) {
+		this.headFilePath = headFilePath;
 	}
 
 }

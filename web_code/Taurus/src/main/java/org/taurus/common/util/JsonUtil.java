@@ -24,9 +24,10 @@ public class JsonUtil {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Map转实体
+	 * 
 	 * @param <T>
 	 * @param map
 	 * @param clazz
@@ -41,9 +42,10 @@ public class JsonUtil {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 实体转实体
+	 * 
 	 * @param <T>
 	 * @param entity
 	 * @param clazz
@@ -62,11 +64,13 @@ public class JsonUtil {
 	/**
 	 * 字符串转List
 	 * 
+	 * @param <T>
+	 * 
 	 * @param jsonStr
 	 * @param clazz
 	 * @return
 	 */
-	public static List<?> toList(String jsonStr, Class<?> clazz) {
+	public static <T> List<T> toList(String jsonStr, Class<T> clazz) {
 		try {
 			return JSON.parseArray(jsonStr, clazz);
 		} catch (Exception e) {
@@ -74,9 +78,27 @@ public class JsonUtil {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * List转List
+	 * 
+	 * @param <T>
+	 * @param list
+	 * @param clazz
+	 * @return
+	 */
+	public static <T> List<T> toList(List<?> list, Class<T> clazz) {
+		try {
+			return JSON.parseArray(JsonUtil.toJson(list), clazz);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		return null;
+	}
+
 	/**
 	 * 实体对象转Map
+	 * 
 	 * @param obj
 	 * @return
 	 */
@@ -89,9 +111,10 @@ public class JsonUtil {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * list转json字符串
+	 * 
 	 * @param list
 	 * @return
 	 */
@@ -104,9 +127,10 @@ public class JsonUtil {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 实体转json字符串
+	 * 
 	 * @param list
 	 * @return
 	 */
@@ -118,5 +142,5 @@ public class JsonUtil {
 		}
 		return null;
 	}
-	
+
 }

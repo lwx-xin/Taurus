@@ -10,8 +10,6 @@
 		<result property="urlPath" column="URL_PATH" />
 		<!--请求方式(get,post)-->
 		<result property="urlType" column="URL_TYPE" />
-		<!--请求参数(json格式)-->
-		<result property="urlParams" column="URL_PARAMS" />
 		<!--系统平台(pc,移动端)-->
 		<result property="urlPlatform" column="URL_PLATFORM" />
 		<!--备注-->
@@ -27,6 +25,27 @@
 		<!--编辑者-->
 		<result property="urlModifyUser" column="URL_MODIFY_USER" />
 	</resultMap>
+    
+    <resultMap id="entityEx" type="org.taurus.extendEntity.SUrlEntityEx" extends="entity">
+    	<collection property="authList" ofType="org.taurus.extendEntity.SAuthEntityEx">
+	        <!-- 权限id -->
+	        <id column="AUTH_ID" property="authId"/>
+	    	<!-- 权限名称 -->
+	        <result column="AUTH_NAME" property="authName"/>
+	    	<!-- 权限级别 -->
+	        <result column="AUTH_LEVEL" property="authLevel"/>
+	    	<!-- 删除标识 -->
+	        <result column="AUTH_DEL_FLG" property="authDelFlg"/>
+	    	<!-- 创建时间 -->
+	        <result column="AUTH_CREATE_TIME" property="authCreateTime"/>
+	    	<!-- 创建者 -->
+	        <result column="AUTH_CREATE_USER" property="authCreateUser"/>
+	    	<!-- 编辑时间 -->
+	        <result column="AUTH_MODIFY_TIME" property="authModifyTime"/>
+	    	<!-- 编辑者 -->
+	        <result column="UAUTH_MODIFY_USER" property="uauthModifyUser"/>
+		</collection>
+    </resultMap>
 	
 	<!-- 查询当前权限下能够访问的请求 -->
 	<select id="getUrlByAuth" resultMap="entity" parameterType="java.lang.String">
@@ -34,8 +53,8 @@
 			u.* 
 		FROM
 			s_auth_url au
-			LEFT JOIN s_url u ON au.URL_ID = u.URL_ID 
-		WHERE au.AUTH_ID = '#{authId}'
+			LEFT JOIN s_url u ON au.URL_ID = u.URL_ID AND u.URL_DEL_FLG = '1'
+		WHERE au.AUTH_URL_DEL_FLG = '1' AND au.AUTH_ID = '#{authId}'
 	</select>
 	
 	<!-- 查询当前权限下能够访问的请求 -->
@@ -44,8 +63,8 @@
 			u.* 
 		FROM
 			s_auth_url au
-			LEFT JOIN s_url u ON au.URL_ID = u.URL_ID 
-		WHERE au.AUTH_ID = 
+			LEFT JOIN s_url u ON au.URL_ID = u.URL_ID
+		WHERE au.AUTH_URL_DEL_FLG = '1' AND au.AUTH_ID IN 
 		<foreach collection="authIds" open="(" close=")" separator="," item="authId">
 			#{authId}
 		</foreach>
@@ -57,10 +76,29 @@
 			DISTINCT u.* 
 		FROM
 			s_auth_url au
-			LEFT JOIN s_url u ON au.URL_ID = u.URL_ID 
-		WHERE EXISTS (
+			LEFT JOIN s_url u ON au.URL_ID = u.URL_ID AND u.URL_DEL_FLG = '1'
+		WHERE au.AUTH_URL_DEL_FLG = '1' AND EXISTS (
 			SELECT 1 FROM s_auth_user WHERE AUTH_ID = au.AUTH_ID AND USER_ID = '#{userId}'
 		)
+	</select>
+	
+	<!-- 获取请求列表 -->
+	<select id="getUrlList" resultMap="entityEx">
+		SELECT 
+			u.*,a.*
+		FROM s_url u
+		LEFT JOIN s_auth_url au ON au.URL_ID = u.URL_ID AND au.AUTH_URL_DEL_FLG = '1'
+		LEFT JOIN s_auth a ON au.AUTH_ID = a.AUTH_ID AND a.AUTH_DEL_FLG = '1'
+		ORDER BY u.URL_MODIFY_TIME DESC
+	</select>
+	
+	<select id="getUrlDetail" resultMap="entityEx" parameterType="java.lang.String">
+		SELECT
+			u.*,a.*
+		FROM s_url u
+		LEFT JOIN s_auth_url au ON au.URL_ID = u.URL_ID AND au.AUTH_URL_DEL_FLG = '1'
+		LEFT JOIN s_auth a ON a.AUTH_ID = au.AUTH_ID AND a.AUTH_DEL_FLG = '1'
+		WHERE u.URL_ID = #{urlId}
 	</select>
 
 </mapper>

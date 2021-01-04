@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.taurus.entity.SAuthEntity;
+import org.taurus.extendEntity.SAuthEntityEx;
 
 import com.baomidou.mybatisplus.extension.service.IService;
- 
+
 /**
  * <p>
  * 系统权限 服务类
@@ -18,12 +19,29 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 @Service
 public interface SAuthService extends IService<SAuthEntity> {
-	
+
 	/**
 	 * 获取用户的权限ID
+	 * 
 	 * @param userId
 	 * @return
 	 */
 	List<String> getAuthByUserId(String userId);
+
+	/**
+	 * 获取权限列表
+	 * 
+	 * @param authEntity
+	 * @return
+	 */
+	List<SAuthEntityEx> getAuthList(SAuthEntity authEntity);
+
+	/**
+	 * 根据id获取权限信息
+	 * 
+	 * @param authId
+	 * @return
+	 */
+	SAuthEntityEx getAuthDetail(String authId);
 
 }

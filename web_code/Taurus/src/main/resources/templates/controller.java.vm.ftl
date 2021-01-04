@@ -3,7 +3,7 @@ package ${package.Controller};
 import org.springframework.web.bind.annotation.*;
 import ${package.Service}.${table.serviceName};
 import ${package.Entity}.${entity};
-import org.taurus.common.Code;
+import org.taurus.common.code.CheckCode;
 import org.taurus.common.result.Result;
 import org.taurus.common.util.LoggerUtil;
 import io.swagger.annotations.Api;
@@ -69,7 +69,7 @@ public class ${table.controllerName} {
         QueryWrapper<${entity}> queryWrapper = new QueryWrapper<${entity}>(${entity?uncap_first}); 
 		page = ${(table.serviceName)?uncap_first}.page(page, queryWrapper);
 		List<${entity}> data = page.getRecords();
-		return new Result<List<${entity}>>(data);
+		return new Result<List<${entity}>>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
     }
  
  
@@ -83,7 +83,7 @@ public class ${table.controllerName} {
     	LoggerUtil.printParam(logger, "pkid", pkid);
     	
 		${entity} data = ${(table.serviceName)?uncap_first}.getById(pkid);
-		return new Result<${entity}>(data);
+		return new Result<${entity}>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
     }
  
     /**
@@ -97,9 +97,9 @@ public class ${table.controllerName} {
     	
 		boolean state = ${(table.serviceName)?uncap_first}.save(${entity?uncap_first});
 		if (state) {
-			return new Result<Object>(null);
+			return new Result<Object>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
 		}
-		return new Result<Object>(null, Code.INTERFACE_ERR_CODE_3);
+		return new Result<Object>(null, false, CheckCode.INTERFACE_ERR_CODE_3);
     }
  
     /**
@@ -113,9 +113,9 @@ public class ${table.controllerName} {
     	
 		boolean state = ${(table.serviceName)?uncap_first}.removeById(pkid);
 		if (state) {
-			return new Result<Object>(null);
+			return new Result<Object>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
 		}
-		return new Result<Object>(null, Code.INTERFACE_ERR_CODE_3);
+		return new Result<Object>(null, false, CheckCode.INTERFACE_ERR_CODE_3);
     }
  
     /**
@@ -129,9 +129,9 @@ public class ${table.controllerName} {
     	
 		boolean state = ${(table.serviceName)?uncap_first}.updateById(${entity?uncap_first});
 		if (state) {
-			return new Result<Object>(null);
+			return new Result<Object>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
 		}
-		return new Result<Object>(null, Code.INTERFACE_ERR_CODE_3);
+		return new Result<Object>(null, false, CheckCode.INTERFACE_ERR_CODE_3);
      }
  
 }

@@ -17,124 +17,124 @@ import java.io.Serializable;
 @TableName("s_auth")
 public class SAuthEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * 权限id
-     */
-    @TableId("AUTH_ID")
-    private String authId;
+	/**
+	 * 权限id
+	 */
+	@TableId("AUTH_ID")
+	private String authId;
 
-    /**
-     * 权限名称
-     */
-    @TableField("AUTH_NAME")
-    private String authName;
+	/**
+	 * 权限名称
+	 */
+	@TableField("AUTH_NAME")
+	private String authName;
 
-    /**
-     * 权限级别
-     */
-    @TableField("AUTH_LEVEL")
-    private String authLevel;
+	/**
+	 * 权限级别
+	 */
+	@TableField("AUTH_LEVEL")
+	private String authLevel;
 
-    /**
-     * 删除标识
-     */
-    @TableField("AUTH_DEL_FLG")
-    private String authDelFlg;
+	/**
+	 * 删除标识
+	 */
+	@TableField("AUTH_DEL_FLG")
+	private String authDelFlg;
 
-    /**
-     * 创建时间
-     */
-    @TableField("AUTH_CREATE_TIME")
-    private LocalDateTime authCreateTime;
+	/**
+	 * 创建时间
+	 */
+	@TableField("AUTH_CREATE_TIME")
+	private LocalDateTime authCreateTime;
 
-    /**
-     * 创建者
-     */
-    @TableField("AUTH_CREATE_USER")
-    private String authCreateUser;
+	/**
+	 * 创建者
+	 */
+	@TableField("AUTH_CREATE_USER")
+	private String authCreateUser;
 
-    /**
-     * 编辑时间
-     */
-    @TableField("AUTH_MODIFY_TIME")
-    private LocalDateTime authModifyTime;
+	/**
+	 * 编辑时间
+	 */
+	@TableField("AUTH_MODIFY_TIME")
+	private LocalDateTime authModifyTime;
 
-    /**
-     * 编辑者
-     */
-    @TableField("UAUTH_MODIFY_USER")
-    private String uauthModifyUser;
+	/**
+	 * 编辑者
+	 */
+	@TableField("UAUTH_MODIFY_USER")
+	private String uauthModifyUser;
 
-    public String getAuthId() {
-        return authId;
-    }
+	public String getAuthId() {
+		return authId;
+	}
 
-    public void setAuthId(String authId) {
-        this.authId = authId;
-    }
-    public String getAuthName() {
-        return authName;
-    }
+	public void setAuthId(String authId) {
+		this.authId = authId;
+	}
 
-    public void setAuthName(String authName) {
-        this.authName = authName;
-    }
-    public String getAuthLevel() {
-        return authLevel;
-    }
+	public String getAuthName() {
+		return authName;
+	}
 
-    public void setAuthLevel(String authLevel) {
-        this.authLevel = authLevel;
-    }
-    public String getAuthDelFlg() {
-        return authDelFlg;
-    }
+	public void setAuthName(String authName) {
+		this.authName = authName;
+	}
 
-    public void setAuthDelFlg(String authDelFlg) {
-        this.authDelFlg = authDelFlg;
-    }
-    public LocalDateTime getAuthCreateTime() {
-        return authCreateTime;
-    }
+	public String getAuthLevel() {
+		return authLevel;
+	}
 
-    public void setAuthCreateTime(LocalDateTime authCreateTime) {
-        this.authCreateTime = authCreateTime;
-    }
-    public String getAuthCreateUser() {
-        return authCreateUser;
-    }
+	public void setAuthLevel(String authLevel) {
+		this.authLevel = authLevel;
+	}
 
-    public void setAuthCreateUser(String authCreateUser) {
-        this.authCreateUser = authCreateUser;
-    }
-    public LocalDateTime getAuthModifyTime() {
-        return authModifyTime;
-    }
+	public String getAuthDelFlg() {
+		return authDelFlg;
+	}
 
-    public void setAuthModifyTime(LocalDateTime authModifyTime) {
-        this.authModifyTime = authModifyTime;
-    }
-    public String getUauthModifyUser() {
-        return uauthModifyUser;
-    }
+	public void setAuthDelFlg(String authDelFlg) {
+		this.authDelFlg = authDelFlg;
+	}
 
-    public void setUauthModifyUser(String uauthModifyUser) {
-        this.uauthModifyUser = uauthModifyUser;
-    }
+	public LocalDateTime getAuthCreateTime() {
+		return authCreateTime;
+	}
 
-    @Override
-    public String toString() {
-        return "SAuthEntity{" +
-            "authId=" + authId +
-            ", authName=" + authName +
-            ", authLevel=" + authLevel +
-            ", authDelFlg=" + authDelFlg +
-            ", authCreateTime=" + authCreateTime +
-            ", authCreateUser=" + authCreateUser +
-            ", authModifyTime=" + authModifyTime +
-            ", uauthModifyUser=" + uauthModifyUser +
-        "}";
-    }
+	public void setAuthCreateTime(LocalDateTime authCreateTime) {
+		this.authCreateTime = authCreateTime;
+	}
+
+	public String getAuthCreateUser() {
+		return authCreateUser;
+	}
+
+	public void setAuthCreateUser(String authCreateUser) {
+		this.authCreateUser = authCreateUser;
+	}
+
+	public LocalDateTime getAuthModifyTime() {
+		return authModifyTime;
+	}
+
+	public void setAuthModifyTime(LocalDateTime authModifyTime) {
+		this.authModifyTime = authModifyTime;
+	}
+
+	public String getUauthModifyUser() {
+		return uauthModifyUser;
+	}
+
+	public void setUauthModifyUser(String uauthModifyUser) {
+		this.uauthModifyUser = uauthModifyUser;
+	}
+
+	@Override
+	public String toString() {
+		return "SAuthEntity{" + "authId=" + authId + ", authName=" + authName + ", authLevel=" + authLevel
+				+ ", authDelFlg=" + authDelFlg + ", authCreateTime=" + authCreateTime + ", authCreateUser="
+				+ authCreateUser + ", authModifyTime=" + authModifyTime + ", uauthModifyUser=" + uauthModifyUser + "}";
+	}
 }

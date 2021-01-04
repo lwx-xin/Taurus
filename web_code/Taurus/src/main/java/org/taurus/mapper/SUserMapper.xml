@@ -64,14 +64,15 @@
 				u.USER_ID = #{userId}
 			</if>
 		</where>
+		ORDER BY U.USER_MODIFY_TIME DESC
     </select>
     
     <select id="getUserDetail" resultMap="entityEx" parameterType="java.lang.String">
 		SELECT 
 			u.*,a.*
 		FROM s_user u
-		LEFT JOIN s_auth_user au ON au.USER_ID = u.USER_ID
-		LEFT JOIN s_auth a ON au.AUTH_ID = a.AUTH_ID
+		LEFT JOIN s_auth_user au ON au.USER_ID = u.USER_ID AND au.AUTH_USER_DEL_FLG = '1'
+		LEFT JOIN s_auth a ON au.AUTH_ID = a.AUTH_ID AND a.AUTH_DEL_FLG = '1'
 		WHERE u.USER_ID = #{userId}
     </select>
     

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.taurus.common.Code;
+import org.springframework.web.multipart.MultipartFile;
+import org.taurus.common.CommonField;
+import org.taurus.common.code.CheckCode;
 import org.taurus.common.result.Result;
 import org.taurus.common.util.LoggerUtil;
 import org.taurus.common.util.SessionUtil;
+import org.taurus.common.util.StrUtil;
 import org.taurus.entity.SUserEntity;
 import org.taurus.extendEntity.SUserEntityEx;
 import org.taurus.service.SUserService;
@@ -40,7 +44,7 @@ public class UserController {
 		LoggerUtil.printParam(logger, "userEntity", userEntity);
 
 		List<SUserEntityEx> data = sUserService.getUserList(userEntity);
-		return new Result<List<SUserEntityEx>>(data, true, Code.INTERFACE_ERR_CODE_0);
+		return new Result<List<SUserEntityEx>>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -54,9 +58,9 @@ public class UserController {
 
 		SUserEntityEx data = sUserService.getUserDetail(userId);
 		if (data == null) {
-			return new Result<SUserEntityEx>(data, false, Code.INTERFACE_ERR_CODE_2);
+			return new Result<SUserEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_2);
 		}
-		return new Result<SUserEntityEx>(data, true, Code.INTERFACE_ERR_CODE_0);
+		return new Result<SUserEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -64,15 +68,15 @@ public class UserController {
 	 */
 	@ApiOperation(value = "添加用户信息")
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public Result<SUserEntityEx> insert(SUserEntityEx userEntityEx, HttpServletRequest request) {
+	public Result<SUserEntityEx> insert(SUserEntityEx userEntityEx, HttpServletRequest request, MultipartFile files) {
 
 		LoggerUtil.printParam(logger, "userEntityEx", userEntityEx);
 
-		SUserEntityEx data = sUserService.insert(userEntityEx, SessionUtil.getUserId(request));
+		SUserEntityEx data = sUserService.insert(userEntityEx, files, SessionUtil.getUserId(request));
 		if (data == null) {
-			return new Result<SUserEntityEx>(data, false, Code.INTERFACE_ERR_CODE_3);
+			return new Result<SUserEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_3);
 		}
-		return new Result<SUserEntityEx>(data, true, Code.INTERFACE_ERR_CODE_0);
+		return new Result<SUserEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -81,34 +85,45 @@ public class UserController {
 	@ApiOperation(value = "修改用户信息")
 	@RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
 	public Result<SUserEntityEx> update(@PathVariable("userId") String userId, SUserEntityEx userEntityEx,
-			HttpServletRequest request) {
+			MultipartFile files, HttpServletRequest request, HttpServletResponse response) {
 
 		LoggerUtil.printParam(logger, "userId", userId);
 		LoggerUtil.printParam(logger, "userEntityEx", userEntityEx);
 
-		SUserEntityEx data = sUserService.update(userId, userEntityEx, SessionUtil.getUserId(request));
+		SUserEntityEx data = sUserService.update(userId, userEntityEx, files, SessionUtil.getUserId(request));
 		if (data == null) {
-			return new Result<SUserEntityEx>(data, false, Code.INTERFACE_ERR_CODE_4);
+			return new Result<SUserEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_4);
 		}
-		return new Result<SUserEntityEx>(data, true, Code.INTERFACE_ERR_CODE_0);
+		
+		if (SessionUtil.getUserId(request).equals(userId)) {
+			response.setHeader(CommonField.SYSTEM_ERR_REDIRECT, "/html/login.html");
+			response.setHeader(CommonField.SYSTEM_ERR_MSG, StrUtil.toUTF8(CheckCode.INTERFACE_ERR_CODE_reLogin.getName()));
+			return new Result<SUserEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_reLogin);
+		}
+		
+		return new Result<SUserEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
-	 * 删除用户信息-逻辑删除
+	 * 禁用启用-用户账号
 	 */
-	@ApiOperation(value = "删除用户信息-逻辑删除")
+	@ApiOperation(value = "禁用启用-用户账号")
 	@RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
-	public Result<SUserEntityEx> delete(@PathVariable("userId") String userId, SUserEntityEx userEntityEx,
-			HttpServletRequest request) {
+	public Result<SUserEntityEx> lock_unLock(@PathVariable("userId") String userId, SUserEntityEx userEntityEx,
+			HttpServletRequest request, HttpServletResponse response) {
 
 		LoggerUtil.printParam(logger, "userId", userId);
 		LoggerUtil.printParam(logger, "userEntityEx", userEntityEx);
+
+		sUserService.lock_unLock(userId, SessionUtil.getUserId(request));
 		
-		sUserService.delete(userId, SessionUtil.getUserId(request));
+		if (SessionUtil.getUserId(request).equals(userId)) {
+			response.setHeader(CommonField.SYSTEM_ERR_REDIRECT, "/html/login.html");
+			response.setHeader(CommonField.SYSTEM_ERR_MSG, StrUtil.toUTF8(CheckCode.INTERFACE_ERR_CODE_reLogin.getName()));
+			return new Result<SUserEntityEx>(null, true, CheckCode.INTERFACE_ERR_CODE_reLogin);
+		}
 		
-		return new Result<SUserEntityEx>(null, true, Code.INTERFACE_ERR_CODE_0);
+		return new Result<SUserEntityEx>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
-	
-	
 
 }

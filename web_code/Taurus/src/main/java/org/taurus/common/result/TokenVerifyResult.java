@@ -2,7 +2,7 @@ package org.taurus.common.result;
 
 import java.io.Serializable;
 
-import org.taurus.common.Code;
+import org.taurus.common.code.CheckCode;
 
 /**
  * 令牌验证结果
@@ -21,7 +21,7 @@ public class TokenVerifyResult implements Serializable {
 	
 	private String message;
 	
-    public TokenVerifyResult(Object data, Code code) {
+    public TokenVerifyResult(Object data, CheckCode code) {
 		super();
 		this.data = data;
 		this.success = false;
@@ -33,8 +33,8 @@ public class TokenVerifyResult implements Serializable {
 		super();
 		this.data = data;
 		this.success = true;
-		this.errCode = Code.TOKEN_SUCCESS.getValue();
-		this.message = Code.TOKEN_SUCCESS.getName();
+		this.errCode = CheckCode.TOKEN_SUCCESS.getValue();
+		this.message = CheckCode.TOKEN_SUCCESS.getName();
 	}
 
 	public Object getData() {

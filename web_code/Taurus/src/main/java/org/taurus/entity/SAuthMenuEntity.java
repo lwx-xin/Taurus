@@ -17,124 +17,125 @@ import java.io.Serializable;
 @TableName("s_auth_menu")
 public class SAuthMenuEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * 菜单权限id
-     */
-    @TableId("AUTH_MENU_ID")
-    private String authMenuId;
+	/**
+	 * 菜单权限id
+	 */
+	@TableId("AUTH_MENU_ID")
+	private String authMenuId;
 
-    /**
-     * 权限id
-     */
-    @TableField("AUTH_ID")
-    private String authId;
+	/**
+	 * 权限id
+	 */
+	@TableField("AUTH_ID")
+	private String authId;
 
-    /**
-     * 菜单id
-     */
-    @TableField("MENU_ID")
-    private String menuId;
+	/**
+	 * 菜单id
+	 */
+	@TableField("MENU_ID")
+	private String menuId;
 
-    /**
-     * 删除标识
-     */
-    @TableField("AUTH_MENU_DEL_FLG")
-    private String authMenuDelFlg;
+	/**
+	 * 删除标识
+	 */
+	@TableField("AUTH_MENU_DEL_FLG")
+	private String authMenuDelFlg;
 
-    /**
-     * 创建时间
-     */
-    @TableField("AUTH_MENU_CREATE_TIME")
-    private LocalDateTime authMenuCreateTime;
+	/**
+	 * 创建时间
+	 */
+	@TableField("AUTH_MENU_CREATE_TIME")
+	private LocalDateTime authMenuCreateTime;
 
-    /**
-     * 创建者
-     */
-    @TableField("AUTH_MENU_CREATE_USER")
-    private String authMenuCreateUser;
+	/**
+	 * 创建者
+	 */
+	@TableField("AUTH_MENU_CREATE_USER")
+	private String authMenuCreateUser;
 
-    /**
-     * 编辑时间
-     */
-    @TableField("AUTH_MENU_MODIFY_TIME")
-    private LocalDateTime authMenuModifyTime;
+	/**
+	 * 编辑时间
+	 */
+	@TableField("AUTH_MENU_MODIFY_TIME")
+	private LocalDateTime authMenuModifyTime;
 
-    /**
-     * 编辑者
-     */
-    @TableField("AUTH_MENU_MODIFY_USER")
-    private String authMenuModifyUser;
+	/**
+	 * 编辑者
+	 */
+	@TableField("AUTH_MENU_MODIFY_USER")
+	private String authMenuModifyUser;
 
-    public String getAuthMenuId() {
-        return authMenuId;
-    }
+	public String getAuthMenuId() {
+		return authMenuId;
+	}
 
-    public void setAuthMenuId(String authMenuId) {
-        this.authMenuId = authMenuId;
-    }
-    public String getAuthId() {
-        return authId;
-    }
+	public void setAuthMenuId(String authMenuId) {
+		this.authMenuId = authMenuId;
+	}
 
-    public void setAuthId(String authId) {
-        this.authId = authId;
-    }
-    public String getMenuId() {
-        return menuId;
-    }
+	public String getAuthId() {
+		return authId;
+	}
 
-    public void setMenuId(String menuId) {
-        this.menuId = menuId;
-    }
-    public String getAuthMenuDelFlg() {
-        return authMenuDelFlg;
-    }
+	public void setAuthId(String authId) {
+		this.authId = authId;
+	}
 
-    public void setAuthMenuDelFlg(String authMenuDelFlg) {
-        this.authMenuDelFlg = authMenuDelFlg;
-    }
-    public LocalDateTime getAuthMenuCreateTime() {
-        return authMenuCreateTime;
-    }
+	public String getMenuId() {
+		return menuId;
+	}
 
-    public void setAuthMenuCreateTime(LocalDateTime authMenuCreateTime) {
-        this.authMenuCreateTime = authMenuCreateTime;
-    }
-    public String getAuthMenuCreateUser() {
-        return authMenuCreateUser;
-    }
+	public void setMenuId(String menuId) {
+		this.menuId = menuId;
+	}
 
-    public void setAuthMenuCreateUser(String authMenuCreateUser) {
-        this.authMenuCreateUser = authMenuCreateUser;
-    }
-    public LocalDateTime getAuthMenuModifyTime() {
-        return authMenuModifyTime;
-    }
+	public String getAuthMenuDelFlg() {
+		return authMenuDelFlg;
+	}
 
-    public void setAuthMenuModifyTime(LocalDateTime authMenuModifyTime) {
-        this.authMenuModifyTime = authMenuModifyTime;
-    }
-    public String getAuthMenuModifyUser() {
-        return authMenuModifyUser;
-    }
+	public void setAuthMenuDelFlg(String authMenuDelFlg) {
+		this.authMenuDelFlg = authMenuDelFlg;
+	}
 
-    public void setAuthMenuModifyUser(String authMenuModifyUser) {
-        this.authMenuModifyUser = authMenuModifyUser;
-    }
+	public LocalDateTime getAuthMenuCreateTime() {
+		return authMenuCreateTime;
+	}
 
-    @Override
-    public String toString() {
-        return "SAuthMenuEntity{" +
-            "authMenuId=" + authMenuId +
-            ", authId=" + authId +
-            ", menuId=" + menuId +
-            ", authMenuDelFlg=" + authMenuDelFlg +
-            ", authMenuCreateTime=" + authMenuCreateTime +
-            ", authMenuCreateUser=" + authMenuCreateUser +
-            ", authMenuModifyTime=" + authMenuModifyTime +
-            ", authMenuModifyUser=" + authMenuModifyUser +
-        "}";
-    }
+	public void setAuthMenuCreateTime(LocalDateTime authMenuCreateTime) {
+		this.authMenuCreateTime = authMenuCreateTime;
+	}
+
+	public String getAuthMenuCreateUser() {
+		return authMenuCreateUser;
+	}
+
+	public void setAuthMenuCreateUser(String authMenuCreateUser) {
+		this.authMenuCreateUser = authMenuCreateUser;
+	}
+
+	public LocalDateTime getAuthMenuModifyTime() {
+		return authMenuModifyTime;
+	}
+
+	public void setAuthMenuModifyTime(LocalDateTime authMenuModifyTime) {
+		this.authMenuModifyTime = authMenuModifyTime;
+	}
+
+	public String getAuthMenuModifyUser() {
+		return authMenuModifyUser;
+	}
+
+	public void setAuthMenuModifyUser(String authMenuModifyUser) {
+		this.authMenuModifyUser = authMenuModifyUser;
+	}
+
+	@Override
+	public String toString() {
+		return "SAuthMenuEntity{" + "authMenuId=" + authMenuId + ", authId=" + authId + ", menuId=" + menuId
+				+ ", authMenuDelFlg=" + authMenuDelFlg + ", authMenuCreateTime=" + authMenuCreateTime
+				+ ", authMenuCreateUser=" + authMenuCreateUser + ", authMenuModifyTime=" + authMenuModifyTime
+				+ ", authMenuModifyUser=" + authMenuModifyUser + "}";
+	}
 }

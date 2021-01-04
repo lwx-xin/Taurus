@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.taurus.entity.SUrlEntity;
+import org.taurus.extendEntity.SUrlEntityEx;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -42,5 +43,40 @@ public interface SUrlService extends IService<SUrlEntity> {
 	 * @return
 	 */
 	public List<SUrlEntity> getUrlByUser(String userId);
+
+	/**
+	 * 获取请求列表
+	 * 
+	 * @param urlEntity
+	 * @return
+	 */
+	public List<SUrlEntityEx> getUrlList(SUrlEntity urlEntity);
+
+	/**
+	 * 根据请求id获取详细信息
+	 * 
+	 * @param urlId
+	 * @return
+	 */
+	public SUrlEntityEx getUrlDetail(String urlId);
+
+	/**
+	 * 新增请求
+	 * 
+	 * @param urlEntityEx
+	 * @param operator    操作人员
+	 * @return
+	 */
+	public SUrlEntityEx insert(SUrlEntityEx urlEntityEx, String operator);
+
+	/**
+	 * 编辑请求
+	 * 
+	 * @param urlId
+	 * @param urlEntityEx
+	 * @param operator    操作人员
+	 * @return
+	 */
+	public SUrlEntityEx update(String urlId, SUrlEntityEx urlEntityEx, String operator);
 
 }

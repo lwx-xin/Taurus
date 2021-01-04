@@ -10,7 +10,7 @@ import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
-import org.taurus.common.Code;
+import org.taurus.common.code.CheckCode;
 import org.taurus.common.result.TokenVerifyResult;
 import org.taurus.common.token_entity.UserToken;
 
@@ -124,23 +124,23 @@ public class JwtUtil {
 	 */
 	public static TokenVerifyResult parseToken(String tokenStr) {
 		Claims body = null;
-		Code code = null;
+		CheckCode code = null;
 		try {
 			body = verifyToken(tokenStr);
-			code = Code.TOKEN_SUCCESS;
+			code = CheckCode.TOKEN_SUCCESS;
 		} catch (ExpiredJwtException e) {
 			//令牌过期
 			System.err.println(e);
 			body = e.getClaims();
-			code = Code.TOKEN_OVERDUE;
+			code = CheckCode.TOKEN_OVERDUE;
 		} catch (SignatureException e) {
 			// 令牌验证失败
 			System.err.println(e);
-			code = Code.TOKEN_ERR;
+			code = CheckCode.TOKEN_ERR;
 		} catch (Exception e) {
 			// 令牌验证失败
 			System.err.println(e);
-			code = Code.TOKEN_ERR;
+			code = CheckCode.TOKEN_ERR;
 		}
 		//(List<String>) body.get("authList");
 		return new TokenVerifyResult(body, code);

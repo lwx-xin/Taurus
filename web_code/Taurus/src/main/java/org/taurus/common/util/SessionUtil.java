@@ -23,6 +23,15 @@ public class SessionUtil {
 	}
 
 	/**
+	 * 清除全部session
+	 * 
+	 * @param session
+	 */
+	public static void clearSession(HttpServletRequest request) {
+		clearSession(request.getSession());
+	}
+
+	/**
 	 * 从session中获取用户信息
 	 * 
 	 * @param session

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.taurus.common.Code;
+import org.taurus.common.code.CheckCode;
 import org.taurus.common.result.Result;
 import org.taurus.common.util.SessionUtil;
 import org.taurus.extendEntity.SMenuEntityEx;
@@ -31,7 +31,7 @@ public class MenuController {
 		String userId = SessionUtil.getUserId(session);
 		List<SMenuEntityEx> menuList = menuService.getMenuListByUser(userId);
 
-		return new Result<List<SMenuEntityEx>>(menuList, true, Code.INTERFACE_ERR_CODE_0);
+		return new Result<List<SMenuEntityEx>>(menuList, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 	
 }

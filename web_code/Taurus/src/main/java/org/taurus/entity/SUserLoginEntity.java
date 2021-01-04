@@ -17,82 +17,81 @@ import java.io.Serializable;
 @TableName("s_user_login")
 public class SUserLoginEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * id
-     */
-    @TableId("LOGIN_ID")
-    private String loginId;
+	/**
+	 * id
+	 */
+	@TableId("LOGIN_ID")
+	private String loginId;
 
-    /**
-     * 用户id
-     */
-    @TableField("LOGIN_USER")
-    private String loginUser;
+	/**
+	 * 用户id
+	 */
+	@TableField("LOGIN_USER")
+	private String loginUser;
 
-    /**
-     * 登录时间
-     */
-    @TableField("LOGIN_TIME")
-    private LocalDateTime loginTime;
+	/**
+	 * 登录时间
+	 */
+	@TableField("LOGIN_TIME")
+	private LocalDateTime loginTime;
 
-    /**
-     * 登录地点
-     */
-    @TableField("LOGIN_ADDRESS")
-    private String loginAddress;
+	/**
+	 * 登录地点
+	 */
+	@TableField("LOGIN_ADDRESS")
+	private String loginAddress;
 
-    /**
-     * 登录平台(PC端,移动端)
-     */
-    @TableField("LOGIN_PLATFORM")
-    private String loginPlatform;
+	/**
+	 * 登录平台(PC端,移动端)
+	 */
+	@TableField("LOGIN_PLATFORM")
+	private String loginPlatform;
 
-    public String getLoginId() {
-        return loginId;
-    }
+	public String getLoginId() {
+		return loginId;
+	}
 
-    public void setLoginId(String loginId) {
-        this.loginId = loginId;
-    }
-    public String getLoginUser() {
-        return loginUser;
-    }
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
 
-    public void setLoginUser(String loginUser) {
-        this.loginUser = loginUser;
-    }
-    public LocalDateTime getLoginTime() {
-        return loginTime;
-    }
+	public String getLoginUser() {
+		return loginUser;
+	}
 
-    public void setLoginTime(LocalDateTime loginTime) {
-        this.loginTime = loginTime;
-    }
-    public String getLoginAddress() {
-        return loginAddress;
-    }
+	public void setLoginUser(String loginUser) {
+		this.loginUser = loginUser;
+	}
 
-    public void setLoginAddress(String loginAddress) {
-        this.loginAddress = loginAddress;
-    }
-    public String getLoginPlatform() {
-        return loginPlatform;
-    }
+	public LocalDateTime getLoginTime() {
+		return loginTime;
+	}
 
-    public void setLoginPlatform(String loginPlatform) {
-        this.loginPlatform = loginPlatform;
-    }
+	public void setLoginTime(LocalDateTime loginTime) {
+		this.loginTime = loginTime;
+	}
 
-    @Override
-    public String toString() {
-        return "SUserLoginEntity{" +
-            "loginId=" + loginId +
-            ", loginUser=" + loginUser +
-            ", loginTime=" + loginTime +
-            ", loginAddress=" + loginAddress +
-            ", loginPlatform=" + loginPlatform +
-        "}";
-    }
+	public String getLoginAddress() {
+		return loginAddress;
+	}
+
+	public void setLoginAddress(String loginAddress) {
+		this.loginAddress = loginAddress;
+	}
+
+	public String getLoginPlatform() {
+		return loginPlatform;
+	}
+
+	public void setLoginPlatform(String loginPlatform) {
+		this.loginPlatform = loginPlatform;
+	}
+
+	@Override
+	public String toString() {
+		return "SUserLoginEntity{" + "loginId=" + loginId + ", loginUser=" + loginUser + ", loginTime=" + loginTime
+				+ ", loginAddress=" + loginAddress + ", loginPlatform=" + loginPlatform + "}";
+	}
 }

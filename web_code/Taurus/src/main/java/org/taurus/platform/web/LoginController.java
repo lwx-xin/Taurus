@@ -9,10 +9,10 @@ import javax.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.taurus.common.Code;
+import org.taurus.common.RepeatLogin;
+import org.taurus.common.code.CheckCode;
 import org.taurus.common.result.Result;
 import org.taurus.common.util.CookieUtil;
-import org.taurus.common.util.ListUtil;
 import org.taurus.common.util.SessionUtil;
 import org.taurus.entity.SUserEntity;
 import org.taurus.service.SAuthService;
@@ -34,29 +34,35 @@ public class LoginController {
 		SUserEntity userEntity = userService.getUser(userNumber, userPwd);
 		
 		if (userEntity==null) {
-			return new Result<String>(false, Code.LOGIN_WEB_ERROR);
+			return new Result<String>(null, false, CheckCode.LOGIN_WEB_ERROR);
 		}
 		
 		String userId = userEntity.getUserId();
 		
 		//往cookie中添加token
 		List<String> authIdList = authService.getAuthByUserId(userId);
-		if (ListUtil.isNotEmpty(authIdList)) {
-			CookieUtil.saveUserInfoToken(userId, authIdList, response);
-		}
+//		if (ListUtil.isNotEmpty(authIdList)) {
+//			CookieUtil.saveUserInfoToken(userId, authIdList, response);
+//		}
+		CookieUtil.saveUserInfoToken(userId, authIdList, response);
 		
 		SessionUtil.setUser(session, userEntity);
+		
+		RepeatLogin.addUser(userId, session);
 
-		return new Result<String>(true, Code.LOGIN_WEB_SUCCESS);
+		return new Result<String>(null, true, CheckCode.LOGIN_WEB_SUCCESS);
 	}
 
 	@RequestMapping(value = "/logout", method = RequestMethod.POST)
 	public Result<String> logout(HttpSession session, HttpServletResponse response){
+
+		String userId = SessionUtil.getUserId(session);
 		
+		RepeatLogin.removeUser(userId);
 		SessionUtil.clearSession(session);
 		CookieUtil.clearCookie(response);
 
-		return new Result<String>(true, Code.INTERFACE_ERR_CODE_0);
+		return new Result<String>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 }

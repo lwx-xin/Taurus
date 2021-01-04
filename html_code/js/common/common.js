@@ -1,9 +1,5 @@
 
 $(function(){
-	// var systemErrMsg = localStorage.getItem("systemErrMsg");
-	// var redirectUrl = localStorage.getItem("systemErrRedirect");
-	// localStorage.removeItem("systemErrMsg");
-	// localStorage.removeItem("systemErrRedirect");
 	var systemErrMsg = getCookie("systemErrMsg");
 	var redirectUrl = getCookie("systemErrRedirect");
 	var sourcePath = getCookie("systemErrSourcePath");
@@ -13,14 +9,12 @@ $(function(){
 	
 	if(isNotNull(redirectUrl)){
 		hintWarning("系统提示", "重定向"+redirectUrl, null)
-		//top.location.href=redirectUrl;
 	}
 	if(isNotNull(systemErrMsg)){
-		hintWarning("系统提示", systemErrMsg, null)
-		//layer.msg(systemErrMsg);
+		hintWarning("系统提示", decodeURI(systemErrMsg), null)
 	}
 	if(isNotNull(sourcePath)){
-		hintWarning("系统提示", "异常资源:"+sourcePath, null)
+		hintWarning("系统提示", "异常资源:"+decodeURI(sourcePath), null)
 	}
 });
 
@@ -36,19 +30,40 @@ function ajax(param){
 		dataType = param.dataType;
 	}
 	
+	var data;
+	var formData;
+	var processData = true;
+	var contentType = "application/x-www-form-urlencoded";
 	if(isNotNull(param.data)){
 		$.each(param.data, function(k, v){
 			param.url = param.url.replace("{"+k+"}", v);
 		});
+		if(param.data.files != null){
+			formData = new FormData();
+			$.each(param.data, function(k, v){
+				formData.append(k, v);
+			});
+			formData.append("files", param.data.files);
+			processData = false;
+			contentType = false;
+			data = formData;
+		} else {
+			data = param.data;
+		}
 	}
 	
 	$.ajax({
 		url: param.url,
-		data: param.data,
+		data: data,
 		dataType: param.dataType,
 		type: param.type,
 		async: isAsync,//false,同步；true,异步
-		beforeSend: function () {
+		processData: processData, 
+		contentType: contentType,
+		headers: {  
+			"req-flg": "ajax"  
+		},
+		beforeSend: function (request) {
 			//发送请求前
 			if(param.beforeSend!=null){
 				param.beforeSend();
@@ -64,6 +79,14 @@ function ajax(param){
 			if(param.success!=null){
 				param.success(data);
 			}
+			
+			if(data.errCode=="-1"){
+				try{
+					swal("提示", "请输入账号", "error");
+				}catch(e){
+					//TODO handle the exception
+				}
+			}
 		},
 		error: function(data){
 			layer.msg("err");
@@ -75,19 +98,32 @@ function ajax(param){
 			var sysErrMessage = request.getResponseHeader("systemErrMsg");
 			var redirectUrl = request.getResponseHeader("systemErrRedirect");
 			var sourcePath = request.getResponseHeader("systemErrSourcePath");
-			console.log("错误信息:"+sysErrMessage)
-			console.log("重定向页面:"+redirectUrl)
-			console.log("异常资源:"+redirectUrl)
+			
+			if(isNotNull(sysErrMessage)){
+				console.log("错误信息:"+decodeURI(sysErrMessage));
+			}
 			if(isNotNull(redirectUrl)){
-				// localStorage.setItem("systemErrRedirect", redirectUrl);
-				//setCookie("systemErrRedirect", redirectUrl);
-				top.location.href=redirectUrl;
+				console.log("重定向页面:"+redirectUrl);
+			}
+			if(isNotNull(redirectUrl)){
+				console.log("异常资源:"+decodeURI(sourcePath));
+			}
+			
+			if(isNotNull(redirectUrl)){
+				if(redirectUrl=="/html/login.html"){
+					top.location.href=redirectUrl;
+				} else {
+					window.location.href=redirectUrl;
+				}
 			}
 			if(isNotNull(sysErrMessage)){
-				// localStorage.setItem("systemErrMsg", sysErrMessage);
-				//setCookie("systemErrMsg", sysErrMessage);
-				layer.msg(sysErrMessage);
+				if(isNull(redirectUrl)){
+					hintWarning("系统提示", decodeURI(sysErrMessage), null)
+				} else {
+					setCookie("systemErrMsg", sysErrMessage)
+				}
 			}
+			
 			if(status=="error"){
 				
 			} else if(status=="timeout"){
@@ -99,10 +135,6 @@ function ajax(param){
 	});
 }
 
-function openWin(url){
-	window.location.href = url+"?v="+new Date().getTime();
-}
-
 function hintWarning(title, messgae, clickFun){
 	toastr.options = {
 		"closeButton": true,
@@ -112,7 +144,7 @@ function hintWarning(title, messgae, clickFun){
 		"onclick": clickFun,
 		"showDuration": "400",
 		"hideDuration": "1000",
-		"timeOut": "5000",
+		"timeOut": "2000",
 		"extendedTimeOut": "1000",
 		"showEasing": "swing",
 		"hideEasing": "linear",
@@ -132,7 +164,7 @@ function hintInfo(title, messgae, clickFun){
 		"onclick": clickFun,
 		"showDuration": "400",
 		"hideDuration": "1000",
-		"timeOut": "5000",
+		"timeOut": "2000",
 		"extendedTimeOut": "1000",
 		"showEasing": "swing",
 		"hideEasing": "linear",
@@ -154,16 +186,28 @@ function isNotNull(obj){
 	return !isNull(obj);
 }
 
+//设置cookie
 function setCookie(key, value){
 	$.cookie(key, value, { expires: 1, path: '/' });
 }
 
+//获取cookie
 function getCookie(key){
 	return $.cookie(key)
 }
 
+//移除cookie
 function removeCookie(key){
 	$.cookie(key, "", { expires: 0, path: '/' });
+}
+
+//清除所有cookie
+function clearAllCookie() {  
+	var keys = document.cookie.match(/[^ =;]+(?=\=)/g);  
+	if(keys) {  
+		for(var i = keys.length; i--;)  
+			$.cookie(keys[i], "", { expires: 0, path: '/' });
+	}  
 }
 
 function getPageParam(){
@@ -179,4 +223,60 @@ function getPageParam(){
 		objs[key]=value;
 	}
 	return objs;
+}
+
+//获取分组下的code列表
+function getCodes(codeGroups){
+	var codeElements;
+	var param = new Object();
+	param["codeGroup"] = JSON.stringify(codeGroups);
+	ajax({
+		url: requestPath.code.url,
+		data: param,
+		type: requestPath.code.type,
+		success: function(data){
+			if(data.status){
+				codeElements = data.data;
+			}
+		},
+		error: function(data){
+			layer.msg("err");
+		}
+	});
+	return codeElements;
+}
+
+//获取code对应的名称
+function getCodeName(group, value){
+	var name = "";
+	if(isNotNull(value)){
+		$.each(Code, function(k, v){
+			if(v.group == group && value == v.value){
+				name = v.name;
+				return false;
+			}
+		});
+	}
+	return name;
+}
+
+//退出登录
+function logout(){
+	setCookie("systemErrMsg","退出登录");
+	//跳转登录页面
+	top.location.href= "../login.html";
+	// ajax({
+	// 	url: requestPath.logout.url,
+	// 	type: requestPath.login.type,
+	// 	success: function(data){
+	// 		if(data.status){
+	// 			setCookie("systemErrMsg","退出登录");
+	// 			//跳转登录页面
+	// 			top.location.href= "../login.html";
+	// 		}
+	// 	},
+	// 	error: function(data){
+	// 		layer.msg("err");
+	// 	}
+	// });
 }

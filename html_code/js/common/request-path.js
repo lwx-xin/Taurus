@@ -1,4 +1,12 @@
 var requestPath = {
+	
+	// 获取code列表
+	code:{"url":"/code", "type":"get"},
+	// 获取登录用户
+	userInfo:{"url":"/userInfo", "type":"get"},
+	// 清除session以及cookie
+	clearLoginInfo:{"url":"/clearLoginInfo", "type":"delete"},
+	
 	// 登录
 	login:{"url":"/web/login/login", "type":"post"},
 	// 退出登录
@@ -12,10 +20,21 @@ var requestPath = {
 	userInsert:{"url":"/web/user", "type":"post"},
 	// 用户详细信息
 	userDetail:{"url":"/web/user/{userId}", "type":"get"},
-	// 编辑信息
+	// 编辑用户信息
 	userUpdate:{"url":"/web/user/{userId}", "type":"put"},
-	// 删除用户
+	// 禁用启用-用户账号
 	userDelete:{"url":"/web/user/{userId}", "type":"delete"},
+	
+	//请求列表
+	urlList:{"url":"/web/url", "type":"get"},
+	// 添加请求
+	urlInsert:{"url":"/web/url", "type":"post"},
+	// 请求详细信息
+	urlDetail:{"url":"/web/url/{urlId}", "type":"get"},
+	// 编辑请求信息
+	urlUpdate:{"url":"/web/url/{urlId}", "type":"put"},
+	// 禁用启用-请求
+	urlDelete:{"url":"/web/url/{urlId}", "type":"delete"},
 	
 	//权限列表
 	authList:{"url":"/web/auth", "type":"get"},

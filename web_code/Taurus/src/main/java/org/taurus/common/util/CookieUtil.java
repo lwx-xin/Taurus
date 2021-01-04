@@ -27,6 +27,7 @@ public class CookieUtil {
 	 * @param response
 	 */
 	public static void createCookie(String cookieName, String cookieValue, HttpServletResponse response) {
+		//cookieValue = cookieValue.replaceAll("[\\t\\n\\r]", "");
 		Cookie cookie = new Cookie(cookieName, cookieValue);
 		cookie.setMaxAge(maxAge);
 		cookie.setPath(contextPath);

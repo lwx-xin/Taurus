@@ -6,12 +6,15 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.taurus.common.Code;
+import org.taurus.common.code.Code;
+import org.taurus.common.util.JsonUtil;
 import org.taurus.common.util.ListUtil;
 import org.taurus.dao.SAuthDao;
 import org.taurus.entity.SAuthEntity;
+import org.taurus.extendEntity.SAuthEntityEx;
 import org.taurus.service.SAuthService;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 /**
@@ -38,6 +41,19 @@ public class SAuthServiceImpl extends ServiceImpl<SAuthDao, SAuthEntity> impleme
 		}
 		
 		return null;
+	}
+
+	@Override
+	public List<SAuthEntityEx> getAuthList(SAuthEntity authEntity) {
+		QueryWrapper<SAuthEntity> queryWrapper = new QueryWrapper<SAuthEntity>(authEntity);
+		List<SAuthEntity> data = list(queryWrapper);
+		return JsonUtil.toList(data, SAuthEntityEx.class);
+	}
+
+	@Override
+	public SAuthEntityEx getAuthDetail(String authId) {
+		SAuthEntity authEntity = getById(authId);
+		return JsonUtil.toEntity(authEntity, SAuthEntityEx.class);
 	}
 	
 }

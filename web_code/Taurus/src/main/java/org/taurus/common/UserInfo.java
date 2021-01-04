@@ -28,16 +28,16 @@ public class UserInfo {
 	 * @return
 	 */
 	public SUserEntity getUserInfo(HttpServletRequest request) {
-		//获取用户信息令牌
+		// 获取用户信息令牌
 		String userInfoToken = CookieUtil.getCookie(CommonField.SYSTEM_USER_INFO, request);
-		
+
 		return JsonUtil.toEntity(userInfoToken, SUserEntity.class);
 	}
 
 	public void setUserInfo(HttpSession session, SUserEntity userEntity) {
 		SessionUtil.setUser(session, userEntity);
 	}
-	
+
 	public void setUserInfo(HttpServletResponse response, SUserEntity userEntity) {
 //		CookieUtil.createCookie(USER_INFO, cookieValue, response);
 	}

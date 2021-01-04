@@ -3,29 +3,34 @@ package org.taurus.service.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.taurus.common.Code;
+import org.springframework.web.multipart.MultipartFile;
+import org.taurus.common.code.Code;
+import org.taurus.common.code.ExecptionType;
+import org.taurus.common.exception.CustomException;
+import org.taurus.common.load.properties.TaurusProperties;
 import org.taurus.common.util.DateUtil;
 import org.taurus.common.util.JsonUtil;
 import org.taurus.common.util.ListUtil;
-import org.taurus.common.util.LoggerUtil;
 import org.taurus.common.util.MD5Util;
 import org.taurus.common.util.StrUtil;
 import org.taurus.dao.SAuthDao;
 import org.taurus.dao.SUserDao;
 import org.taurus.entity.SAuthEntity;
 import org.taurus.entity.SAuthUserEntity;
+import org.taurus.entity.SFileEntity;
 import org.taurus.entity.SUserEntity;
 import org.taurus.extendEntity.SAuthEntityEx;
 import org.taurus.extendEntity.SUserEntityEx;
 import org.taurus.service.SAuthService;
 import org.taurus.service.SAuthUserService;
+import org.taurus.service.SFileService;
+import org.taurus.service.SFolderService;
 import org.taurus.service.SUserService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -43,6 +48,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> implements SUserService {
 
 	@Resource
+	private TaurusProperties taurusProperties;
+
+	@Resource
 	private SUserDao userDao;
 
 	@Resource
@@ -54,6 +62,12 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 	@Resource
 	private SAuthUserService authUserService;
 
+	@Resource
+	private SFolderService folderService;
+
+	@Resource
+	private SFileService fileService;
+
 	@Override
 	public SUserEntity getUser(String userNumber, String userPwd) {
 
@@ -62,13 +76,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 		userEntity.setUserPwd(MD5Util.getMD5(userPwd, userNumber));
 		QueryWrapper<SUserEntity> queryWrapper = new QueryWrapper<SUserEntity>(userEntity);
 
-		try {
-			userEntity = getOne(queryWrapper);
-		} catch (Exception e) {
-			userEntity = null;
-			String paramStr = "{'userNumber':" + userNumber + ",'userPwd':" + userPwd + "}";
-			LoggerUtil.saveErrorLog(e, SUserServiceImpl.class, "getUser", JsonUtil.toEntity(paramStr, Map.class));
-		}
+		userEntity = getOne(queryWrapper);
 
 		return userEntity;
 	}
@@ -85,19 +93,22 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 
 	@Override
 	@Transactional
-	public SUserEntityEx insert(SUserEntityEx userEntityEx, String operator) {
+	public SUserEntityEx insert(SUserEntityEx userEntityEx, MultipartFile files, String operator) {
 
-		// 将要添加的用户ID
+		// aa 将要添加的用户ID
 		String willAddUserId = StrUtil.getUUID();
-		// 当前时间
+		// aa 当前时间
 		LocalDateTime nowTime = DateUtil.getLocalDateTime();
+		
+		// aa 上传头像文件
+		SFileEntity saveHeadPicFile = fileService.saveHeadPicFile(files, willAddUserId);
 
 		SUserEntity userEntity = new SUserEntity();
 		userEntity.setUserId(willAddUserId);
 		userEntity.setUserNumber(userEntityEx.getUserNumber());
 		userEntity.setUserPwd(MD5Util.getMD5(userEntityEx.getUserPwd(), userEntityEx.getUserNumber()));
 		userEntity.setUserName(userEntityEx.getUserName());
-		userEntity.setUserHead(userEntityEx.getUserHead());
+		userEntity.setUserHead(saveHeadPicFile.getFileId());
 		userEntity.setUserPlatform(Code.PLATFORM_WEB_WINDOW.getValue());
 		userEntity.setUserQq(userEntityEx.getUserQq());
 		userEntity.setUserEmail(userEntityEx.getUserEmail());
@@ -106,166 +117,196 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 		userEntity.setUserCreateUser(operator);
 		userEntity.setUserModifyTime(nowTime);
 		userEntity.setUserModifyUser(operator);
+		if (!save(userEntity)) {
+			throw new CustomException(ExecptionType.USER, null, "用户表添加数据失败");
+		}
 
-		boolean saveUser = save(userEntity);
-		if (saveUser) {
-			if (ListUtil.isNotEmpty(userEntityEx.getAuthList())) {
-				// 要给用户赋予的权限
-				List<String> authIdList = userEntityEx.getAuthList().stream().map(SAuthEntity::getAuthId)
+		if (ListUtil.isNotEmpty(userEntityEx.getAuthList())) {
+			// aa 要给用户赋予的权限
+			List<String> authIdList = userEntityEx.getAuthList().stream().map(SAuthEntity::getAuthId)
+					.collect(Collectors.toList());
+
+			// aa 要给用户赋予的权限--详细信息
+			SAuthEntity authEntity = new SAuthEntity();
+			authEntity.setAuthDelFlg(Code.DEL_FLG_1.getValue());
+			QueryWrapper<SAuthEntity> queryWrapper = new QueryWrapper<SAuthEntity>(authEntity);
+			queryWrapper.in("AUTH_ID", authIdList);
+			List<SAuthEntity> allAuth = authService.list(queryWrapper);
+
+			List<SAuthEntityEx> authList = new ArrayList<SAuthEntityEx>();
+			// aa 给用户绑定权限
+			List<SAuthUserEntity> authUserList = new ArrayList<SAuthUserEntity>();
+			for (SAuthEntity auth : allAuth) {
+				SAuthUserEntity authUserEntity = new SAuthUserEntity();
+				authUserEntity.setAuthUserId(StrUtil.getUUID());
+				authUserEntity.setAuthId(auth.getAuthId());
+				authUserEntity.setUserId(willAddUserId);
+				authUserEntity.setAuthUserDelFlg(Code.DEL_FLG_1.getValue());
+				authUserEntity.setAuthUserCreateUser(operator);
+				authUserEntity.setAuthUserCreateTime(nowTime);
+				authUserEntity.setAuthUserModifyUser(operator);
+				authUserEntity.setAuthUserModifyTime(nowTime);
+				authUserList.add(authUserEntity);
+
+				authList.add(JsonUtil.toEntity(auth, SAuthEntityEx.class));
+			}
+			if (!authUserService.saveBatch(authUserList)) {
+				throw new CustomException(ExecptionType.USER_AUTH, null, "用户权限关联表添加数据失败");
+			}
+			userEntityEx.setAuthList(authList);
+		}
+
+		return userEntityEx;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public SUserEntityEx update(String userId, SUserEntityEx userEntityEx, MultipartFile files, String operator) {
+		// aa 当前时间
+		LocalDateTime nowTime = DateUtil.getLocalDateTime();
+		
+		// aa 上传头像文件
+		SFileEntity saveHeadPicFile = fileService.saveHeadPicFile(files, userId);
+
+		SUserEntity userEntity = new SUserEntity();
+		userEntity.setUserId(userId);
+		userEntity.setUserName(userEntityEx.getUserName());
+		userEntity.setUserPlatform(Code.PLATFORM_WEB_WINDOW.getValue());
+		userEntity.setUserQq(userEntityEx.getUserQq());
+		userEntity.setUserEmail(userEntityEx.getUserEmail());
+		userEntity.setUserModifyTime(nowTime);
+		userEntity.setUserModifyUser(operator);
+		if (saveHeadPicFile!=null) {
+			userEntity.setUserHead(saveHeadPicFile.getFileId());
+		}
+		if (!updateById(userEntity)) {
+			throw new CustomException(ExecptionType.USER, null, "用户表修改数据失败");
+		}
+
+		// aa 页面上选择的权限
+		List<String> authIdList = null;
+		A: if (ListUtil.isNotEmpty(userEntityEx.getAuthList())) {
+			authIdList = userEntityEx.getAuthList().stream().map(SAuthEntity::getAuthId).collect(Collectors.toList());
+
+			// aa 过滤掉不存在的权限
+			SAuthEntity authEntity = new SAuthEntity();
+			authEntity.setAuthDelFlg(Code.DEL_FLG_1.getValue());
+			QueryWrapper<SAuthEntity> queryWrapper_auth = new QueryWrapper<SAuthEntity>(authEntity);
+			queryWrapper_auth.in("AUTH_ID", authIdList);
+			List<SAuthEntity> allAuth = authService.list(queryWrapper_auth);
+			if (ListUtil.isNotEmpty(allAuth)) {
+				authIdList = allAuth.stream().map(SAuthEntity::getAuthId).collect(Collectors.toList());
+			} else {
+				break A;
+			}
+
+			// aa 获取当前用户的权限id（修改前）
+			List<String> updateBeforAuthUserList_authId = null;
+			SAuthUserEntity authUserEntity_query = new SAuthUserEntity();
+			authUserEntity_query.setUserId(userId);
+			authUserEntity_query.setAuthUserDelFlg(Code.DEL_FLG_1.getValue());
+			QueryWrapper<SAuthUserEntity> queryWrapper_authUser = new QueryWrapper<SAuthUserEntity>(
+					authUserEntity_query);
+			List<SAuthUserEntity> updateBeforAuthUserList = authUserService.list(queryWrapper_authUser);
+			if (ListUtil.isNotEmpty(updateBeforAuthUserList)) {
+				updateBeforAuthUserList_authId = updateBeforAuthUserList.stream().map(SAuthUserEntity::getAuthId)
 						.collect(Collectors.toList());
+			}
 
-				// 要给用户赋予的权限--详细信息
-				SAuthEntity authEntity = new SAuthEntity();
-				authEntity.setAuthDelFlg(Code.DEL_FLG_1.getValue());
-				QueryWrapper<SAuthEntity> queryWrapper = new QueryWrapper<SAuthEntity>(authEntity);
-				queryWrapper.in("AUTH_ID", authIdList);
-				List<SAuthEntity> allAuth = authService.list(queryWrapper);
+			// aa 要删除的权限
+			List<String> deleteAuth = null;
+			// aa 要新增的权限
+			List<String> insertAuth = null;
+			if (ListUtil.isNotEmpty(updateBeforAuthUserList_authId)) {
+				deleteAuth = ListUtil.except(updateBeforAuthUserList_authId, authIdList);
+				insertAuth = ListUtil.except(authIdList, updateBeforAuthUserList_authId);
+			} else {
+				insertAuth= new ArrayList<>();
+				insertAuth.addAll(authIdList);
+			}
 
-				List<SAuthEntityEx> authList = new ArrayList<SAuthEntityEx>();
-				// 给用户绑定权限
-				List<SAuthUserEntity> authUserList = new ArrayList<SAuthUserEntity>();
-				for (SAuthEntity auth : allAuth) {
+			// aa 删除权限 - 逻辑删除
+			if (ListUtil.isNotEmpty(deleteAuth)) {
+				for (String authId : deleteAuth) {
+					SAuthUserEntity authUserEntity = new SAuthUserEntity();
+					authUserEntity.setAuthId(authId);
+					authUserEntity.setUserId(userId);
+
+					QueryWrapper<SAuthUserEntity> queryWrapper = new QueryWrapper<>(authUserEntity);
+
+					authUserEntity = new SAuthUserEntity();
+					authUserEntity.setAuthUserDelFlg(Code.DEL_FLG_0.getValue());
+					if (!authUserService.update(authUserEntity, queryWrapper)) {
+						throw new CustomException(ExecptionType.USER_AUTH, null, "用户权限关联表删除数据失败");
+					}
+				}
+			}
+
+			// aa 新增权限
+			if (ListUtil.isNotEmpty(insertAuth)) {
+				List<SAuthUserEntity> authUserList = new ArrayList<>();
+				for (String authId : insertAuth) {
 					SAuthUserEntity authUserEntity = new SAuthUserEntity();
 					authUserEntity.setAuthUserId(StrUtil.getUUID());
-					authUserEntity.setAuthId(auth.getAuthId());
-					authUserEntity.setUserId(willAddUserId);
+					authUserEntity.setAuthId(authId);
+					authUserEntity.setUserId(userId);
 					authUserEntity.setAuthUserDelFlg(Code.DEL_FLG_1.getValue());
 					authUserEntity.setAuthUserCreateUser(operator);
 					authUserEntity.setAuthUserCreateTime(nowTime);
 					authUserEntity.setAuthUserModifyUser(operator);
 					authUserEntity.setAuthUserModifyTime(nowTime);
 					authUserList.add(authUserEntity);
-
-					authList.add(JsonUtil.toEntity(auth, SAuthEntityEx.class));
 				}
-				boolean saveAuthUser = authUserService.saveBatch(authUserList);
-				if (saveAuthUser) {
-					userEntityEx.setAuthList(authList);
-				} else {
-					throw new RuntimeException("用户权限关联表添加失败");
+				if (!authUserService.saveBatch(authUserList)) {
+					throw new CustomException(ExecptionType.USER_AUTH, null, "用户权限关联表添加数据失败");
 				}
 			}
-			return userEntityEx;
-		} else {
-			throw new RuntimeException("用户表添加失败");
 		}
+		
+		// aa 删除当前用户全部权限
+		if (ListUtil.isEmpty(authIdList)) {
+			SAuthUserEntity authUserEntity_query = new SAuthUserEntity();
+			authUserEntity_query.setUserId(userId);
+			QueryWrapper<SAuthUserEntity> queryWrapper = new QueryWrapper<SAuthUserEntity>(authUserEntity_query);
+			if (authUserService.count(queryWrapper) > 0) {
+				SAuthUserEntity authUserEntity_updateQuery = new SAuthUserEntity();
+				authUserEntity_updateQuery.setUserId(userId);
+				QueryWrapper<SAuthUserEntity> updateWrapper = new QueryWrapper<SAuthUserEntity>(
+						authUserEntity_updateQuery);
+
+				SAuthUserEntity authUserEntity_update = new SAuthUserEntity();
+				authUserEntity_update.setAuthUserDelFlg(Code.DEL_FLG_0.getValue());
+				authUserEntity_update.setAuthUserModifyTime(nowTime);
+				authUserEntity_update.setAuthUserModifyUser(operator);
+				if (!authUserService.update(authUserEntity_update, updateWrapper)) {
+					throw new CustomException(ExecptionType.USER_AUTH, null, "用户权限关联表删除数据失败");
+				}
+			}
+		}
+		return userEntityEx;
+
 	}
 
 	@Override
 	@Transactional
-	public SUserEntityEx update(String userId, SUserEntityEx userEntityEx, String operator) {
-		// 当前时间
-		LocalDateTime nowTime = DateUtil.getLocalDateTime();
-
-		SUserEntity userEntity = JsonUtil.toEntity(userEntityEx, SUserEntity.class);
-		userEntity.setUserModifyTime(nowTime);
-		userEntity.setUserModifyUser(operator);
-		boolean updateUser = updateById(userEntity);
-		if (updateUser) {
-			if (ListUtil.isNotEmpty(userEntityEx.getAuthList())) {
-				// 要给用户赋予的权限
-				List<String> authIdList = userEntityEx.getAuthList().stream().map(SAuthEntity::getAuthId)
-						.collect(Collectors.toList());
-
-				// 要给用户赋予的权限--详细信息
-				SAuthEntity authEntity = new SAuthEntity();
-				authEntity.setAuthDelFlg(Code.DEL_FLG_1.getValue());
-				QueryWrapper<SAuthEntity> queryWrapper_auth = new QueryWrapper<SAuthEntity>(authEntity);
-				queryWrapper_auth.in("AUTH_ID", authIdList);
-				List<SAuthEntity> allAuth = authService.list(queryWrapper_auth);
-
-				// 当前用户的权限(修改前的权限)
-				SAuthUserEntity authUserEntity_query = new SAuthUserEntity();
-				authUserEntity_query.setAuthUserDelFlg(Code.DEL_FLG_1.getValue());
-				QueryWrapper<SAuthUserEntity> queryWrapper_authUser = new QueryWrapper<SAuthUserEntity>(
-						authUserEntity_query);
-				List<SAuthUserEntity> updateBeforAuthUserList = authUserService.list(queryWrapper_authUser);
-				List<String> updateBeforAuthUserList_authId = new ArrayList<String>();
-				if (ListUtil.isNotEmpty(updateBeforAuthUserList_authId)) {
-					updateBeforAuthUserList_authId.addAll(updateBeforAuthUserList.stream()
-							.map(SAuthUserEntity::getAuthId).collect(Collectors.toList()));
-				}
-
-				if (ListUtil.isNotEmpty(allAuth)) {
-
-					// 给用户绑定权限
-					List<SAuthUserEntity> authUserList = new ArrayList<SAuthUserEntity>();
-					for (SAuthEntity auth : allAuth) {
-						String authId = auth.getAuthId();
-						if (updateBeforAuthUserList_authId.contains(authId)) {
-							updateBeforAuthUserList_authId.remove(authId);
-						} else {
-							SAuthUserEntity authUserEntity = new SAuthUserEntity();
-							authUserEntity.setAuthUserId(StrUtil.getUUID());
-							authUserEntity.setAuthId(authId);
-							authUserEntity.setUserId(userId);
-							authUserEntity.setAuthUserDelFlg(Code.DEL_FLG_1.getValue());
-							authUserEntity.setAuthUserCreateUser(operator);
-							authUserEntity.setAuthUserCreateTime(nowTime);
-							authUserEntity.setAuthUserModifyUser(operator);
-							authUserEntity.setAuthUserModifyTime(nowTime);
-							authUserList.add(authUserEntity);
-						}
-					}
-					if (ListUtil.isNotEmpty(authUserList)) {
-						boolean saveAuthUser = authUserService.saveBatch(authUserList);
-						if (saveAuthUser) {
-							if (ListUtil.isNotEmpty(updateBeforAuthUserList_authId)) {
-								QueryWrapper<SAuthUserEntity> updateWrapper = new QueryWrapper<SAuthUserEntity>();
-								updateWrapper.in("AUTH_ID", updateBeforAuthUserList_authId);
-
-								SAuthUserEntity authUserEntity_update = new SAuthUserEntity();
-								authUserEntity_update.setAuthUserDelFlg(Code.DEL_FLG_0.getValue());
-								authUserEntity_update.setAuthUserModifyTime(nowTime);
-								authUserEntity_update.setAuthUserModifyUser(operator);
-								boolean update = authUserService.update(authUserEntity_update, updateWrapper);
-								if (!update) {
-									throw new RuntimeException("用户权限关联表删除失败");
-								}
-							}
-						} else {
-							throw new RuntimeException("用户权限关联表添加失败");
-						}
-					}
-				}
-			} else {
-				SAuthUserEntity authUserEntity_query = new SAuthUserEntity();
-				authUserEntity_query.setUserId(userId);
-				QueryWrapper<SAuthUserEntity> queryWrapper = new QueryWrapper<SAuthUserEntity>(authUserEntity_query);
-				if (authUserService.count(queryWrapper)>0) {
-					SAuthUserEntity authUserEntity_updateQuery = new SAuthUserEntity();
-					authUserEntity_updateQuery.setUserId(userId);
-					QueryWrapper<SAuthUserEntity> updateWrapper = new QueryWrapper<SAuthUserEntity>(authUserEntity_updateQuery);
-
-					SAuthUserEntity authUserEntity_update = new SAuthUserEntity();
-					authUserEntity_update.setAuthUserDelFlg(Code.DEL_FLG_0.getValue());
-					authUserEntity_update.setAuthUserModifyTime(nowTime);
-					authUserEntity_update.setAuthUserModifyUser(operator);
-					boolean update = authUserService.update(authUserEntity_update, updateWrapper);
-					if (!update) {
-						throw new RuntimeException("用户权限关联表删除失败");
-					}
-				}
-			}
-			return userEntityEx;
+	public void lock_unLock(String userId, String operator) {
+		SUserEntity userEntity = getById(userId);
+		String userDelFlg = userEntity.getUserDelFlg();
+		if (Code.DEL_FLG_0.getValue().equals(userDelFlg)) {
+			userDelFlg = Code.DEL_FLG_1.getValue();
 		} else {
-			throw new RuntimeException("用户表修改失败");
+			userDelFlg = Code.DEL_FLG_0.getValue();
 		}
-	}
 
-	@Override
-	public void delete(String userId, String operator) {
-		// 当前时间
+		// aa 当前时间
 		LocalDateTime nowTime = DateUtil.getLocalDateTime();
 
-		SUserEntity userEntity = new SUserEntity();
-		userEntity.setUserId(userId);
-		userEntity.setUserDelFlg(Code.DEL_FLG_0.getValue());
+		userEntity.setUserDelFlg(userDelFlg);
 		userEntity.setUserModifyTime(nowTime);
 		userEntity.setUserModifyUser(operator);
-		boolean updateById = updateById(userEntity);
-		if (updateById) {
-			throw new RuntimeException("用户表删除失败");
+		if (!updateById(userEntity)) {
+			throw new CustomException(ExecptionType.USER, null, "用户表删除数据失败");
 		}
 	}
 

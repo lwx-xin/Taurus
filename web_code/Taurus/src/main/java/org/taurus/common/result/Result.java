@@ -2,7 +2,7 @@ package org.taurus.common.result;
 
 import java.io.Serializable;
 
-import org.taurus.common.Code;
+import org.taurus.common.code.CheckCode;
 
 public class Result<T> implements Serializable {
 	
@@ -16,36 +16,20 @@ public class Result<T> implements Serializable {
 	
 	private String message;
 	
-    public Result(T data, Code errCode) {
-		super();
-		this.data = data;
-		this.status = false;
-		this.errCode = errCode.getValue();
-		this.message = errCode.getName();
-	}
-	
-    public Result(T data, Boolean status, Code errCode) {
+	public Result(T data, boolean status, CheckCode code) {
 		super();
 		this.data = data;
 		this.status = status;
-		this.errCode = errCode.getValue();
-		this.message = errCode.getName();
+		this.errCode = code.getValue();
+		this.message = code.getName();
 	}
 	
-    public Result(Boolean status, Code errCode) {
-		super();
-		this.data = null;
-		this.status = status;
-		this.errCode = errCode.getValue();
-		this.message = errCode.getName();
-	}
-	
-    public Result(T data) {
+	public Result(T data, boolean status, String errCode, String message) {
 		super();
 		this.data = data;
-		this.status = true;
-		this.errCode = Code.INTERFACE_ERR_CODE_0.getValue();
-		this.message = Code.INTERFACE_ERR_CODE_0.getName();
+		this.status = status;
+		this.errCode = errCode;
+		this.message = message;
 	}
 
 	public T getData() {

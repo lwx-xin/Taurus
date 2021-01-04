@@ -44,6 +44,7 @@ public class MyBatisPlusGenerater {
         // 包配置
         PackageConfig pc = new PackageConfig();
         pc.setParent(packageName);
+        pc.setController("controller");
         pc.setEntity("entity");
         pc.setMapper("dao");
         pc.setXml("mapper");
@@ -54,7 +55,8 @@ public class MyBatisPlusGenerater {
 
         // 配置模板
         TemplateConfig templateConfig = new TemplateConfig();
-        templateConfig.setController("templates/controller.java.vm");
+//        templateConfig.setController("templates/controller.java.vm");
+        templateConfig.setController("");
         templateConfig.setService("templates/service.java.vm");
         templateConfig.setXml("templates/xml.java.vm");
         mpg.setTemplate(templateConfig);
