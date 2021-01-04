@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.SFileDao">
+ 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="entity" type="org.taurus.entity.SFileEntity">
+        <!-- 文件id -->
+        <id column="FILE_ID" property="fileId"/>
+    	<!-- 文件名 -->
+        <result column="FILE_NAME" property="fileName"/>
+    	<!-- 文件名+时间戳 -->
+        <result column="FILE_NAME_TIMESTAMP" property="fileNameTimestamp"/>
+    	<!-- 文件大小 -->
+        <result column="FILE_SIZE" property="fileSize"/>
+    	<!-- 文件类型 -->
+        <result column="FILE_TYPE" property="fileType"/>
+    	<!-- 文件所属文件夹id -->
+        <result column="FILE_FOLDER" property="fileFolder"/>
+    	<!-- 文件所有者 -->
+        <result column="FILE_OWNER" property="fileOwner"/>
+    	<!-- 删除标识 -->
+        <result column="FILE_DEL_FLG" property="fileDelFlg"/>
+    	<!-- 创建时间 -->
+        <result column="FILE_CREATE_TIME" property="fileCreateTime"/>
+    	<!-- 创建者 -->
+        <result column="FILE_CREATE_USER" property="fileCreateUser"/>
+    	<!-- 编辑时间 -->
+        <result column="FILE_MODIFY_TIME" property="fileModifyTime"/>
+    	<!-- 编辑者 -->
+        <result column="FILE_MODIFY_USER" property="fileModifyUser"/>
+    </resultMap>
+    
+</mapper>

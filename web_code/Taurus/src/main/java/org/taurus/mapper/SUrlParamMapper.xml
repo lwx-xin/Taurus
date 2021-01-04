@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.SUrlParamDao">
+ 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="entity" type="org.taurus.entity.SUrlParamEntity">
+        <!-- 请求参数id -->
+        <id column="URL_PARAM_ID" property="urlParamId"/>
+    	<!-- 请求id -->
+        <result column="URL_ID" property="urlId"/>
+    	<!-- 参数名 -->
+        <result column="URL_PARAM_NAME" property="urlParamName"/>
+    	<!-- 参数值，正则表达式 -->
+        <result column="URL_PARAM_VALUE" property="urlParamValue"/>
+    	<!-- 是否为必须参数 -->
+        <result column="URL_PARAM_REQUIRED" property="urlParamRequired"/>
+    	<!-- 是否允许为空值 -->
+        <result column="URL_PARAM_NULL" property="urlParamNull"/>
+    	<!-- 删除标识 -->
+        <result column="URL_PARAM_DEL_FLG" property="urlParamDelFlg"/>
+    	<!-- 创建时间 -->
+        <result column="URL_PARAM_CREATE_TIME" property="urlParamCreateTime"/>
+    	<!-- 创建者 -->
+        <result column="URL_PARAM_CREATE_USER" property="urlParamCreateUser"/>
+    	<!-- 编辑事件 -->
+        <result column="URL_PARAM_MODIFY_TIME" property="urlParamModifyTime"/>
+    	<!-- 编辑者 -->
+        <result column="URL_PARAM_MODIFY_USER" property="urlParamModifyUser"/>
+    </resultMap>
+    
+</mapper>

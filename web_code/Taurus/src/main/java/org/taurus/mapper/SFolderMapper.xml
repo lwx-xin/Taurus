@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.SFolderDao">
+ 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="entity" type="org.taurus.entity.SFolderEntity">
+        <!-- 文件夹ID -->
+        <id column="FOLDER_ID" property="folderId"/>
+    	<!-- 文件夹名称 -->
+        <result column="FOLDER_NAME" property="folderName"/>
+    	<!-- 父文件夹 -->
+        <result column="FOLDER_PARENT" property="folderParent"/>
+    	<!-- 文件夹所有者 -->
+        <result column="FOLDER_OWNER" property="folderOwner"/>
+    	<!-- 删除标识 -->
+        <result column="FOLDER_DEL_FLG" property="folderDelFlg"/>
+    	<!-- 创建时间 -->
+        <result column="FOLDER_CREATE_TIME" property="folderCreateTime"/>
+    	<!-- 创建者 -->
+        <result column="FOLDER_CREATE_USER" property="folderCreateUser"/>
+    	<!-- 编辑时间 -->
+        <result column="FOLDER_MODIFY_TIME" property="folderModifyTime"/>
+    	<!-- 编辑者 -->
+        <result column="FOLDER_MODIFY_USER" property="folderModifyUser"/>
+    </resultMap>
+    
+</mapper>
