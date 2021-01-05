@@ -94,13 +94,14 @@ public class UserController {
 		if (data == null) {
 			return new Result<SUserEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_4);
 		}
-		
+
 		if (SessionUtil.getUserId(request).equals(userId)) {
 			response.setHeader(CommonField.SYSTEM_ERR_REDIRECT, "/html/login.html");
-			response.setHeader(CommonField.SYSTEM_ERR_MSG, StrUtil.toUTF8(CheckCode.INTERFACE_ERR_CODE_reLogin.getName()));
+			response.setHeader(CommonField.SYSTEM_ERR_MSG,
+					StrUtil.toUTF8(CheckCode.INTERFACE_ERR_CODE_reLogin.getName()));
 			return new Result<SUserEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_reLogin);
 		}
-		
+
 		return new Result<SUserEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
@@ -116,13 +117,14 @@ public class UserController {
 		LoggerUtil.printParam(logger, "userEntityEx", userEntityEx);
 
 		sUserService.lock_unLock(userId, SessionUtil.getUserId(request));
-		
+
 		if (SessionUtil.getUserId(request).equals(userId)) {
 			response.setHeader(CommonField.SYSTEM_ERR_REDIRECT, "/html/login.html");
-			response.setHeader(CommonField.SYSTEM_ERR_MSG, StrUtil.toUTF8(CheckCode.INTERFACE_ERR_CODE_reLogin.getName()));
+			response.setHeader(CommonField.SYSTEM_ERR_MSG,
+					StrUtil.toUTF8(CheckCode.INTERFACE_ERR_CODE_reLogin.getName()));
 			return new Result<SUserEntityEx>(null, true, CheckCode.INTERFACE_ERR_CODE_reLogin);
 		}
-		
+
 		return new Result<SUserEntityEx>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 

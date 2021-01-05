@@ -25,7 +25,7 @@ var requestPath = {
 	// 禁用启用-用户账号
 	userDelete:{"url":"/web/user/{userId}", "type":"delete"},
 	
-	//请求列表
+	// 请求列表
 	urlList:{"url":"/web/url", "type":"get"},
 	// 添加请求
 	urlInsert:{"url":"/web/url", "type":"post"},
@@ -36,8 +36,12 @@ var requestPath = {
 	// 禁用启用-请求
 	urlDelete:{"url":"/web/url/{urlId}", "type":"delete"},
 	
-	//权限列表
+	// 权限列表
 	authList:{"url":"/web/auth", "type":"get"},
-	//权限信息
-	authDetail:{"url":"/web/auth/{authId}", "type":"get"}
+	// 添加权限
+	authInsert:{"url":"/web/auth", "type":"post"},
+	// 权限详细信息
+	authDetail:{"url":"/web/auth/{authId}", "type":"get"},
+	// 编辑权限信息
+	authUpdate:{"url":"/web/auth/{authId}", "type":"put"},
 }

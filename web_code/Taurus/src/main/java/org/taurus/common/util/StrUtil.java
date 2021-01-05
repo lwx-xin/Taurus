@@ -71,7 +71,7 @@ public class StrUtil {
 	}
 
 	/**
-	 * 转换编码格式，前端使用decodeURI()还原编码
+	 * 转换编码格式，前端使用toUTF8（）还原编码
 	 * 
 	 * @param str
 	 * @return
@@ -80,8 +80,9 @@ public class StrUtil {
 		if (isEmpty(str)) {
 			return "";
 		}
+		str = str.replaceAll("[\\t\\n\\r]", "");
 		try {
-			return URLEncoder.encode(str, "UTF-8");
+			return URLEncoder.encode(toAscii(str), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			System.err.println(e.getMessage());
 			return "";
@@ -89,7 +90,27 @@ public class StrUtil {
 	}
 
 	/**
+	 * 转换编码格式，前端使用fromCharCode()还原编码
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String toAscii(String value) {
+		StringBuffer sbu = new StringBuffer();
+		char[] chars = value.toCharArray();
+		for (int i = 0; i < chars.length; i++) {
+			if (i != chars.length - 1) {
+				sbu.append((int) chars[i]).append(",");
+			} else {
+				sbu.append((int) chars[i]);
+			}
+		}
+		return sbu.toString();
+	}
+
+	/**
 	 * 获取文件类型
+	 * 
 	 * @param fileName
 	 * @return
 	 */

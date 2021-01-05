@@ -11,10 +11,10 @@ $(function(){
 		hintWarning("系统提示", "重定向"+redirectUrl, null)
 	}
 	if(isNotNull(systemErrMsg)){
-		hintWarning("系统提示", decodeURI(systemErrMsg), null)
+		hintWarning("系统提示", toUTF8(systemErrMsg), null)
 	}
 	if(isNotNull(sourcePath)){
-		hintWarning("系统提示", "异常资源:"+decodeURI(sourcePath), null)
+		hintWarning("系统提示", "异常资源:"+toUTF8(sourcePath), null)
 	}
 });
 
@@ -100,13 +100,13 @@ function ajax(param){
 			var sourcePath = request.getResponseHeader("systemErrSourcePath");
 			
 			if(isNotNull(sysErrMessage)){
-				console.log("错误信息:"+decodeURI(sysErrMessage));
+				console.log("错误信息:"+toUTF8(sysErrMessage));
 			}
 			if(isNotNull(redirectUrl)){
 				console.log("重定向页面:"+redirectUrl);
 			}
 			if(isNotNull(redirectUrl)){
-				console.log("异常资源:"+decodeURI(sourcePath));
+				console.log("异常资源:"+toUTF8(sourcePath));
 			}
 			
 			if(isNotNull(redirectUrl)){
@@ -118,7 +118,7 @@ function ajax(param){
 			}
 			if(isNotNull(sysErrMessage)){
 				if(isNull(redirectUrl)){
-					hintWarning("系统提示", decodeURI(sysErrMessage), null)
+					hintWarning("系统提示", toUTF8(sysErrMessage), null)
 				} else {
 					setCookie("systemErrMsg", sysErrMessage)
 				}
@@ -279,4 +279,17 @@ function logout(){
 	// 		layer.msg("err");
 	// 	}
 	// });
+}
+
+function toUTF8(str){
+	var ascll_str = ""
+	// 带","的ascll编码
+	var s = decodeURI(str);
+	if(isNotNull(s)){
+		var asclls = s.split(",");
+		for(var i=0;i<asclls.length;i++){
+			ascll_str += String.fromCharCode(asclls[i]);
+		}
+	}
+	return ascll_str;
 }

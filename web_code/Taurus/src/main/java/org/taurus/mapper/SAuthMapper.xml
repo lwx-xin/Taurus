@@ -19,7 +19,7 @@
     	<!-- 编辑时间 -->
         <result column="AUTH_MODIFY_TIME" property="authModifyTime"/>
     	<!-- 编辑者 -->
-        <result column="UAUTH_MODIFY_USER" property="uauthModifyUser"/>
+        <result column="AUTH_MODIFY_USER" property="authModifyUser"/>
     </resultMap>
 
 	<select id="getAuthByUserId" parameterType="java.lang.String" resultMap="entity">

@@ -1,5 +1,6 @@
 package org.taurus.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,8 +8,12 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.taurus.common.code.Code;
+import org.taurus.common.code.ExecptionType;
+import org.taurus.common.exception.CustomException;
+import org.taurus.common.util.DateUtil;
 import org.taurus.common.util.JsonUtil;
 import org.taurus.common.util.ListUtil;
+import org.taurus.common.util.StrUtil;
 import org.taurus.dao.SAuthDao;
 import org.taurus.entity.SAuthEntity;
 import org.taurus.extendEntity.SAuthEntityEx;
@@ -27,19 +32,19 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
  */
 @Service
 public class SAuthServiceImpl extends ServiceImpl<SAuthDao, SAuthEntity> implements SAuthService {
-	
+
 	@Resource
 	private SAuthDao authDao;
 
 	@Override
 	public List<String> getAuthByUserId(String userId) {
-		
+
 		List<SAuthEntity> authEntityList = authDao.getAuthByUserId(userId, Code.DEL_FLG_1.getValue());
-		
+
 		if (ListUtil.isNotEmpty(authEntityList)) {
 			return authEntityList.stream().map(SAuthEntity::getAuthId).collect(Collectors.toList());
 		}
-		
+
 		return null;
 	}
 
@@ -55,5 +60,45 @@ public class SAuthServiceImpl extends ServiceImpl<SAuthDao, SAuthEntity> impleme
 		SAuthEntity authEntity = getById(authId);
 		return JsonUtil.toEntity(authEntity, SAuthEntityEx.class);
 	}
-	
+
+	@Override
+	public SAuthEntityEx insert(SAuthEntityEx authEntityEx, String operator) {
+		// aa 当前时间
+		LocalDateTime nowTime = DateUtil.getLocalDateTime();
+		
+		SAuthEntity authEntity = new SAuthEntity();
+		authEntity.setAuthId(StrUtil.getUUID());
+		authEntity.setAuthName(authEntityEx.getAuthName());
+		authEntity.setAuthLevel(authEntityEx.getAuthLevel());
+		authEntity.setAuthDelFlg(Code.DEL_FLG_1.getValue());
+		authEntity.setAuthCreateTime(nowTime);
+		authEntity.setAuthCreateUser(operator);
+		authEntity.setAuthModifyTime(nowTime);
+		authEntity.setAuthModifyUser(operator);
+		
+		if (save(authEntity)) {
+			throw new CustomException(ExecptionType.AUTH, null, "新增权限失败");
+		}
+		return JsonUtil.toEntity(authEntity, SAuthEntityEx.class);
+	}
+
+	@Override
+	public SAuthEntityEx update(String authId, SAuthEntityEx authEntityEx, String operator) {
+		// aa 当前时间
+		LocalDateTime nowTime = DateUtil.getLocalDateTime();
+		
+		SAuthEntity authEntity = new SAuthEntity();
+		authEntity.setAuthId(authId);
+		authEntity.setAuthName(authEntityEx.getAuthName());
+		authEntity.setAuthLevel(authEntityEx.getAuthLevel());
+		authEntity.setAuthModifyTime(nowTime);
+		authEntity.setAuthModifyUser(operator);
+		
+		if (updateById(authEntity)) {
+			throw new CustomException(ExecptionType.AUTH, null, "修改权限失败");
+		}
+		
+		return JsonUtil.toEntity(authEntity, SAuthEntityEx.class);
+	}
+
 }

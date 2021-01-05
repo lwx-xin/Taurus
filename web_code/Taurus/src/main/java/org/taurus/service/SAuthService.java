@@ -44,4 +44,22 @@ public interface SAuthService extends IService<SAuthEntity> {
 	 */
 	SAuthEntityEx getAuthDetail(String authId);
 
+	/**
+	 * 新增权限
+	 * 
+	 * @param authEntity
+	 * @param operator   操作人员
+	 * @return
+	 */
+	SAuthEntityEx insert(SAuthEntityEx authEntity, String operator);
+
+	/**
+	 * 新增权限
+	 * 
+	 * @param authEntity
+	 * @param operator   操作人员
+	 * @return
+	 */
+	SAuthEntityEx update(String authId, SAuthEntityEx authEntity, String operator);
+
 }

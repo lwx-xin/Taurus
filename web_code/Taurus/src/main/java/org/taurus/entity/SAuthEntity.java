@@ -64,8 +64,8 @@ public class SAuthEntity implements Serializable {
 	/**
 	 * 编辑者
 	 */
-	@TableField("UAUTH_MODIFY_USER")
-	private String uauthModifyUser;
+	@TableField("AUTH_MODIFY_USER")
+	private String authModifyUser;
 
 	public String getAuthId() {
 		return authId;
@@ -123,18 +123,18 @@ public class SAuthEntity implements Serializable {
 		this.authModifyTime = authModifyTime;
 	}
 
-	public String getUauthModifyUser() {
-		return uauthModifyUser;
+	public String getAuthModifyUser() {
+		return authModifyUser;
 	}
 
-	public void setUauthModifyUser(String uauthModifyUser) {
-		this.uauthModifyUser = uauthModifyUser;
+	public void setAuthModifyUser(String authModifyUser) {
+		this.authModifyUser = authModifyUser;
 	}
 
 	@Override
 	public String toString() {
 		return "SAuthEntity{" + "authId=" + authId + ", authName=" + authName + ", authLevel=" + authLevel
 				+ ", authDelFlg=" + authDelFlg + ", authCreateTime=" + authCreateTime + ", authCreateUser="
-				+ authCreateUser + ", authModifyTime=" + authModifyTime + ", uauthModifyUser=" + uauthModifyUser + "}";
+				+ authCreateUser + ", authModifyTime=" + authModifyTime + ", authModifyUser=" + authModifyUser + "}";
 	}
 }

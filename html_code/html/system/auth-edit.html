@@ -74,23 +74,14 @@
 	function initEvent(){
 		$(".insert-btn").click(function(){
 			var param = new Object();
-			param["urlId"] = "";
-			param["urlPath"] = $("input[name='urlPath']").val();
-			param["urlType"] = $("select[name='urlType']").val();
-			param["urlPlatform"] = $("select[name='urlPlatform']").val();
-			param["urlRemarks"] = $("textarea[name='urlRemarks']").val();
-			
-			var authIdList = $("#authId").val();
-			if(isNotNull(authIdList)){
-				$.each(authIdList, function(i, v){
-					param["authList["+i+"].authId"] = v;
-				});
-			}
+			param["authId"] = "";
+			param["authName"] = $("input[name='authName']").val();
+			param["authLevel"] = $("input[name='authLevel']").val();
 			
 			ajax({
-				url: requestPath.urlInsert.url,
+				url: requestPath.authInsert.url,
 				data: param,
-				type: requestPath.urlInsert.type,
+				type: requestPath.authInsert.type,
 				success: function(data){
 					if(data.status){
 						closeFrame();
@@ -103,23 +94,14 @@
 		$(".update-btn").click(function(){
 		
 			var param = new Object();
-			param["urlId"] = pageParams.urlId;
-			param["urlPath"] = $("input[name='urlPath']").val();
-			param["urlType"] = $("select[name='urlType']").val();
-			param["urlPlatform"] = $("select[name='urlPlatform']").val();
-			param["urlRemarks"] = $("textarea[name='urlRemarks']").val();
-			
-			var authIdList = $("#authId").val();
-			if(isNotNull(authIdList)){
-				$.each(authIdList, function(i, v){
-					param["authList["+i+"].authId"] = v;
-				});
-			}
+			param["authId"] = pageParams.authId;
+			param["authName"] = $("input[name='authName']").val();
+			param["authLevel"] = $("input[name='authLevel']").val();
 			
 			ajax({
-				url: requestPath.urlUpdate.url,
+				url: requestPath.authUpdate.url,
 				data: param,
-				type: requestPath.urlUpdate.type,
+				type: requestPath.authUpdate.type,
 				success: function(data){
 					if(data.status){
 						closeFrame();
