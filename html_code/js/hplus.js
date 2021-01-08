@@ -145,18 +145,18 @@ $(function () {
             $("body").addClass('fixed-nav');
             $('#boxedlayout').prop('checked', false);
 
-            if (localStorageSupport) {
+            if (localStorageSupport()) {
                 localStorage.setItem("boxedlayout", 'off');
             }
 
-            if (localStorageSupport) {
+            if (localStorageSupport()) {
                 localStorage.setItem("fixednavbar", 'on');
             }
         } else {
             $(".navbar-fixed-top").removeClass('navbar-fixed-top').addClass('navbar-static-top');
             $("body").removeClass('fixed-nav');
 
-            if (localStorageSupport) {
+            if (localStorageSupport()) {
                 localStorage.setItem("fixednavbar", 'off');
             }
         }
@@ -169,7 +169,7 @@ $(function () {
             $("body").addClass('mini-navbar');
             SmoothlyMenu();
 
-            if (localStorageSupport) {
+            if (localStorageSupport()) {
                 localStorage.setItem("collapse_menu", 'on');
             }
 
@@ -177,7 +177,7 @@ $(function () {
             $("body").removeClass('mini-navbar');
             SmoothlyMenu();
 
-            if (localStorageSupport) {
+            if (localStorageSupport()) {
                 localStorage.setItem("collapse_menu", 'off');
             }
         }
@@ -190,18 +190,18 @@ $(function () {
             $('#fixednavbar').prop('checked', false);
             $(".navbar-fixed-top").removeClass('navbar-fixed-top').addClass('navbar-static-top');
             $("body").removeClass('fixed-nav');
-            if (localStorageSupport) {
+            if (localStorageSupport()) {
                 localStorage.setItem("fixednavbar", 'off');
             }
 
 
-            if (localStorageSupport) {
+            if (localStorageSupport()) {
                 localStorage.setItem("boxedlayout", 'on');
             }
         } else {
             $("body").removeClass('boxed-layout');
 
-            if (localStorageSupport) {
+            if (localStorageSupport()) {
                 localStorage.setItem("boxedlayout", 'off');
             }
         }
@@ -231,7 +231,7 @@ $(function () {
         return false;
     });
 
-    if (localStorageSupport) {
+    if (localStorageSupport()) {
         var collapse = localStorage.getItem("collapse_menu");
         var fixednavbar = localStorage.getItem("fixednavbar");
         var boxedlayout = localStorage.getItem("boxedlayout");
@@ -247,7 +247,7 @@ $(function () {
         }
     }
 
-    if (localStorageSupport) {
+    if (localStorageSupport()) {
 
         var collapse = localStorage.getItem("collapse_menu");
         var fixednavbar = localStorage.getItem("fixednavbar");
@@ -272,7 +272,3 @@ $(function () {
     }
 });
 
-//判断浏览器是否支持html5本地存储
-function localStorageSupport() {
-    return (('localStorage' in window) && window['localStorage'] !== null)
-}

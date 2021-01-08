@@ -1,23 +1,38 @@
 
 $(function(){
-	var systemErrMsg = getCookie("systemErrMsg");
-	var redirectUrl = getCookie("systemErrRedirect");
-	var sourcePath = getCookie("systemErrSourcePath");
-	removeCookie("systemErrMsg");
-	removeCookie("systemErrRedirect");
-	removeCookie("systemErrSourcePath");
-	
-	if(isNotNull(redirectUrl)){
-		hintWarning("系统提示", "重定向"+redirectUrl, null)
-	}
-	if(isNotNull(systemErrMsg)){
-		hintWarning("系统提示", toUTF8(systemErrMsg), null)
-	}
-	if(isNotNull(sourcePath)){
-		hintWarning("系统提示", "异常资源:"+toUTF8(sourcePath), null)
-	}
+	showCookieErrMsg();
 });
 
+/**
+ * 显示cookie中的异常信息
+ */
+function showCookieErrMsg(){
+	var systemErrMsg = getCookie(commonField.sys_err_msg);
+	var redirectUrl = getCookie(commonField.sys_err_redirect);
+	var sourcePath = getCookie(commonField.sys_err_source_path);
+	removeCookie(commonField.sys_err_msg);
+	removeCookie(commonField.sys_err_redirect);
+	removeCookie(commonField.sys_err_source_path);
+	
+	var errInfo = "";
+	if(isNotNull(redirectUrl)){
+		errInfo += "重定向<b>:</b>"+redirectUrl+"<br/>";
+	}
+	if(isNotNull(systemErrMsg)){
+		errInfo += "异常信息<b>:</b>"+systemErrMsg+"<br/>";
+	}
+	if(isNotNull(sourcePath)){
+		errInfo += "异常资源<b>:</b>"+sourcePath+"<br/>";
+	}
+	if(isNotNull(errInfo)){
+		showInformation("系统提示", errInfo, "info");
+	}
+}
+
+/**
+ * ajax
+ * @param {Object} param
+ */
 function ajax(param){
 	
 	var isAsync = false;
@@ -73,7 +88,7 @@ function ajax(param){
 			//console.log(data)
 			
 			if(isNotNull(data.message)){
-				hintInfo("提示",data.message, null);
+				showInformation("提示", data.message, "info;");
 			}
 			
 			if(param.success!=null){
@@ -81,53 +96,57 @@ function ajax(param){
 			}
 			
 			if(data.errCode=="-1"){
-				try{
-					swal("提示", "请输入账号", "error");
-				}catch(e){
-					//TODO handle the exception
-				}
+				alert("请重新登录!");
 			}
 		},
 		error: function(data){
-			layer.msg("err");
+			layer.msg("ajax error");
 			if(param.error!=null){
 				param.error(data);
 			}
 		},
 		complete: function(request,status){
-			var sysErrMessage = request.getResponseHeader("systemErrMsg");
-			var redirectUrl = request.getResponseHeader("systemErrRedirect");
-			var sourcePath = request.getResponseHeader("systemErrSourcePath");
+			var sysErrMessage = request.getResponseHeader(commonField.sys_err_msg);
+			var redirectUrl = request.getResponseHeader(commonField.sys_err_redirect);
+			var sourcePath = request.getResponseHeader(commonField.sys_err_source_path);
 			
+			if(isNotNull(sysErrMessage)){ console.log("错误信息:"+toUTF8(sysErrMessage)); }
+			if(isNotNull(redirectUrl)){ console.log("重定向页面:"+toUTF8(redirectUrl)); }
+			if(isNotNull(sourcePath)){ console.log("异常资源:"+toUTF8(sourcePath)); }
+			
+			var errInfo = "";
 			if(isNotNull(sysErrMessage)){
-				console.log("错误信息:"+toUTF8(sysErrMessage));
+				if(isNull(redirectUrl)){
+					errInfo += "异常信息<b>:</b>"+toUTF8(sysErrMessage)+"<br/>";
+				} else {
+					setCookie(commonField.sys_err_msg, toUTF8(sysErrMessage))
+				}
 			}
-			if(isNotNull(redirectUrl)){
-				console.log("重定向页面:"+redirectUrl);
+			if(isNotNull(sourcePath)){
+				if(isNull(redirectUrl)){
+					errInfo += "异常资源<b>:</b>"+toUTF8(sourcePath)+"<br/>";
+				} else {
+					setCookie(commonField.sys_err_source_path, toUTF8(sourcePath))
+				}
 			}
-			if(isNotNull(redirectUrl)){
-				console.log("异常资源:"+toUTF8(sourcePath));
+			
+			if(isNotNull(errInfo)){
+				showInformation("系统提示", errInfo, "info");
 			}
 			
 			if(isNotNull(redirectUrl)){
+				redirectUrl = toUTF8(redirectUrl);
 				if(redirectUrl=="/html/login.html"){
 					top.location.href=redirectUrl;
 				} else {
 					window.location.href=redirectUrl;
 				}
 			}
-			if(isNotNull(sysErrMessage)){
-				if(isNull(redirectUrl)){
-					hintWarning("系统提示", toUTF8(sysErrMessage), null)
-				} else {
-					setCookie("systemErrMsg", sysErrMessage)
-				}
-			}
 			
 			if(status=="error"){
 				
 			} else if(status=="timeout"){
-				
+				layer.msg("服务器连接超时，请稍后再试");
 			} else if(status=="success"){
 				
 			}
@@ -135,7 +154,18 @@ function ajax(param){
 	});
 }
 
-function hintWarning(title, messgae, clickFun){
+/**
+ * 显示toastr弹框
+ * @param {String} type = [error|info|success|warning]
+ * @param {String} title 标题
+ * @param {String} messgae 内容
+ * @param {Function(Event)} clickFun 点击事件回调函数
+ */
+function showToastr(type, title, messgae, clickFun){
+	
+	// 持续显示时间（单位:毫秒）
+	var timeOut = toNumber(getLocalStroage(commonField.sys_config_toastr_timeOut));
+	
 	toastr.options = {
 		"closeButton": true,
 		"debug": false,
@@ -144,7 +174,7 @@ function hintWarning(title, messgae, clickFun){
 		"onclick": clickFun,
 		"showDuration": "400",
 		"hideDuration": "1000",
-		"timeOut": "2000",
+		"timeOut": timeOut,
 		"extendedTimeOut": "1000",
 		"showEasing": "swing",
 		"hideEasing": "linear",
@@ -152,29 +182,46 @@ function hintWarning(title, messgae, clickFun){
 		"hideMethod": "fadeOut"
 	}
 	
-	toastr['success'](messgae, title);
+	toastr['info'](messgae, "<strong>"+title+"</strong>");
 }
 
-function hintInfo(title, messgae, clickFun){
-	toastr.options = {
-		"closeButton": true,
-		"debug": false,
-		"progressBar": true,
-		"positionClass": "toast-top-right",
-		"onclick": clickFun,
-		"showDuration": "400",
-		"hideDuration": "1000",
-		"timeOut": "2000",
-		"extendedTimeOut": "1000",
-		"showEasing": "swing",
-		"hideEasing": "linear",
-		"showMethod": "fadeIn",
-		"hideMethod": "fadeOut"
-	}
+/**
+ * 显示SmallPop弹框
+ * @param {String} type = [error|info|success|warning]
+ * @param {String} title 标题
+ * @param {String} messgae 内容
+ * @param {Function(Event)} openFun 打开回调函数
+ * @param {Function(Event)} closeFun 关闭回调函数
+ */
+function showSmallPop(type, title, messgae, openFun, closeFun){
 	
-	toastr['info'](messgae, title);
+	// 持续显示时间（单位:毫秒）
+	var timeOut = toNumber(getLocalStroage(commonField.sys_config_smallpop_timeOut));
+	
+	spop({
+		template  : '<h4 class="spop-title">'+title+'</h4>'+messgae,// string required. Without it nothing happens!
+		style     : type,// error or success
+		autoclose : timeOut==0?false:timeOut,// miliseconds
+		position  : 'top-right',// top-left top-center bottom-left bottom-center bottom-right
+		icon      : true,// or false
+		group     : false,// string, add a id reference 
+		onOpen    : openFun,
+		onClose   : closeFun
+	});
 }
 
+function toNumber(str){
+	if(isNull(str)){
+		return 0;
+	}
+	return Number(str);
+}
+
+/**
+ * 判断值是否为空值,空值返回true
+ * @param {Object} obj
+ * @return {Boolean}
+ */
 function isNull(obj){
 	if(obj==null || obj=="" || (typeof obj=="String" && obj.trim()=="") || JSON.stringify(obj)=="{}" || JSON.stringify(obj)=="[]"){
 		return true;
@@ -182,26 +229,43 @@ function isNull(obj){
 	return false;
 }
 
+/**
+ * 判断值是否为空值,空值返回false
+ * @param {Object} obj
+ * @return {Boolean}
+ */
 function isNotNull(obj){
 	return !isNull(obj);
 }
 
-//设置cookie
+/**
+ * 设置cookie
+ * @param {String} key
+ * @param {String} value
+ */
 function setCookie(key, value){
-	$.cookie(key, value, { expires: 1, path: '/' });
+	$.cookie(key, encodeURI(toAscll(value)), { expires: 1, path: '/' });
 }
 
-//获取cookie
+/**
+ * 获取cookie
+ * @param {String} key
+ */
 function getCookie(key){
-	return $.cookie(key)
+	return toUTF8($.cookie(key));
 }
 
-//移除cookie
+/**
+ * 移除cookie
+ * @param {String} key
+ */
 function removeCookie(key){
 	$.cookie(key, "", { expires: 0, path: '/' });
 }
 
-//清除所有cookie
+/**
+ * 清除所有cookie
+ */
 function clearAllCookie() {  
 	var keys = document.cookie.match(/[^ =;]+(?=\=)/g);  
 	if(keys) {  
@@ -210,6 +274,58 @@ function clearAllCookie() {
 	}  
 }
 
+/**
+ * 判断浏览器是否支持html5本地存储
+ * @return {Boolean}
+ */
+function localStorageSupport() {
+    return (('localStorage' in window) && window['localStorage'] !== null)
+}
+
+/**
+ * 设置本地缓存
+ * @param {String} key
+ * @param {String} value
+ */
+function setLocalStorage(key,value){
+	if(localStorageSupport()){
+		localStorage.setItem(key, value);
+	}
+}
+
+/**
+ * 获取本地缓存
+ * @param {String} key
+ */
+function getLocalStroage(key){
+	if(localStorageSupport()){
+		return localStorage.getItem(key);
+	}
+	return "";
+}
+
+/**
+ * 移除本地缓存
+ * @param {String} key
+ */
+function removeLocalStroage(key){
+	if(localStorageSupport()){
+		localStorage.removeItem(key);
+	}
+}
+
+/**
+ * 清除全部本地缓存
+ */
+function clearAllLocalStroage(){
+	if(localStorageSupport()){
+		localStorage.clear();
+	}
+}
+
+/**
+ * 获取页面间传递的参数
+ */
 function getPageParam(){
 	var objs = new Object();
 	var strs = window.location.href.split("?");
@@ -225,7 +341,11 @@ function getPageParam(){
 	return objs;
 }
 
-//获取分组下的code列表
+/**
+ * 获取分组下的code列表
+ * @param {Array} codeGroups code分组
+ * @return {Array}
+ */
 function getCodes(codeGroups){
 	var codeElements;
 	var param = new Object();
@@ -246,7 +366,11 @@ function getCodes(codeGroups){
 	return codeElements;
 }
 
-//获取code对应的名称
+/**
+ * 获取code对应的名称
+ * @param {String} group code分组
+ * @param {String} value code值
+ */
 function getCodeName(group, value){
 	var name = "";
 	if(isNotNull(value)){
@@ -260,36 +384,87 @@ function getCodeName(group, value){
 	return name;
 }
 
-//退出登录
+/**
+ * 退出登录
+ */
 function logout(){
-	setCookie("systemErrMsg","退出登录");
+	setCookie(commonField.sys_err_msg,"退出登录");
 	//跳转登录页面
 	top.location.href= "../login.html";
-	// ajax({
-	// 	url: requestPath.logout.url,
-	// 	type: requestPath.login.type,
-	// 	success: function(data){
-	// 		if(data.status){
-	// 			setCookie("systemErrMsg","退出登录");
-	// 			//跳转登录页面
-	// 			top.location.href= "../login.html";
-	// 		}
-	// 	},
-	// 	error: function(data){
-	// 		layer.msg("err");
-	// 	}
-	// });
 }
 
+/**
+ * 转换编码格式
+ * @param {String} str 
+ * @return {String}
+ */
 function toUTF8(str){
 	var ascll_str = ""
-	// 带","的ascll编码
-	var s = decodeURI(str);
-	if(isNotNull(s)){
-		var asclls = s.split(",");
-		for(var i=0;i<asclls.length;i++){
-			ascll_str += String.fromCharCode(asclls[i]);
+	if(isNotNull(str)){
+		// 带","的ascll编码
+		var s = decodeURIComponent(str);
+		if(isNotNull(s)){
+			var asclls = s.split(",");
+			for(var i=0;i<asclls.length;i++){
+				ascll_str += String.fromCharCode(asclls[i]);
+			}
 		}
 	}
 	return ascll_str;
+}
+
+/**
+ * 显示提示信息
+ * @param {String} title 标题
+ * @param {String} msg 提示内容
+ * @param {String} level = [error|info|success|warning]
+ */
+function showInformation(title, msg, level){
+	//是否使用toastr
+	var toastrUsing_localStorage = getLocalStroage(commonField.sys_config_toastr_using);
+	//是否使用SmallPop
+	var smallpopUsing_localStorage = getLocalStroage(commonField.sys_config_smallpop_using);
+	
+	if(Code.enable.value == toastrUsing_localStorage){
+		showToastr(level, title, msg, null);
+	} else if(Code.enable.value == smallpopUsing_localStorage){
+		showSmallPop(level, title, msg, null, null);
+	} else {
+		layer.msg(msg);
+	}
+}
+
+/**
+ * 将字符串转换成ascll(","分隔)
+ * @param {String} str
+ */
+function toAscll(str){
+	var ascll_arr = new Array();
+	if(isNotNull(str)){
+		for(var i=0;i<str.length;i++){
+			ascll_arr.push(str[i].charCodeAt());
+		}
+	}
+	return ascll_arr.join();
+}
+
+/**
+ * 将图片转换为base64
+ * @param {Element} fileEle
+ * @param {Function(String))} callBack
+ * @example 
+ */
+function imgToBase64(fileEle, callBack){
+	/*图片转Base64 核心代码*/ 
+	var file = fileEle.files[0]; 
+	//这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件 
+	if (!/image\/\w+/.test(file.type)) { 
+		alert("请确保文件为图像类型"); 
+		return false; 
+	} 
+	var reader = new FileReader(); 
+	reader.onload = function () {
+		callBack(this.result);
+	} 
+	reader.readAsDataURL(file);
 }

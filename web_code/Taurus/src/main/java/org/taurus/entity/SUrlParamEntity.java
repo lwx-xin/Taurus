@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author 欣
- * @since 2020-12-28
+ * @since 2021-01-06
  */
 @TableName("s_url_param")
 public class SUrlParamEntity implements Serializable {
@@ -54,6 +54,12 @@ public class SUrlParamEntity implements Serializable {
 	 */
 	@TableField("URL_PARAM_NULL")
 	private String urlParamNull;
+
+	/**
+	 * 参数备注
+	 */
+	@TableField("URL_PARAM_REMARK")
+	private String urlParamRemark;
 
 	/**
 	 * 删除标识
@@ -133,6 +139,14 @@ public class SUrlParamEntity implements Serializable {
 		this.urlParamNull = urlParamNull;
 	}
 
+	public String getUrlParamRemark() {
+		return urlParamRemark;
+	}
+
+	public void setUrlParamRemark(String urlParamRemark) {
+		this.urlParamRemark = urlParamRemark;
+	}
+
 	public String getUrlParamDelFlg() {
 		return urlParamDelFlg;
 	}
@@ -177,8 +191,8 @@ public class SUrlParamEntity implements Serializable {
 	public String toString() {
 		return "SUrlParamEntity{" + "urlParamId=" + urlParamId + ", urlId=" + urlId + ", urlParamName=" + urlParamName
 				+ ", urlParamValue=" + urlParamValue + ", urlParamRequired=" + urlParamRequired + ", urlParamNull="
-				+ urlParamNull + ", urlParamDelFlg=" + urlParamDelFlg + ", urlParamCreateTime=" + urlParamCreateTime
-				+ ", urlParamCreateUser=" + urlParamCreateUser + ", urlParamModifyTime=" + urlParamModifyTime
-				+ ", urlParamModifyUser=" + urlParamModifyUser + "}";
+				+ urlParamNull + ", urlParamRemark=" + urlParamRemark + ", urlParamDelFlg=" + urlParamDelFlg
+				+ ", urlParamCreateTime=" + urlParamCreateTime + ", urlParamCreateUser=" + urlParamCreateUser
+				+ ", urlParamModifyTime=" + urlParamModifyTime + ", urlParamModifyUser=" + urlParamModifyUser + "}";
 	}
 }

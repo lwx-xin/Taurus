@@ -108,7 +108,6 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 		userEntity.setUserNumber(userEntityEx.getUserNumber());
 		userEntity.setUserPwd(MD5Util.getMD5(userEntityEx.getUserPwd(), userEntityEx.getUserNumber()));
 		userEntity.setUserName(userEntityEx.getUserName());
-		userEntity.setUserHead(saveHeadPicFile.getFileId());
 		userEntity.setUserPlatform(Code.PLATFORM_WEB_WINDOW.getValue());
 		userEntity.setUserQq(userEntityEx.getUserQq());
 		userEntity.setUserEmail(userEntityEx.getUserEmail());
@@ -117,6 +116,9 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 		userEntity.setUserCreateUser(operator);
 		userEntity.setUserModifyTime(nowTime);
 		userEntity.setUserModifyUser(operator);
+		if (saveHeadPicFile!=null) {
+			userEntity.setUserHead(saveHeadPicFile.getFileId());
+		}
 		if (!save(userEntity)) {
 			throw new CustomException(ExecptionType.USER, null, "用户表添加数据失败");
 		}
@@ -291,12 +293,15 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 	@Override
 	@Transactional
 	public void lock_unLock(String userId, String operator) {
+		String msg = "";
 		SUserEntity userEntity = getById(userId);
 		String userDelFlg = userEntity.getUserDelFlg();
 		if (Code.DEL_FLG_0.getValue().equals(userDelFlg)) {
 			userDelFlg = Code.DEL_FLG_1.getValue();
+			msg = "启用用户失败";
 		} else {
 			userDelFlg = Code.DEL_FLG_0.getValue();
+			msg = "禁用用户失败";
 		}
 
 		// aa 当前时间
@@ -306,7 +311,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 		userEntity.setUserModifyTime(nowTime);
 		userEntity.setUserModifyUser(operator);
 		if (!updateById(userEntity)) {
-			throw new CustomException(ExecptionType.USER, null, "用户表删除数据失败");
+			throw new CustomException(ExecptionType.USER, null, msg);
 		}
 	}
 

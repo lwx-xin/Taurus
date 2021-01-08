@@ -56,11 +56,11 @@
 
 	var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
 	
-	var pageParams;
+	const pageParams = getPageParam();
+	$.deepFreeze(pageParams);
+	
 	$(function(){
 		
-		pageParams = getPageParam();
-
 		//渲染控件
 		drawElement();
 		

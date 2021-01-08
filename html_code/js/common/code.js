@@ -1,4 +1,4 @@
-var Code = {
+const Code = {
 	/** 删除标志-禁用 */
 	"DEL_FLG_0": {"group":"del_flg","name":"禁用","value":"0"},
 	/** 删除标志-启用 */
@@ -24,5 +24,16 @@ var Code = {
 	/** 请求方式-delete */
 	"REQUEST_METHOD_DELETE": {"group":"request_method","name":"delete","value":"3"},
 	/** 请求方式-put */
-	"REQUEST_METHOD_PUT": {"group":"request_method","name":"put","value":"4"}
+	"REQUEST_METHOD_PUT": {"group":"request_method","name":"put","value":"4"},
+	
+	/** 否-false */
+	"NO": {"group":"yes_no","name":"否","value":"0"},
+	/** 是-true */
+	"YES":{"group":"yes_no","name":"是","value":"1"},
+	
+	/** 禁用 */
+	"disable": {"group":"use_type","name":"禁用","value":"0"},
+	/** 启用 */
+	"enable":{"group":"use_type","name":"启用","value":"1"}
 }
+$.deepFreeze(Code);

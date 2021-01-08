@@ -99,8 +99,11 @@ public class AuthFilter implements Filter {
 			System.err.println("异常请求方法：" + method);
 			System.err.println("=====异常请求=====");
 			String redirectUrl = authCheck.getValue();
-			String errMessage = StrUtil.toUTF8(authCheck.getName());
-			url = StrUtil.toUTF8(url);
+			String errMessage = authCheck.getName();
+
+			String redirectUrl_utf8 = StrUtil.toUTF8(redirectUrl);
+			String errMessage_utf8 = StrUtil.toUTF8(errMessage);
+			String url_utf8 = StrUtil.toUTF8(url);
 
 			if (CheckCode.AUTH_FILTER_NO_LOGIN.equals(authCheck) || CheckCode.AUTH_FILTER_TOKEN_NULL.equals(authCheck)
 					|| CheckCode.AUTH_FILTER_TOKEN_ERR.equals(authCheck)
@@ -122,19 +125,19 @@ public class AuthFilter implements Filter {
 			}
 
 			if (isAjax) {
-				response.addHeader(CommonField.SYSTEM_ERR_MSG, errMessage);
-				response.addHeader(CommonField.SYSTEM_ERR_SOURCE_PATH, url);
+				response.addHeader(CommonField.SYSTEM_ERR_MSG, errMessage_utf8);
+				response.addHeader(CommonField.SYSTEM_ERR_SOURCE_PATH, url_utf8);
 
 				if (CheckCode.AUTH_FILTER_PARAM_ERR.equals(authCheck)) {
 					response.addHeader(CommonField.SYSTEM_ERR_REDIRECT, "");
 				} else {
-					response.addHeader(CommonField.SYSTEM_ERR_REDIRECT, redirectUrl);
-					//filterChain.doFilter(request, response);
+					response.addHeader(CommonField.SYSTEM_ERR_REDIRECT, redirectUrl_utf8);
+					// filterChain.doFilter(request, response);
 				}
 			} else {
-				CookieUtil.createCookie(CommonField.SYSTEM_ERR_MSG, errMessage, response);
-				CookieUtil.createCookie(CommonField.SYSTEM_ERR_REDIRECT, redirectUrl, response);
-				CookieUtil.createCookie(CommonField.SYSTEM_ERR_SOURCE_PATH, url, response);
+				CookieUtil.createCookie(CommonField.SYSTEM_ERR_MSG, errMessage_utf8, response);
+				CookieUtil.createCookie(CommonField.SYSTEM_ERR_REDIRECT, redirectUrl_utf8, response);
+				CookieUtil.createCookie(CommonField.SYSTEM_ERR_SOURCE_PATH, url_utf8, response);
 				response.sendRedirect(redirectUrl);
 			}
 		}
@@ -235,7 +238,7 @@ public class AuthFilter implements Filter {
 			return CheckCode.AUTH_FILTER_TOKEN_OVERDUE;
 		} else if (CheckCode.USER_ERR.equals(errCode)) {
 			return CheckCode.AUTH_FILTER_NO_LOGIN;
-		} 
+		}
 
 //		SUserEntity userInfo;
 //		if (userInfoObj != null) {
@@ -279,7 +282,8 @@ public class AuthFilter implements Filter {
 			List<String> authIds = urlEntityEx.getAuthList().stream().map(SAuthEntity::getAuthId)
 					.collect(Collectors.toList());
 
-			if (ListUtil.isEmpty(ListUtil.intersection(authIds, authIdList))) {
+			// aa 未设置权限的资源可以随意访问
+			if (ListUtil.isNotEmpty(authIds) && ListUtil.isEmpty(ListUtil.intersection(authIds, authIdList))) {
 				return CheckCode.AUTH_FILTER_NO_AUTH;
 			}
 		}

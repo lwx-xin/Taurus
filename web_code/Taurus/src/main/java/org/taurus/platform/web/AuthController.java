@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import org.taurus.common.util.LoggerUtil;
 import org.taurus.common.util.SessionUtil;
 import org.taurus.entity.SAuthEntity;
 import org.taurus.extendEntity.SAuthEntityEx;
+import org.taurus.extendEntity.SUserEntityEx;
 import org.taurus.service.SAuthService;
 
 import io.swagger.annotations.ApiOperation;
@@ -61,11 +63,11 @@ public class AuthController {
 	 */
 	@ApiOperation(value = "添加权限信息")
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public Result<SAuthEntityEx> insert(SAuthEntityEx authEntity, HttpServletRequest request) {
+	public Result<SAuthEntityEx> insert(SAuthEntityEx authEntityEx, HttpServletRequest request) {
 
-		LoggerUtil.printParam(logger, "authEntity", authEntity);
+		LoggerUtil.printParam(logger, "authEntityEx", authEntityEx);
 
-		SAuthEntityEx data = authService.insert(authEntity, SessionUtil.getUserId(request));
+		SAuthEntityEx data = authService.insert(authEntityEx, SessionUtil.getUserId(request));
 		if (data == null) {
 			return new Result<SAuthEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_3);
 		}
@@ -77,16 +79,33 @@ public class AuthController {
 	 */
 	@ApiOperation(value = "修改权限信息")
 	@RequestMapping(value = "/{authId}", method = RequestMethod.PUT)
-	public Result<SAuthEntityEx> update(@PathVariable("authId") String authId, SAuthEntityEx authEntity, HttpServletRequest request) {
+	public Result<SAuthEntityEx> update(@PathVariable("authId") String authId, SAuthEntityEx authEntityEx,
+			HttpServletRequest request) {
 
 		LoggerUtil.printParam(logger, "authId", authId);
-		LoggerUtil.printParam(logger, "authEntity", authEntity);
+		LoggerUtil.printParam(logger, "authEntityEx", authEntityEx);
 
-		SAuthEntityEx data = authService.update(authId, authEntity, SessionUtil.getUserId(request));
+		SAuthEntityEx data = authService.update(authId, authEntityEx, SessionUtil.getUserId(request));
 		if (data == null) {
 			return new Result<SAuthEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_4);
 		}
 		return new Result<SAuthEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+	}
+
+	/**
+	 * 禁用启用-权限(如果有【用户，请求，菜单】使用过该权限将无法禁用)
+	 */
+	@ApiOperation(value = "禁用启用-权限(如果有【用户，请求，菜单】使用过该权限将无法禁用)")
+	@RequestMapping(value = "/{authId}", method = RequestMethod.DELETE)
+	public Result<SUserEntityEx> lock_unLock(@PathVariable("authId") String authId, SAuthEntityEx authEntityEx,
+			HttpServletRequest request, HttpServletResponse response) {
+
+		LoggerUtil.printParam(logger, "authId", authId);
+		LoggerUtil.printParam(logger, "authEntityEx", authEntityEx);
+
+		authService.lock_unLock(authId, SessionUtil.getUserId(request));
+
+		return new Result<SUserEntityEx>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 }

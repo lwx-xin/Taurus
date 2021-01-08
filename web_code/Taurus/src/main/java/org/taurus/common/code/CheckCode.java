@@ -58,7 +58,7 @@ public enum CheckCode {
 
 	/** 登录状态(pc)-登录成功 */
 	LOGIN_WEB_SUCCESS("login_web", "登录成功", "0"),
-	/** 登录状态(pc)-登录成功 */
+	/** 登录状态(pc)-登录失败 */
 	LOGIN_WEB_ERROR("login_web", "登录失败", "1");
 
 	private String group;

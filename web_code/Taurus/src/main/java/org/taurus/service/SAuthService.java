@@ -23,7 +23,7 @@ public interface SAuthService extends IService<SAuthEntity> {
 	/**
 	 * 获取用户的权限ID
 	 * 
-	 * @param userId
+	 * @param userId 用户id
 	 * @return
 	 */
 	List<String> getAuthByUserId(String userId);
@@ -39,7 +39,7 @@ public interface SAuthService extends IService<SAuthEntity> {
 	/**
 	 * 根据id获取权限信息
 	 * 
-	 * @param authId
+	 * @param authId 权限id
 	 * @return
 	 */
 	SAuthEntityEx getAuthDetail(String authId);
@@ -51,7 +51,7 @@ public interface SAuthService extends IService<SAuthEntity> {
 	 * @param operator   操作人员
 	 * @return
 	 */
-	SAuthEntityEx insert(SAuthEntityEx authEntity, String operator);
+	SAuthEntityEx insert(SAuthEntityEx authEntityEx, String operator);
 
 	/**
 	 * 新增权限
@@ -60,6 +60,14 @@ public interface SAuthService extends IService<SAuthEntity> {
 	 * @param operator   操作人员
 	 * @return
 	 */
-	SAuthEntityEx update(String authId, SAuthEntityEx authEntity, String operator);
+	SAuthEntityEx update(String authId, SAuthEntityEx authEntityEx, String operator);
+
+	/**
+	 * 禁用启用-权限(如果有【用户，请求，菜单】使用过该权限将无法禁用)
+	 * 
+	 * @param authId   权限id
+	 * @param operator 操作人员
+	 */
+	void lock_unLock(String authId, String operator);
 
 }

@@ -1,9 +1,11 @@
 package org.taurus.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.taurus.entity.SUrlParamEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
- 
+
 /**
  * <p>
  * 请求参数 服务类
@@ -15,5 +17,32 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 @Service
 public interface SUrlParamService extends IService<SUrlParamEntity> {
+
+	/**
+	 * 获取请求参数列表
+	 * 
+	 * @param urlParamEntity
+	 * @return
+	 */
+	List<SUrlParamEntity> getUrlParamList(SUrlParamEntity urlParamEntity);
+
+	/**
+	 * 添加请求参数信息
+	 * 
+	 * @param urlParamEntity
+	 * @param operator       操作人员
+	 * @return
+	 */
+	SUrlParamEntity insert(SUrlParamEntity urlParamEntity, String operator);
+
+	/**
+	 * 修改请求参数信息
+	 * 
+	 * @param urlParamId
+	 * @param urlParamEntity
+	 * @param operator       操作人员
+	 * @return
+	 */
+	SUrlParamEntity update(String urlParamId, SUrlParamEntity urlParamEntity, String operator);
 
 }

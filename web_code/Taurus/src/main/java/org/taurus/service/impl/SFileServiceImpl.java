@@ -12,6 +12,7 @@ import org.taurus.dao.SFileDao;
 import org.taurus.service.SFileService;
 import org.taurus.service.SFolderService;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.io.File;
@@ -89,51 +90,77 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
 
 		// aa 如果根目录文件夹不存在
 		if (!rootFolder.exists()) {
-
-			SFolderEntity folderEntity = new SFolderEntity();
-			folderEntity.setFolderId(rootFolderId);
-			folderEntity.setFolderName(rootFolderName);
-			folderEntity.setFolderOwner(userId);
-			folderEntity.setFolderParent(null);
-			folderEntity.setFolderDelFlg(Code.DEL_FLG_1.getValue());
-			folderEntity.setFolderCreateTime(nowTime);
-			folderEntity.setFolderCreateUser(userId);
-			folderEntity.setFolderModifyTime(nowTime);
-			folderEntity.setFolderModifyUser(userId);
-			if (!folderService.save(folderEntity)) {
-				throw new CustomException(ExecptionType.FOLDER, null, "创建用户，添加根目录失败");
+			
+			// aa 文件夹数据不存在就添加文件夹数据
+			SFolderEntity folderQueryEntity = new SFolderEntity();
+			folderQueryEntity.setFolderId(rootFolderId);
+			QueryWrapper<SFolderEntity> folderQueryWrapper = new QueryWrapper<SFolderEntity>(folderQueryEntity);
+			if (folderService.count(folderQueryWrapper)==0) {
+				SFolderEntity folderEntity = new SFolderEntity();
+				folderEntity.setFolderId(rootFolderId);
+				folderEntity.setFolderName(rootFolderName);
+				folderEntity.setFolderOwner(userId);
+				folderEntity.setFolderParent(null);
+				folderEntity.setFolderDelFlg(Code.DEL_FLG_1.getValue());
+				folderEntity.setFolderCreateTime(nowTime);
+				folderEntity.setFolderCreateUser(userId);
+				folderEntity.setFolderModifyTime(nowTime);
+				folderEntity.setFolderModifyUser(userId);
+				if (!folderService.save(folderEntity)) {
+					throw new CustomException(ExecptionType.FOLDER, null, "创建用户，添加根目录失败");
+				}
 			}
+
 			rootFolder.mkdirs();// 创建根目录文件夹
 		}
 
 		// aa 用户系统资源文件夹id
-		String userSystemFolderId = StrUtil.getUUID();
+		String userSystemFolderId = "";
 		// aa 用户系统资源文件夹名称
 		String userSystemFolderName = "system";
 		// aa 用户系统资源文件夹
 		File userSystemFolder = new File(taurusProperties.getFolderRoot() + userId + "/" + userSystemFolderName);
+		
+		// aa 查询用户系统资源文件夹
+		SFolderEntity folderQueryEntity = new SFolderEntity();
+		folderQueryEntity.setFolderName(userSystemFolderName);
+		folderQueryEntity.setFolderOwner(userId);
+		folderQueryEntity.setFolderParent(rootFolderId);
+		folderQueryEntity.setFolderDelFlg(Code.DEL_FLG_1.getValue());
+		QueryWrapper<SFolderEntity> folderQueryWrapper = new QueryWrapper<SFolderEntity>(folderQueryEntity);
+		SFolderEntity folderEntity = folderService.getOne(folderQueryWrapper);
 
 		// aa 如果用户系统资源文件夹不存在
 		if (!userSystemFolder.exists()) {
-
-			SFolderEntity folderEntity = new SFolderEntity();
-			folderEntity.setFolderId(userSystemFolderId);
-			folderEntity.setFolderName(userSystemFolderName);
-			folderEntity.setFolderOwner(userId);
-			folderEntity.setFolderParent(rootFolderId);
-			folderEntity.setFolderDelFlg(Code.DEL_FLG_1.getValue());
-			folderEntity.setFolderCreateTime(nowTime);
-			folderEntity.setFolderCreateUser(userId);
-			folderEntity.setFolderModifyTime(nowTime);
-			folderEntity.setFolderModifyUser(userId);
-			if (!folderService.save(folderEntity)) {
-				throw new CustomException(ExecptionType.FOLDER, null, "创建用户，添加系统资源文件夹失败");
+			
+			if (folderEntity==null) {
+				userSystemFolderId = StrUtil.getUUID();
+				folderEntity = new SFolderEntity();
+				folderEntity.setFolderId(userSystemFolderId);
+				folderEntity.setFolderName(userSystemFolderName);
+				folderEntity.setFolderOwner(userId);
+				folderEntity.setFolderParent(rootFolderId);
+				folderEntity.setFolderDelFlg(Code.DEL_FLG_1.getValue());
+				folderEntity.setFolderCreateTime(nowTime);
+				folderEntity.setFolderCreateUser(userId);
+				folderEntity.setFolderModifyTime(nowTime);
+				folderEntity.setFolderModifyUser(userId);
+				if (!folderService.save(folderEntity)) {
+					throw new CustomException(ExecptionType.FOLDER, null, "创建用户，添加系统资源文件夹失败");
+				}
 			}
+
 			userSystemFolder.mkdirs();// 创建用户系统资源文件夹
+		} else {
+			if (folderEntity==null) {
+				throw new CustomException(ExecptionType.FOLDER, null, "用户系统资源文件夹异常");
+			}
+			userSystemFolderId = folderEntity.getFolderId();
 		}
 
-		SFileEntity fileEntity = new SFileEntity();
+		SFileEntity fileEntity = null;
 		if (file != null) {
+			fileEntity = new SFileEntity();
 			// aa 保存头像文件信息
 			fileEntity = getInfoByFile(file, nowTime);
 			fileEntity.setFileFolder(userSystemFolderId);
@@ -203,7 +230,7 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
 				return filePath;
 			}
 			String fileFolder = fileEntity.getFileFolder();
-			filePath = folderService.getFolderPath(fileFolder, owner)+fileEntity.getFileNameTimestamp();
+			filePath = folderService.getFolderPath(fileFolder, owner) + fileEntity.getFileNameTimestamp();
 		}
 		return filePath;
 	}
@@ -217,7 +244,8 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
 				return filePath;
 			}
 			String fileFolder = fileEntity.getFileFolder();
-			filePath = "/f/" + folderService.getFolderRelativePath(fileFolder, owner)+fileEntity.getFileNameTimestamp();
+			filePath = "/f/" + folderService.getFolderRelativePath(fileFolder, owner)
+					+ fileEntity.getFileNameTimestamp();
 		}
 		return filePath;
 	}

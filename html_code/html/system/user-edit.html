@@ -2,6 +2,9 @@
 <html>
 <head>
 <style type="text/css">
+	.head-img{
+		width: 100px;
+	}
 	.no-padding{
 		padding: 0px;
 	}
@@ -25,6 +28,11 @@
                 <div class="ibox float-e-margins">
                     <div class="ibox-content">
                         <form class="form-horizontal m-t" id="my-form">
+                            <div class="form-group" id="head-img-div">
+								<div style="text-align: center; width: 100%;">
+									<img alt="image" src="../../img/default-head.jpg" class="img-circle head-img" style="display: inline-block;" />
+								</div>
+                            </div>
                             <div class="form-group" name="userNumberDiv">
                                 <label class="col-sm-3 control-label">账号：</label>
                                 <div class="col-sm-8">
@@ -32,7 +40,7 @@
                                     <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 最多9个文字</span>
                                 </div>
                             </div>
-							<div class="form-group">
+							<div class="form-group display-none">
                                 <label class="col-sm-3 control-label">头像：</label>
                                 <div class="col-sm-8">
 	                                <input name="userHead_file" type="file" class="form-control" aria-required="true">
@@ -97,10 +105,10 @@
 
 	var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
 	
-	var pageParams;
+	const pageParams = getPageParam();
+	$.deepFreeze(pageParams);
+	
 	$(function(){
-		
-		pageParams = getPageParam();
 
 		//渲染控件
 		drawElement();
@@ -174,6 +182,16 @@
 				}
 			});
 		});
+		
+		$("#head-img-div .head-img").click(function(){
+			$(":file[name='userHead_file']").click();
+		});
+		
+		$(":file[name='userHead_file']").change(function(){
+			imgToBase64(this,function(data){
+				$(".head-img").attr("src", data);
+			})
+		});
 	}
 	
 	//渲染控件
@@ -241,6 +259,11 @@
 				type: requestPath.userDetail.type,
 				success: function(data){
 					if(data.status){
+						// 头像文件地址
+						var headFilePath = data.data.headFilePath;
+						if(isNotNull(headFilePath)){
+							$(".head-img").attr("src","../../" + headFilePath);
+						}
 						$("#userNumber").val(data.data.userNumber);
 						$("#userName").val(data.data.userName);
 						$("#userPwd").val(data.data.userPwd);

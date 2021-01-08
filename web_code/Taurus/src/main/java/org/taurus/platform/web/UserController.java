@@ -21,6 +21,7 @@ import org.taurus.common.util.SessionUtil;
 import org.taurus.common.util.StrUtil;
 import org.taurus.entity.SUserEntity;
 import org.taurus.extendEntity.SUserEntityEx;
+import org.taurus.service.SFileService;
 import org.taurus.service.SUserService;
 
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +34,9 @@ public class UserController {
 
 	@Resource
 	private SUserService sUserService;
+	
+	@Resource
+	private SFileService fileService;
 
 	/**
 	 * 获取用户列表
@@ -60,6 +64,10 @@ public class UserController {
 		if (data == null) {
 			return new Result<SUserEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_2);
 		}
+		// aa 用户头像文件id
+		String userHead = data.getUserHead();
+		// aa 用户头像文件请求路径
+		data.setHeadFilePath(fileService.getFileUrl(userHead, userId));
 		return new Result<SUserEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
@@ -96,7 +104,7 @@ public class UserController {
 		}
 
 		if (SessionUtil.getUserId(request).equals(userId)) {
-			response.setHeader(CommonField.SYSTEM_ERR_REDIRECT, "/html/login.html");
+			response.setHeader(CommonField.SYSTEM_ERR_REDIRECT, StrUtil.toUTF8("/html/login.html"));
 			response.setHeader(CommonField.SYSTEM_ERR_MSG,
 					StrUtil.toUTF8(CheckCode.INTERFACE_ERR_CODE_reLogin.getName()));
 			return new Result<SUserEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_reLogin);
@@ -119,7 +127,7 @@ public class UserController {
 		sUserService.lock_unLock(userId, SessionUtil.getUserId(request));
 
 		if (SessionUtil.getUserId(request).equals(userId)) {
-			response.setHeader(CommonField.SYSTEM_ERR_REDIRECT, "/html/login.html");
+			response.setHeader(CommonField.SYSTEM_ERR_REDIRECT, StrUtil.toUTF8("/html/login.html"));
 			response.setHeader(CommonField.SYSTEM_ERR_MSG,
 					StrUtil.toUTF8(CheckCode.INTERFACE_ERR_CODE_reLogin.getName()));
 			return new Result<SUserEntityEx>(null, true, CheckCode.INTERFACE_ERR_CODE_reLogin);

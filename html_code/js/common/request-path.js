@@ -1,9 +1,11 @@
-var requestPath = {
+const requestPath = {
+	// 获取登录用户
+	loginUser:{"url":"/loginUser", "type":"get"},
+	// 修改登录用户
+	loginUserUpdate:{"url":"/loginUser", "type":"put"},
 	
 	// 获取code列表
 	code:{"url":"/code", "type":"get"},
-	// 获取登录用户
-	userInfo:{"url":"/userInfo", "type":"get"},
 	// 清除session以及cookie
 	clearLoginInfo:{"url":"/clearLoginInfo", "type":"delete"},
 	
@@ -44,4 +46,10 @@ var requestPath = {
 	authDetail:{"url":"/web/auth/{authId}", "type":"get"},
 	// 编辑权限信息
 	authUpdate:{"url":"/web/auth/{authId}", "type":"put"},
+	// 禁用启用-权限
+	authDelete:{"url":"/web/auth/{authId}", "type":"delete"},
+	
+	// 请求参数列表
+	urlParamList:{"url":"/web/url-param", "type":"get"},
 }
+$.deepFreeze(requestPath);

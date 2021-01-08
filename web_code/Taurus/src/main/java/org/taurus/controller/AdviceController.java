@@ -17,7 +17,7 @@ public class AdviceController {
 	public void exceptioinHandler(CustomException ex, HttpServletRequest request, HttpServletResponse response) {
 
 		// 请求路径
-		String url = request.getServletPath();
+		String url = StrUtil.toUTF8(request.getServletPath());
 
 		String errMessage = StrUtil.toUTF8(ex.getRemark());
 
@@ -27,6 +27,7 @@ public class AdviceController {
 			isAjax = true;
 		}
 
+		response.setStatus(500);
 		if (isAjax) {
 			response.addHeader(CommonField.SYSTEM_ERR_MSG, errMessage);
 			response.addHeader(CommonField.SYSTEM_ERR_SOURCE_PATH, url);
@@ -41,7 +42,7 @@ public class AdviceController {
 	public void exceptioinHandler(Exception ex, HttpServletRequest request, HttpServletResponse response) {
 
 		// 请求路径
-		String url = request.getServletPath();
+		String url = StrUtil.toUTF8(request.getServletPath());
 
 		String errMessage = StrUtil.toUTF8(ex.getMessage());
 
@@ -51,6 +52,7 @@ public class AdviceController {
 			isAjax = true;
 		}
 
+		response.setStatus(500);
 		if (isAjax) {
 			response.addHeader(CommonField.SYSTEM_ERR_MSG, errMessage);
 			response.addHeader(CommonField.SYSTEM_ERR_SOURCE_PATH, url);

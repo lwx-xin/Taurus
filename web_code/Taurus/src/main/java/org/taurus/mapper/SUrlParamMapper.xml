@@ -16,6 +16,8 @@
         <result column="URL_PARAM_REQUIRED" property="urlParamRequired"/>
     	<!-- 是否允许为空值 -->
         <result column="URL_PARAM_NULL" property="urlParamNull"/>
+    	<!-- 参数备注 -->
+        <result column="URL_PARAM_REMARK" property="urlParamRemark"/>
     	<!-- 删除标识 -->
         <result column="URL_PARAM_DEL_FLG" property="urlParamDelFlg"/>
     	<!-- 创建时间 -->
