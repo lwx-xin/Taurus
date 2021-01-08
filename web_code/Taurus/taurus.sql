@@ -10,8 +10,8 @@
  Target Server Type    : MySQL
  Target Server Version : 80015
  File Encoding         : 65001
- 
- Date: 31/12/2020 18:18:28
+
+ Date: 08/01/2021 19:31:38
 */
 
 SET NAMES utf8mb4;
@@ -89,9 +89,6 @@ INSERT INTO `s_auth_menu` VALUES ('985a44e8-3ba0-11eb-94ca-000ec6545094', '1', '
 INSERT INTO `s_auth_menu` VALUES ('985b4fb4-3ba0-11eb-94ca-000ec6545094', '1', '4', '1', '2020-12-11 19:04:10', '1', '2020-12-11 19:04:10', '1');
 INSERT INTO `s_auth_menu` VALUES ('985c5b8d-3ba0-11eb-94ca-000ec6545094', '1', '5', '1', '2020-12-11 19:04:10', '1', '2020-12-11 19:04:10', '1');
 INSERT INTO `s_auth_menu` VALUES ('985d772e-3ba0-11eb-94ca-000ec6545094', '1', '6', '1', '2020-12-11 19:04:10', '1', '2020-12-11 19:04:10', '1');
-INSERT INTO `s_auth_menu` VALUES ('985e7640-3ba0-11eb-94ca-000ec6545094', '1', '7', '1', '2020-12-11 19:04:10', '1', '2020-12-11 19:04:10', '1');
-INSERT INTO `s_auth_menu` VALUES ('9fe70423-3ba0-11eb-94ca-000ec6545094', '1', '8', '1', '2020-12-11 19:04:22', '1', '2020-12-11 19:04:22', '1');
-INSERT INTO `s_auth_menu` VALUES ('9fe70455-3ba0-11eb-94ca-000ec6545094', '1', '9', '1', '2020-12-15 13:25:48', '1', '2020-12-15 13:25:45', '1');
 
 -- ----------------------------
 -- Table structure for s_auth_url
@@ -112,6 +109,9 @@ CREATE TABLE `s_auth_url`  (
 -- ----------------------------
 -- Records of s_auth_url
 -- ----------------------------
+INSERT INTO `s_auth_url` VALUES ('097464f6d9644389a37ce29ba061c54b', '1', '6724c150e3b3473d92968d30497d2f70', '1', '2021-01-04 03:30:12', '1', '2021-01-04 03:30:12', '1');
+INSERT INTO `s_auth_url` VALUES ('31272ef23d8747b18d17a1e0998c7320', '1', '90d077f0a38e4a84b07f032387d6ceff', '1', '2021-01-06 10:39:51', '1', '2021-01-06 10:39:51', '1');
+INSERT INTO `s_auth_url` VALUES ('4051491d83134e26a58c2e09ccd0f7eb', '1', 'c6f3c460-4e34-11eb-ab73-309c23fb82e4', '1', '2021-01-04 02:35:10', '1', '2021-01-04 02:35:10', '1');
 INSERT INTO `s_auth_url` VALUES ('416fa67f-4673-11eb-ab73-309c23fb82e4', '1', '2a17f0ed-4673-11eb-ab73-309c23fb82e4', '1', '2020-12-25 13:37:10', '1', '2020-12-25 13:37:15', '1');
 INSERT INTO `s_auth_url` VALUES ('82d244f34ce547de85dec9cc96006300', '1', 'acba69e5f8a3427f92299b192b31c24a', '1', '2020-12-30 06:48:19', '1', '2020-12-30 06:48:19', '1');
 INSERT INTO `s_auth_url` VALUES ('8e00b408a8874987832557659e5d299d', '1', 'c67f1f19cbce477e9c3c8374c19d7dda', '1', '2020-12-31 07:26:45', '1', '2020-12-31 07:26:45', '1');
@@ -135,12 +135,15 @@ INSERT INTO `s_auth_url` VALUES ('8fa5a981-4670-11eb-ab73-309c23fb82e4', '1', 'c
 INSERT INTO `s_auth_url` VALUES ('8fa6868f-4670-11eb-ab73-309c23fb82e4', '1', 'c808bc31-466f-11eb-ab73-309c23fb82e4', '1', '2020-12-25 13:18:02', '1', '2020-12-25 13:18:02', '1');
 INSERT INTO `s_auth_url` VALUES ('8fa768d6-4670-11eb-ab73-309c23fb82e4', '1', 'c809e2f9-466f-11eb-ab73-309c23fb82e4', '1', '2020-12-25 13:18:02', '1', '2020-12-25 13:18:02', '1');
 INSERT INTO `s_auth_url` VALUES ('8fa83f25-4670-11eb-ab73-309c23fb82e4', '1', 'c80b2033-466f-11eb-ab73-309c23fb82e4', '1', '2020-12-25 13:18:02', '1', '2020-12-25 13:18:02', '1');
+INSERT INTO `s_auth_url` VALUES ('9ce1e5d5961e4078ad08958bd182d802', '1', 'f70c620356ce43f1a521a4942f74ba47', '1', '2021-01-08 02:53:00', '1', '2021-01-08 02:53:00', '1');
 INSERT INTO `s_auth_url` VALUES ('a845601c8eed414c9cdc87843497d4e4', '1', '9f6a8503e1d44f83a94d9d010b96e857', '1', '2020-12-31 07:12:57', '1', '2020-12-31 07:12:57', '1');
 INSERT INTO `s_auth_url` VALUES ('bc98efb5-4a4a-11eb-ab73-309c23fb82e4', '1', '913bd49b-4a4a-11eb-ab73-309c23fb82e4', '1', '2020-12-30 10:57:03', '1', '2020-12-30 10:57:00', '1');
 INSERT INTO `s_auth_url` VALUES ('c01747e06ec24f4d88a8c00e2ae9bd36', '5', 'acba69e5f8a3427f92299b192b31c24a', '1', '2020-12-30 06:43:39', '1', '2020-12-30 06:43:39', '1');
 INSERT INTO `s_auth_url` VALUES ('c1cf6d4be641442e9f7fb23c464afb46', '1', 'f344627d7597405987eae2d33f56650d', '1', '2020-12-30 08:43:40', '1', '2020-12-30 08:43:40', '1');
 INSERT INTO `s_auth_url` VALUES ('c57d5bdeb895455a831c808a4eecfe93', '3', 'acba69e5f8a3427f92299b192b31c24a', '0', '2020-12-30 06:43:39', '1', '2020-12-30 06:43:39', '1');
 INSERT INTO `s_auth_url` VALUES ('d4d15502ccf145c4a239359ba228c160', '2', 'acba69e5f8a3427f92299b192b31c24a', '1', '2020-12-30 06:43:39', '1', '2020-12-30 06:43:39', '1');
+INSERT INTO `s_auth_url` VALUES ('d62afe17f9304ba993b5a342bcdbf043', '1', '1648ec55ecf54668bd84d1cf9708141b', '1', '2021-01-06 10:38:48', '1', '2021-01-06 10:38:48', '1');
+INSERT INTO `s_auth_url` VALUES ('fd1af22ead274b7c88c5e32fb7dd11d7', '1', '22411febcbf44647926b20954d5602ac', '1', '2021-01-08 01:50:49', '1', '2021-01-08 01:50:49', '1');
 
 -- ----------------------------
 -- Table structure for s_auth_user
@@ -162,9 +165,10 @@ CREATE TABLE `s_auth_user`  (
 -- Records of s_auth_user
 -- ----------------------------
 INSERT INTO `s_auth_user` VALUES ('313bb4c3ce674c4290c4419cfebb005a', '1', '351990bafd0c47b395cf155ad5fb2e03', '1', '2020-12-30 09:26:12', '1', '2020-12-30 09:26:12', '1');
+INSERT INTO `s_auth_user` VALUES ('6a527164164c4e9aa41cc815d52626b5', '1', 'f4a9357eefc74e74953cf510abbe6247', '1', '2021-01-08 11:23:34', '1', '2021-01-08 11:23:34', '1');
 INSERT INTO `s_auth_user` VALUES ('7a059720760f4802b2d8a3f72d3aa822', '1', '1', '1', '2020-12-25 05:49:26', '1', '2020-12-25 05:49:26', '1');
-INSERT INTO `s_auth_user` VALUES ('f70f93b71ff341d291c0f2a3cb31ec20', '4', '1', '1', '2020-12-30 09:22:55', '1', '2020-12-30 09:22:55', '1');
-INSERT INTO `s_auth_user` VALUES ('ff59267720554f7d865e1db45c00fadc', '3', '1', '1', '2020-12-30 09:22:55', '1', '2020-12-30 09:22:55', '1');
+INSERT INTO `s_auth_user` VALUES ('f70f93b71ff341d291c0f2a3cb31ec20', '4', '1', '0', '2020-12-30 09:22:55', '1', '2020-12-30 09:22:55', '1');
+INSERT INTO `s_auth_user` VALUES ('ff59267720554f7d865e1db45c00fadc', '3', '1', '0', '2020-12-30 09:22:55', '1', '2020-12-30 09:22:55', '1');
 
 -- ----------------------------
 -- Table structure for s_file
@@ -189,7 +193,8 @@ CREATE TABLE `s_file`  (
 -- ----------------------------
 -- Records of s_file
 -- ----------------------------
-INSERT INTO `s_file` VALUES ('6a231ae032754c609539b584e1b7dcc6', 'a7.jpg', 'a71609230517821.jpg', '10.16', '5', 'd308b6b43c9f4047886477b8bc994813', '351990bafd0c47b395cf155ad5fb2e03', '1', '2020-12-29 08:28:38', '351990bafd0c47b395cf155ad5fb2e03', '2020-12-29 08:28:38', '351990bafd0c47b395cf155ad5fb2e03');
+INSERT INTO `s_file` VALUES ('153cdace4cec40f2a10cc4c9837b8b83', 'a3.jpg', 'a31610104521940.jpg', '49.17', '5', 'e42a840d440146a986be960ad2a88aa4', '1', '1', '2021-01-08 11:15:22', '1', '2021-01-08 11:15:22', '1');
+INSERT INTO `s_file` VALUES ('d098e5291d554c748e60692118242174', 'a9.jpg', 'a91610104537446.jpg', '15.54', '5', 'e42a840d440146a986be960ad2a88aa4', '1', '1', '2021-01-08 11:15:37', '1', '2021-01-08 11:15:37', '1');
 
 -- ----------------------------
 -- Table structure for s_folder
@@ -211,10 +216,10 @@ CREATE TABLE `s_folder`  (
 -- ----------------------------
 -- Records of s_folder
 -- ----------------------------
-INSERT INTO `s_folder` VALUES ('1', '1', NULL, '1', '1', '2020-12-30 09:22:55', '1', '2020-12-30 09:22:55', '1');
-INSERT INTO `s_folder` VALUES ('351990bafd0c47b395cf155ad5fb2e03', '351990bafd0c47b395cf155ad5fb2e03', NULL, '351990bafd0c47b395cf155ad5fb2e03', '1', '2020-12-29 08:28:38', '351990bafd0c47b395cf155ad5fb2e03', '2020-12-29 08:28:38', '351990bafd0c47b395cf155ad5fb2e03');
-INSERT INTO `s_folder` VALUES ('3a3f7db3543c45a982a1536165d69831', 'system', '1', '1', '1', '2020-12-30 09:22:55', '1', '2020-12-30 09:22:55', '1');
-INSERT INTO `s_folder` VALUES ('d308b6b43c9f4047886477b8bc994813', 'system', '351990bafd0c47b395cf155ad5fb2e03', '351990bafd0c47b395cf155ad5fb2e03', '1', '2020-12-29 08:28:38', '351990bafd0c47b395cf155ad5fb2e03', '2020-12-29 08:28:38', '351990bafd0c47b395cf155ad5fb2e03');
+INSERT INTO `s_folder` VALUES ('1', '1', NULL, '1', '1', '2021-01-08 11:15:22', '1', '2021-01-08 11:15:22', '1');
+INSERT INTO `s_folder` VALUES ('103519b8f8134496a3572bee345c961d', 'system', 'f4a9357eefc74e74953cf510abbe6247', 'f4a9357eefc74e74953cf510abbe6247', '1', '2021-01-08 11:23:34', 'f4a9357eefc74e74953cf510abbe6247', '2021-01-08 11:23:34', 'f4a9357eefc74e74953cf510abbe6247');
+INSERT INTO `s_folder` VALUES ('e42a840d440146a986be960ad2a88aa4', 'system', '1', '1', '1', '2021-01-08 11:15:22', '1', '2021-01-08 11:15:22', '1');
+INSERT INTO `s_folder` VALUES ('f4a9357eefc74e74953cf510abbe6247', 'f4a9357eefc74e74953cf510abbe6247', NULL, 'f4a9357eefc74e74953cf510abbe6247', '1', '2021-01-08 11:23:34', 'f4a9357eefc74e74953cf510abbe6247', '2021-01-08 11:23:34', 'f4a9357eefc74e74953cf510abbe6247');
 
 -- ----------------------------
 -- Table structure for s_menu
@@ -242,8 +247,8 @@ INSERT INTO `s_menu` VALUES ('1', '系统管理', NULL, 1, NULL, 'fa fa-cog', '1
 INSERT INTO `s_menu` VALUES ('2', '工具', NULL, 2, NULL, 'fa fa-wrench', '1', '2020-12-11 18:56:15', '1', '2020-12-11 18:56:13', '1');
 INSERT INTO `s_menu` VALUES ('3', '用户管理', '1', 1, 'user-list.html', NULL, '1', '2020-12-11 18:57:12', '1', '2020-12-11 18:57:05', '1');
 INSERT INTO `s_menu` VALUES ('4', '请求管理', '1', 2, 'url-list.html', NULL, '1', '2020-12-11 18:58:25', '1', '2020-12-11 18:58:22', '1');
-INSERT INTO `s_menu` VALUES ('5', '权限管理', '1', 3, NULL, NULL, '1', '2020-12-11 18:59:20', '1', '2020-12-11 18:59:24', '1');
-INSERT INTO `s_menu` VALUES ('6', '菜单管理', '1', 4, NULL, NULL, '1', '2020-12-11 18:59:55', '1', '2020-12-11 18:59:58', '1');
+INSERT INTO `s_menu` VALUES ('5', '权限管理', '1', 3, 'auth-list.html', NULL, '1', '2020-12-11 18:59:20', '1', '2020-12-11 18:59:24', '1');
+INSERT INTO `s_menu` VALUES ('6', '菜单管理', '1', 4, 'menu-list.html', NULL, '1', '2020-12-11 18:59:55', '1', '2020-12-11 18:59:58', '1');
 INSERT INTO `s_menu` VALUES ('7', '游戏', '2', 1, NULL, 'fa fa-gamepad', '1', '2020-12-11 19:00:23', '1', '2020-12-11 19:00:21', '1');
 INSERT INTO `s_menu` VALUES ('8', '数独', '7', 2, NULL, 'iconfont icon-sudoku', '1', '2020-12-11 19:00:45', '1', '2020-12-11 19:00:42', '1');
 INSERT INTO `s_menu` VALUES ('9', '贪吃蛇', '7', 1, NULL, 'iconfont icon-Snake', '1', '2020-12-15 11:23:46', '1', '2020-12-15 11:23:43', '1');
@@ -269,9 +274,14 @@ CREATE TABLE `s_url`  (
 -- ----------------------------
 -- Records of s_url
 -- ----------------------------
+INSERT INTO `s_url` VALUES ('1648ec55ecf54668bd84d1cf9708141b', '/html/system/url-param-list.html', '1', '1', '打开请求参数页面', '1', '2021-01-06 10:38:48', '1', '2021-01-06 10:38:48', '1');
+INSERT INTO `s_url` VALUES ('22411febcbf44647926b20954d5602ac', '/html/system/config.html', '1', '', '打开系统配置页面', '1', '2021-01-08 01:50:49', '1', '2021-01-08 01:50:49', '1');
 INSERT INTO `s_url` VALUES ('2a17f0ed-4673-11eb-ab73-309c23fb82e4', '/web/menu', '1', '1', '获取菜单列表', '1', '2020-12-25 13:36:20', '1', '2020-12-25 13:36:18', '1');
-INSERT INTO `s_url` VALUES ('913bd49b-4a4a-11eb-ab73-309c23fb82e4', '/code', '1', '1', '获取code列表', '1', '2020-12-30 10:55:47', '1', '2020-12-30 10:55:51', '1');
+INSERT INTO `s_url` VALUES ('6724c150e3b3473d92968d30497d2f70', '/html/system/auth-edit.html', '1', '1', '打开编辑权限页面', '1', '2021-01-04 03:30:12', '1', '2021-01-04 03:30:12', '1');
+INSERT INTO `s_url` VALUES ('90d077f0a38e4a84b07f032387d6ceff', '/web/url-param', '1', '', '获取请求参数数据', '1', '2021-01-06 10:39:51', '1', '2021-01-06 10:39:51', '1');
+INSERT INTO `s_url` VALUES ('913bd49b-4a4a-11eb-ab73-309c23fb82e4', '/code', '1', '1', '获取code列表', '1', '2020-12-30 10:55:47', '1', '2021-01-06 05:43:36', '1');
 INSERT INTO `s_url` VALUES ('9f6a8503e1d44f83a94d9d010b96e857', '/html/login.html', '1', '1', '打开登录页面', '1', '2020-12-31 07:12:57', '1', '2020-12-31 07:12:57', '1');
+INSERT INTO `s_url` VALUES ('c6f3c460-4e34-11eb-ab73-309c23fb82e4', '/html/system/auth-list.html', '1', '1', '打开权限列表界面', '1', '2021-01-04 10:30:54', '1', '2021-01-04 02:35:10', '1');
 INSERT INTO `s_url` VALUES ('c7f7f1f2-466f-11eb-ab73-309c23fb82e4', '/html/system/home.html', '1', '1', '打开首页', '1', '2020-12-25 13:12:27', '1', '2020-12-25 13:12:27', '1');
 INSERT INTO `s_url` VALUES ('c7f8e72f-466f-11eb-ab73-309c23fb82e4', '/html/system/user-list.html', '1', '1', '打开用户列表页面', '1', '2020-12-25 13:12:27', '1', '2020-12-25 13:12:27', '1');
 INSERT INTO `s_url` VALUES ('c7fa212d-466f-11eb-ab73-309c23fb82e4', '/html/system/user-edit.html', '1', '1', '打开编辑用户页面', '1', '2020-12-25 13:12:27', '1', '2020-12-25 13:12:27', '1');
@@ -292,7 +302,8 @@ INSERT INTO `s_url` VALUES ('c807cddd-466f-11eb-ab73-309c23fb82e4', '/web/auth',
 INSERT INTO `s_url` VALUES ('c808bc31-466f-11eb-ab73-309c23fb82e4', '/web/auth/.*', '1', '1', '获取权限的详细信息', '1', '2020-12-25 13:12:27', '1', '2020-12-25 13:12:27', '1');
 INSERT INTO `s_url` VALUES ('c809e2f9-466f-11eb-ab73-309c23fb82e4', '/web/auth/.*', '4', '1', '编辑权限信息', '1', '2020-12-25 13:12:27', '1', '2020-12-25 13:12:27', '1');
 INSERT INTO `s_url` VALUES ('c80b2033-466f-11eb-ab73-309c23fb82e4', '/web/auth/.*', '3', '1', '禁用-启用 权限', '1', '2020-12-25 13:12:27', '1', '2020-12-25 13:12:27', '1');
-INSERT INTO `s_url` VALUES ('f344627d7597405987eae2d33f56650d', '/userInfo', '1', '1', '获取当前登录用户信息', '1', '2020-12-30 08:43:40', '1', '2020-12-30 08:43:40', '1');
+INSERT INTO `s_url` VALUES ('f344627d7597405987eae2d33f56650d', '/loginUser', '1', '1', '获取当前登录用户信息', '1', '2020-12-30 08:43:40', '1', '2021-01-08 02:46:14', '1');
+INSERT INTO `s_url` VALUES ('f70c620356ce43f1a521a4942f74ba47', '/loginUser', '4', '1', '编辑登录用户信息', '1', '2021-01-08 02:53:00', '1', '2021-01-08 02:53:00', '1');
 
 -- ----------------------------
 -- Table structure for s_url_param
@@ -305,6 +316,7 @@ CREATE TABLE `s_url_param`  (
   `URL_PARAM_VALUE` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '参数值，正则表达式',
   `URL_PARAM_REQUIRED` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '是否为必须参数',
   `URL_PARAM_NULL` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否允许为空值',
+  `URL_PARAM_REMARK` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '参数备注',
   `URL_PARAM_DEL_FLG` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '删除标识',
   `URL_PARAM_CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
   `URL_PARAM_CREATE_USER` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建者',
@@ -316,7 +328,7 @@ CREATE TABLE `s_url_param`  (
 -- ----------------------------
 -- Records of s_url_param
 -- ----------------------------
-INSERT INTO `s_url_param` VALUES ('ff8e7598-48d3-11eb-ab73-309c23fb82e4', 'c7ff372b-466f-11eb-ab73-309c23fb82e4', 'userEmail', '^([\\w-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([\\w-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$', '1', '0', '1', '2020-12-28 14:14:49', '1', '2020-12-28 14:14:49', '1');
+INSERT INTO `s_url_param` VALUES ('ff8e7598-48d3-11eb-ab73-309c23fb82e4', 'c7ff372b-466f-11eb-ab73-309c23fb82e4', 'userEmail', '^([\\w-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([\\w-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$', '1', '0', '用户邮箱', '1', '2020-12-28 14:14:49', '1', '2020-12-28 14:14:49', '1');
 
 -- ----------------------------
 -- Table structure for s_user
@@ -342,8 +354,9 @@ CREATE TABLE `s_user`  (
 -- ----------------------------
 -- Records of s_user
 -- ----------------------------
-INSERT INTO `s_user` VALUES ('1', 'admin', 'a8abc0eb28fe60c7a568bea0e5cf1ac2', '管理员0001133333', '', '1', '123', '123@qs.com', '1', '2020-12-08 09:02:16', '1', '2020-12-31 08:58:16', '1');
-INSERT INTO `s_user` VALUES ('351990bafd0c47b395cf155ad5fb2e03', 'test1', 'd9a590b91605eb17ffabdf80d50986bd', 'test12', '6a231ae032754c609539b584e1b7dcc6', '1', '', '321@1.com', '1', '2020-12-28 00:28:38', '1', '2020-12-31 08:09:52', '1');
+INSERT INTO `s_user` VALUES ('1', 'admin', 'a8abc0eb28fe60c7a568bea0e5cf1ac2', '管理员1', 'd098e5291d554c748e60692118242174', '1', '123', '123@qs.com', '1', '2020-12-08 09:02:16', '1', '2021-01-08 11:15:37', '1');
+INSERT INTO `s_user` VALUES ('351990bafd0c47b395cf155ad5fb2e03', 'test1', 'd9a590b91605eb17ffabdf80d50986bd', 'test12', '', '1', '', '321@1.com', '1', '2020-12-28 00:28:38', '1', '2021-01-08 10:56:36', '1');
+INSERT INTO `s_user` VALUES ('f4a9357eefc74e74953cf510abbe6247', 'ttt', '2409240af12573aa070569e1714f124f', 'ttt', '1', '1', '', '123@qs.com', '1', '2021-01-08 11:23:34', '1', '2021-01-08 11:23:34', '1');
 
 -- ----------------------------
 -- Table structure for s_user_login
