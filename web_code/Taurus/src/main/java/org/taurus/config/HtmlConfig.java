@@ -1,12 +1,12 @@
-package org.taurus.common.config;
+package org.taurus.config;
 
 import javax.annotation.Resource;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.taurus.common.load.properties.PathProperties;
-import org.taurus.common.load.properties.TaurusProperties;
+import org.taurus.config.load.properties.PathProperties;
+import org.taurus.config.load.properties.TaurusProperties;
 
 @Configuration
 public class HtmlConfig implements WebMvcConfigurer {

@@ -1,4 +1,4 @@
-package org.taurus.common.config;
+package org.taurus.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;

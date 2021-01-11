@@ -5,9 +5,9 @@ import org.taurus.entity.SFolderEntity;
 import org.taurus.common.code.Code;
 import org.taurus.common.code.ExecptionType;
 import org.taurus.common.exception.CustomException;
-import org.taurus.common.load.properties.TaurusProperties;
 import org.taurus.common.util.DateUtil;
 import org.taurus.common.util.StrUtil;
+import org.taurus.config.load.properties.TaurusProperties;
 import org.taurus.dao.SFileDao;
 import org.taurus.service.SFileService;
 import org.taurus.service.SFolderService;
@@ -77,108 +77,47 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
 	}
 
 	@Override
-	public SFileEntity saveHeadPicFile(MultipartFile file, String userId) {
-		// aa 当前时间
-		LocalDateTime nowTime = DateUtil.getLocalDateTime();
-
-		// aa 用户文件根目录id
-		String rootFolderId = userId;
-		// aa 用户文件根目录名称
-		String rootFolderName = userId;
-		// aa 用户文件根目录
-		File rootFolder = new File(taurusProperties.getFolderRoot() + rootFolderName);
-
-		// aa 如果根目录文件夹不存在
-		if (!rootFolder.exists()) {
-			
-			// aa 文件夹数据不存在就添加文件夹数据
-			SFolderEntity folderQueryEntity = new SFolderEntity();
-			folderQueryEntity.setFolderId(rootFolderId);
-			QueryWrapper<SFolderEntity> folderQueryWrapper = new QueryWrapper<SFolderEntity>(folderQueryEntity);
-			if (folderService.count(folderQueryWrapper)==0) {
-				SFolderEntity folderEntity = new SFolderEntity();
-				folderEntity.setFolderId(rootFolderId);
-				folderEntity.setFolderName(rootFolderName);
-				folderEntity.setFolderOwner(userId);
-				folderEntity.setFolderParent(null);
-				folderEntity.setFolderDelFlg(Code.DEL_FLG_1.getValue());
-				folderEntity.setFolderCreateTime(nowTime);
-				folderEntity.setFolderCreateUser(userId);
-				folderEntity.setFolderModifyTime(nowTime);
-				folderEntity.setFolderModifyUser(userId);
-				if (!folderService.save(folderEntity)) {
-					throw new CustomException(ExecptionType.FOLDER, null, "创建用户，添加根目录失败");
-				}
-			}
-
-			rootFolder.mkdirs();// 创建根目录文件夹
-		}
-
-		// aa 用户系统资源文件夹id
-		String userSystemFolderId = "";
-		// aa 用户系统资源文件夹名称
-		String userSystemFolderName = "system";
-		// aa 用户系统资源文件夹
-		File userSystemFolder = new File(taurusProperties.getFolderRoot() + userId + "/" + userSystemFolderName);
-		
-		// aa 查询用户系统资源文件夹
-		SFolderEntity folderQueryEntity = new SFolderEntity();
-		folderQueryEntity.setFolderName(userSystemFolderName);
-		folderQueryEntity.setFolderOwner(userId);
-		folderQueryEntity.setFolderParent(rootFolderId);
-		folderQueryEntity.setFolderDelFlg(Code.DEL_FLG_1.getValue());
-		QueryWrapper<SFolderEntity> folderQueryWrapper = new QueryWrapper<SFolderEntity>(folderQueryEntity);
-		SFolderEntity folderEntity = folderService.getOne(folderQueryWrapper);
-
-		// aa 如果用户系统资源文件夹不存在
-		if (!userSystemFolder.exists()) {
-			
-			if (folderEntity==null) {
-				userSystemFolderId = StrUtil.getUUID();
-				folderEntity = new SFolderEntity();
-				folderEntity.setFolderId(userSystemFolderId);
-				folderEntity.setFolderName(userSystemFolderName);
-				folderEntity.setFolderOwner(userId);
-				folderEntity.setFolderParent(rootFolderId);
-				folderEntity.setFolderDelFlg(Code.DEL_FLG_1.getValue());
-				folderEntity.setFolderCreateTime(nowTime);
-				folderEntity.setFolderCreateUser(userId);
-				folderEntity.setFolderModifyTime(nowTime);
-				folderEntity.setFolderModifyUser(userId);
-				if (!folderService.save(folderEntity)) {
-					throw new CustomException(ExecptionType.FOLDER, null, "创建用户，添加系统资源文件夹失败");
-				}
-			}
-
-			userSystemFolder.mkdirs();// 创建用户系统资源文件夹
-		} else {
-			if (folderEntity==null) {
-				throw new CustomException(ExecptionType.FOLDER, null, "用户系统资源文件夹异常");
-			}
-			userSystemFolderId = folderEntity.getFolderId();
-		}
-
+	public SFileEntity saveHeadPicFile(MultipartFile file, String userId, String operator) {
 		SFileEntity fileEntity = null;
-		if (file != null) {
-			fileEntity = new SFileEntity();
-			// aa 保存头像文件信息
-			fileEntity = getInfoByFile(file, nowTime);
-			fileEntity.setFileFolder(userSystemFolderId);
-			fileEntity.setFileOwner(userId);
-			fileEntity.setFileCreateUser(userId);
-			fileEntity.setFileModifyUser(userId);
-			if (!save(fileEntity)) {
-				throw new CustomException(ExecptionType.FILE, null, "保存头像文件信息失败");
-			}
 
-			// aa 上传文件
-			try {
-				String path = taurusProperties.getFolderRoot() + rootFolderName + "/" + userSystemFolderName + "/"
-						+ fileEntity.getFileNameTimestamp();
-				FileUtils.copyInputStreamToFile(file.getInputStream(), new File(path));
-			} catch (IOException e) {
-				throw new CustomException(ExecptionType.FILE, e.getMessage(), "文件上传失败");
-			}
+		// aa 获取根目录
+		SFolderEntity rootFolderEntity_query = new SFolderEntity();
+		rootFolderEntity_query.setFolderName(userId);
+		rootFolderEntity_query.setFolderOwner(userId);
+		rootFolderEntity_query.setFolderParent("");
+		rootFolderEntity_query.setFolderDelFlg(Code.DEL_FLG_1.getValue());
+		QueryWrapper<SFolderEntity> rootQueryWrapper = new QueryWrapper<SFolderEntity>(rootFolderEntity_query);
+		SFolderEntity rootFolderEntity = folderService.getOne(rootQueryWrapper);
+		if (rootFolderEntity == null) {
+			return fileEntity;
+		}
+
+		// aa 获取系统资源目录
+		SFolderEntity systemFolderEntity_query = new SFolderEntity();
+		systemFolderEntity_query.setFolderName(taurusProperties.getFolderSystemName());
+		systemFolderEntity_query.setFolderOwner(userId);
+		systemFolderEntity_query.setFolderParent(rootFolderEntity.getFolderId());
+		systemFolderEntity_query.setFolderDelFlg(Code.DEL_FLG_1.getValue());
+		QueryWrapper<SFolderEntity> systemQueryWrapper = new QueryWrapper<SFolderEntity>(systemFolderEntity_query);
+		SFolderEntity systemFolderEntity = folderService.getOne(systemQueryWrapper);
+		if (systemFolderEntity == null) {
+			return fileEntity;
+		}
+
+		// aa 获取头像文件目录
+		SFolderEntity headImgFolderEntity_query = new SFolderEntity();
+		headImgFolderEntity_query.setFolderName(taurusProperties.getFolderHeadImgName());
+		headImgFolderEntity_query.setFolderOwner(userId);
+		headImgFolderEntity_query.setFolderParent(systemFolderEntity.getFolderId());
+		headImgFolderEntity_query.setFolderDelFlg(Code.DEL_FLG_1.getValue());
+		QueryWrapper<SFolderEntity> headImgQueryWrapper = new QueryWrapper<SFolderEntity>(headImgFolderEntity_query);
+		SFolderEntity headImgFolderEntity = folderService.getOne(headImgQueryWrapper);
+		if (headImgFolderEntity == null) {
+			return fileEntity;
+		}
+
+		if (file != null) {
+			fileEntity = saveFile(file, headImgFolderEntity.getFolderId(), operator, userId);
 		}
 
 		return fileEntity;

@@ -1,11 +1,11 @@
-package org.taurus.common.load.properties;
+package org.taurus.config.load.properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 
-@Order(2) // value越小越先加载
+@Order(1) // value越小越先加载
 @PropertySource(value = { "classpath:taurus.properties" }, encoding = "utf-8")
 @Configuration
 public class TaurusProperties {
@@ -21,10 +21,16 @@ public class TaurusProperties {
 	private String accountPwd;
 	@Value("${system.account.name}")
 	private String accountName;
-	@Value("${system.account.head}")
-	private String accountHead;
-	@Value("${system.account.platform}")
-	private String accountPlatform;
+
+	/**
+	 * 系统顶级管理员权限
+	 */
+	@Value("${system.admin.auth.id}")
+	private String adminAuthId;
+	@Value("${system.admin.auth.name}")
+	private String adminAuthName;
+	@Value("${system.admin.auth.level}")
+	private String adminAuthLevel;
 
 	/**
 	 * 上传文件根目录
@@ -36,6 +42,17 @@ public class TaurusProperties {
 	 */
 	@Value("${system.folder.root.virtual}")
 	private String folderRootVirtual;
+
+	/**
+	 * 系统资源目录
+	 */
+	@Value("${system.folder.system.name}")
+	private String folderSystemName;
+	/**
+	 * 用户头像目录
+	 */
+	@Value("${system.folder.headImg.name}")
+	private String folderHeadImgName;
 
 	public String getAccountId() {
 		return accountId;
@@ -69,20 +86,28 @@ public class TaurusProperties {
 		this.accountName = accountName;
 	}
 
-	public String getAccountHead() {
-		return accountHead;
+	public String getAdminAuthId() {
+		return adminAuthId;
 	}
 
-	public void setAccountHead(String accountHead) {
-		this.accountHead = accountHead;
+	public void setAdminAuthId(String adminAuthId) {
+		this.adminAuthId = adminAuthId;
 	}
 
-	public String getAccountPlatform() {
-		return accountPlatform;
+	public String getAdminAuthName() {
+		return adminAuthName;
 	}
 
-	public void setAccountPlatform(String accountPlatform) {
-		this.accountPlatform = accountPlatform;
+	public void setAdminAuthName(String adminAuthName) {
+		this.adminAuthName = adminAuthName;
+	}
+
+	public String getAdminAuthLevel() {
+		return adminAuthLevel;
+	}
+
+	public void setAdminAuthLevel(String adminAuthLevel) {
+		this.adminAuthLevel = adminAuthLevel;
 	}
 
 	public String getFolderRoot() {
@@ -99,6 +124,22 @@ public class TaurusProperties {
 
 	public void setFolderRootVirtual(String folderRootVirtual) {
 		this.folderRootVirtual = folderRootVirtual;
+	}
+
+	public String getFolderSystemName() {
+		return folderSystemName;
+	}
+
+	public void setFolderSystemName(String folderSystemName) {
+		this.folderSystemName = folderSystemName;
+	}
+
+	public String getFolderHeadImgName() {
+		return folderHeadImgName;
+	}
+
+	public void setFolderHeadImgName(String folderHeadImgName) {
+		this.folderHeadImgName = folderHeadImgName;
 	}
 
 }

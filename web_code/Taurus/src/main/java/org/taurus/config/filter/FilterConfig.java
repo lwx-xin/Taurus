@@ -1,4 +1,4 @@
-package org.taurus.common.filter;
+package org.taurus.config.filter;
 
 import javax.servlet.Filter;
 

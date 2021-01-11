@@ -13,12 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.taurus.common.code.Code;
 import org.taurus.common.code.ExecptionType;
 import org.taurus.common.exception.CustomException;
-import org.taurus.common.load.properties.TaurusProperties;
 import org.taurus.common.util.DateUtil;
 import org.taurus.common.util.JsonUtil;
 import org.taurus.common.util.ListUtil;
 import org.taurus.common.util.MD5Util;
 import org.taurus.common.util.StrUtil;
+import org.taurus.config.load.properties.TaurusProperties;
 import org.taurus.dao.SAuthDao;
 import org.taurus.dao.SUserDao;
 import org.taurus.entity.SAuthEntity;
@@ -99,9 +99,12 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 		String willAddUserId = StrUtil.getUUID();
 		// aa 当前时间
 		LocalDateTime nowTime = DateUtil.getLocalDateTime();
-		
+
+		// aa 添加默认文件夹
+		folderService.createInitFolder(willAddUserId, operator);
+
 		// aa 上传头像文件
-		SFileEntity saveHeadPicFile = fileService.saveHeadPicFile(files, willAddUserId);
+		SFileEntity saveHeadPicFile = fileService.saveHeadPicFile(files, willAddUserId, operator);
 
 		SUserEntity userEntity = new SUserEntity();
 		userEntity.setUserId(willAddUserId);
@@ -116,7 +119,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 		userEntity.setUserCreateUser(operator);
 		userEntity.setUserModifyTime(nowTime);
 		userEntity.setUserModifyUser(operator);
-		if (saveHeadPicFile!=null) {
+		if (saveHeadPicFile != null) {
 			userEntity.setUserHead(saveHeadPicFile.getFileId());
 		}
 		if (!save(userEntity)) {
@@ -167,9 +170,9 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 	public SUserEntityEx update(String userId, SUserEntityEx userEntityEx, MultipartFile files, String operator) {
 		// aa 当前时间
 		LocalDateTime nowTime = DateUtil.getLocalDateTime();
-		
+
 		// aa 上传头像文件
-		SFileEntity saveHeadPicFile = fileService.saveHeadPicFile(files, userId);
+		SFileEntity saveHeadPicFile = fileService.saveHeadPicFile(files, userId, operator);
 
 		SUserEntity userEntity = new SUserEntity();
 		userEntity.setUserId(userId);
@@ -179,7 +182,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 		userEntity.setUserEmail(userEntityEx.getUserEmail());
 		userEntity.setUserModifyTime(nowTime);
 		userEntity.setUserModifyUser(operator);
-		if (saveHeadPicFile!=null) {
+		if (saveHeadPicFile != null) {
 			userEntity.setUserHead(saveHeadPicFile.getFileId());
 		}
 		if (!updateById(userEntity)) {
@@ -224,7 +227,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 				deleteAuth = ListUtil.except(updateBeforAuthUserList_authId, authIdList);
 				insertAuth = ListUtil.except(authIdList, updateBeforAuthUserList_authId);
 			} else {
-				insertAuth= new ArrayList<>();
+				insertAuth = new ArrayList<>();
 				insertAuth.addAll(authIdList);
 			}
 
@@ -265,7 +268,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> impleme
 				}
 			}
 		}
-		
+
 		// aa 删除当前用户全部权限
 		if (ListUtil.isEmpty(authIdList)) {
 			SAuthUserEntity authUserEntity_query = new SAuthUserEntity();

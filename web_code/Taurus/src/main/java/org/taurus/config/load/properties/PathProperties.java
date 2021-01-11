@@ -1,11 +1,11 @@
-package org.taurus.common.load.properties;
+package org.taurus.config.load.properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 
-@Order(1) // value越小越先加载
+@Order(2) // value越小越先加载
 @PropertySource(value = { "classpath:path.properties" }, encoding = "utf-8")
 @Configuration
 public class PathProperties {

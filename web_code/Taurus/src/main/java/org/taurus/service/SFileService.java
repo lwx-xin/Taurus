@@ -33,9 +33,10 @@ public interface SFileService extends IService<SFileEntity> {
 	 * 
 	 * @param file
 	 * @param userId
+	 * @param operator 操作人员
 	 * @return
 	 */
-	public SFileEntity saveHeadPicFile(MultipartFile file, String userId);
+	public SFileEntity saveHeadPicFile(MultipartFile file, String userId, String operator);
 
 	/**
 	 * 获取文件的全路径
