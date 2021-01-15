@@ -160,36 +160,10 @@
 	}
 	
 	function initCodeList(){
-		var groups = new Array();
-		groups.push("auth"); // 权限
-		groups.push(Code.REQUEST_METHOD_ALL.group); // 请求方式
-		groups.push(Code.PLATFORM_WEB_ALL.group); // 平台
-		var codeElements = getCodes(groups);
-		if(isNotNull(codeElements)){
-			// 权限
-			var authCodeList = codeElements["auth"];
-			// 请求方式
-			var urlTypeCodeList = codeElements[Code.REQUEST_METHOD_ALL.group];
-			// 平台
-			var urlPlatformCodeList = codeElements[Code.PLATFORM_WEB_ALL.group];
-			
-			if(isNotNull(authCodeList)){
-				$.each(authCodeList, function(k,v){
-					$("select[name='authId']").append("<option value='"+v.value+"'>"+v.name+"</option>");
-				});
-			}
-			if(isNotNull(urlTypeCodeList)){
-				$.each(urlTypeCodeList, function(k,v){
-					$("select[name='urlType']").append("<option value='"+v.value+"'>"+v.name+"</option>");
-				});
-			}
-			if(isNotNull(urlPlatformCodeList)){
-				$.each(urlPlatformCodeList, function(k,v){
-					$("select[name='urlPlatform']").append("<option value='"+v.value+"'>"+v.name+"</option>");
-				});
-			}
-		}
-		$(".chosen-select").chosen();
+		$("select[name='authId']").attr("code-tag", "auth");
+		$("select[name='urlType']").attr("code-tag", Code.REQUEST_METHOD_ALL.group);
+		$("select[name='urlPlatform']").attr("code-tag", Code.PLATFORM_WEB_ALL.group);
+		loadCodeList();
 	}
 	
 	function initData(){

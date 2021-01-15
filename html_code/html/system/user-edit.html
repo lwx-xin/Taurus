@@ -216,25 +216,8 @@
 	}
 	
 	function initCodeList(){
-		//初始化权限下拉框
-		ajax({
-			url: requestPath.authList.url,
-			type: requestPath.authList.type,
-			success: function(data){
-				if(data.status && isNotNull(data.data)){
-					$.each(data.data, function(i, v){
-						//权限id
-						var authId = v.authId;
-						//名称
-						var name = v.authName;
-						$("#authId").append("<option value='"+authId+"'>"+name+"</option>");
-					});
-				}
-			},
-			error: function(data){
-			}
-		});
-		$(".chosen-select").chosen();
+		$("select[name='authId']").attr("code-tag", "auth");
+		loadCodeList();
 	}
 	
 	function initData(){

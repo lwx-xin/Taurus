@@ -45,7 +45,14 @@ public enum Code {
 	/** 文件类型-日志*/
 	FILE_TYPE_LOG("file_type", "log", "4"),
 	/** 文件类型-图片*/
-	FILE_TYPE_PICTURE("file_type", "picture", "5");
+	FILE_TYPE_PICTURE("file_type", "picture", "5"),
+
+	/** 日志处理状态-待处理*/
+	LOG_STATUS_0("log_status","待处理","0"),
+	/** 日志处理状态-已处理*/
+	LOG_STATUS_1("log_status","已处理","1"),
+	/** 日志处理状态-无需处理*/
+	LOG_STATUS_2("log_status","无需处理","2");
 
 	private String group;
 

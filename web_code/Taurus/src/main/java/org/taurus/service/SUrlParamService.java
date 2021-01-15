@@ -27,6 +27,14 @@ public interface SUrlParamService extends IService<SUrlParamEntity> {
 	List<SUrlParamEntity> getUrlParamList(SUrlParamEntity urlParamEntity);
 
 	/**
+	 * 根据id获取请求参数信息
+	 * 
+	 * @param urlParamId
+	 * @return
+	 */
+	SUrlParamEntity getURLParamDetail(String urlParamId);
+
+	/**
 	 * 添加请求参数信息
 	 * 
 	 * @param urlParamEntity

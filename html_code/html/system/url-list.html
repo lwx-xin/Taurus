@@ -156,13 +156,13 @@
 			}],
 	        "columns": [
 	            { 
-	            	className: "display-none",
+	            	"className": "display-none",
 	            	"data": null,"render": function (data, type, row, meta) {
 	            		return "<span name='urlId'>"+data.urlId+"</span>";
 					}
 	            },
 	            { 
-	            	className: "row-no",
+	            	"className": "row-no",
 	            	"data": null,"render": function (data, type, row, meta) {
 						return "";
 					}
@@ -201,7 +201,7 @@
 	            },
 	            { 
 	            	"data": null,"render": function (data, type, row, meta) {
-	            		return "<a href='#' class='url-param-a'>参数配置</a>";
+	            		return "<a href='javascript:void(0);' class='url-param-a'>参数配置</a>";
 					}
 	            },
 	            { 
@@ -217,12 +217,12 @@
 	            { 
 	            	"data": null,"render": function (data, type, row, meta) {
 						var html = "";
-						html += "<a href='#' class='edit-url-btn' ><i class='fa fa-edit text-navy'> 编辑</i></a>";
+						html += "<a href='javascript:void(0);' class='edit-url-btn' ><i class='fa fa-edit text-navy'> 编辑</i></a>";
 						// if(data.urlDelFlg == Code.DEL_FLG_0.value){
-						// 	html += "&nbsp;&nbsp;<a href='#' class='unlock-url-btn' ><i class='fa fa-unlock text-navy'> 启用</i></a>";
+						// 	html += "&nbsp;&nbsp;<a href='javascript:void(0);' class='unlock-url-btn' ><i class='fa fa-unlock text-navy'> 启用</i></a>";
 						// } else {
-						// 	html += "<a href='#' class='edit-url-btn' ><i class='fa fa-edit text-navy'> 编辑</i></a>";
-						// 	html += "&nbsp;&nbsp;<a href='#' class='lock-url-btn' ><i class='fa fa-lock text-navy'> 禁用</i></a>";
+						// 	html += "<a href='javascript:void(0);' class='edit-url-btn' ><i class='fa fa-edit text-navy'> 编辑</i></a>";
+						// 	html += "&nbsp;&nbsp;<a href='javascript:void(0);' class='lock-url-btn' ><i class='fa fa-lock text-navy'> 禁用</i></a>";
 						// }
 	            		return html;
 					}

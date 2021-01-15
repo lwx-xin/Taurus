@@ -3,6 +3,39 @@ $(function(){
 	showCookieErrMsg();
 });
 
+function loadCodeList(){
+	var groups = new Array();
+	$("[code-tag]").each(function(){
+		var group = $(this).attr("code-tag");
+		if(isNotNull(group)){
+			groups.push(group);
+		}
+	});
+	
+	var iconIndex = $.inArray("icon", groups);
+	if(iconIndex!=-1){
+		$.each(commonIcon, function(id, iconData){
+			$("select[code-tag='icon']").append("<option value='"+iconData.value+"' class='"+iconData.value+"'> "+iconData.name+"</option>");
+		})
+		groups.splice(iconIndex, 1);
+		$("select[code-tag='icon']").chosen();
+	}
+	
+	if(isNotNull(groups)){
+		var codeElements = getCodes(groups);
+		if(isNotNull(codeElements)){
+			$.each(codeElements, function(group, codeList){
+				if(isNotNull(codeList)){
+					$.each(codeList, function(i,codeElement){
+						$("select[code-tag='"+group+"']").append("<option value='"+codeElement.value+"'>"+codeElement.name+"</option>");
+					});
+				}
+			});
+		}
+		$(".chosen-select").chosen();
+	}
+}
+
 /**
  * 显示cookie中的异常信息
  */
@@ -10,23 +43,104 @@ function showCookieErrMsg(){
 	var systemErrMsg = getCookie(commonField.sys_err_msg);
 	var redirectUrl = getCookie(commonField.sys_err_redirect);
 	var sourcePath = getCookie(commonField.sys_err_source_path);
-	removeCookie(commonField.sys_err_msg);
+
 	removeCookie(commonField.sys_err_redirect);
-	removeCookie(commonField.sys_err_source_path);
+	var thisHtmlPath = location.href.split("?")[0].substring(location.href.indexOf("/html"));
+	if(isNotNull(redirectUrl) && thisHtmlPath!=redirectUrl){
+		if(redirectUrl=="/html/login.html"){
+			top.location.href=redirectUrl;
+		} else {
+			window.location.href=redirectUrl;
+		}
+	} else {
+		removeCookie(commonField.sys_err_msg);
+		removeCookie(commonField.sys_err_source_path);
+		
+		var errInfo = "";
+		if(isNotNull(systemErrMsg)){
+			errInfo += "异常信息<b>:</b>"+systemErrMsg+"<br/>";
+		}
+		if(isNotNull(sourcePath)){
+			errInfo += "异常资源<b>:</b>"+sourcePath+"<br/>";
+		}
+		if(isNotNull(errInfo)){
+			showInformation("系统提示", errInfo, "info");
+		}
+	}
+}
+
+/**
+ * 获取ajax参数验证所需的json数据
+ */
+function getAjaxCheckJson(){
+	var param = new Object();
+	param["paramCheck"] = false;
 	
-	var errInfo = "";
-	if(isNotNull(redirectUrl)){
-		errInfo += "重定向<b>:</b>"+redirectUrl+"<br/>";
+	ajax({
+		url: requestPath.getAjaxCheckJson.url,
+		data: param,
+		type: requestPath.getAjaxCheckJson.type,
+		success: function(data){
+			if(isNotNull(data.data)){
+				setLocalStorage(commonField.ajax_check_json,data.data);
+			}
+		},
+		error: function(data){
+		}
+	});
+}
+
+/**
+ * 验证ajax请求参数
+ * @param {String} url
+ * @param {String} type
+ * @param {Object} data
+ */
+function checkAjaxParam(url,type,data){
+	var result = new Object();
+	var status = true;
+	var msg = "";
+	var hintMap = new Object();
+	
+	var checkJson = getLocalStroage(commonField.ajax_check_json);
+	if(isNotNull(checkJson) && isNotNull(data)){
+		var checkMap = JSON.parse(checkJson);
+		$.each(checkMap, function(k, v){
+			if(url.match(k)!=null){
+				var paramMap = v[type];
+				if(paramMap!=null){
+					$.each(paramMap, function(paramName, urlParamEntityEx){
+						var paramValue = urlParamEntityEx.urlParamValue;
+						var paramRequired = urlParamEntityEx.urlParamRequired;
+						var paramNull = urlParamEntityEx.urlParamNull;
+						var paramHint = urlParamEntityEx.urlParamErrHint;
+						
+						var value = data[paramName];
+						
+						if((value==null && paramRequired == Code.YES.value)
+							|| (value=="" && paramNull == Code.NO.value)
+							|| (value.match(paramValue) == null)){
+							status = false;
+							hintMap[paramName] = paramHint;
+						}
+					});
+				}
+			}
+		});
 	}
-	if(isNotNull(systemErrMsg)){
-		errInfo += "异常信息<b>:</b>"+systemErrMsg+"<br/>";
+	
+	hideInformation();
+	$(".has-error").removeClass("has-error");
+	if(!status){
+		$.each(hintMap, function(paramName, hintMsg){
+			showInformation("参数异常", hintMsg, "warning");
+			$("#"+paramName).parents(".form-group").addClass("has-error");
+		});
 	}
-	if(isNotNull(sourcePath)){
-		errInfo += "异常资源<b>:</b>"+sourcePath+"<br/>";
-	}
-	if(isNotNull(errInfo)){
-		showInformation("系统提示", errInfo, "info");
-	}
+	
+	result["status"] = status;
+	result["errHint"] = hintMap;
+	return result;
 }
 
 /**
@@ -64,6 +178,16 @@ function ajax(param){
 			data = formData;
 		} else {
 			data = param.data;
+		}
+	}
+	
+	if(isNull(param.paramCheck) || param.paramCheck == true){
+		var checkResult = checkAjaxParam(param.url, param.type, data);
+		if(checkResult.status == false){
+			if(param.error!=null){
+				param.error(checkResult);
+			}
+			return false;
 		}
 	}
 	
@@ -186,6 +310,13 @@ function showToastr(type, title, messgae, clickFun){
 }
 
 /**
+ * 清空Toastr
+ */
+function closeToastr(){
+	toastr.clear();
+}
+
+/**
  * 显示SmallPop弹框
  * @param {String} type = [error|info|success|warning]
  * @param {String} title 标题
@@ -210,11 +341,41 @@ function showSmallPop(type, title, messgae, openFun, closeFun){
 	});
 }
 
+/**
+ * 清空SmallPop
+ */
+function closeSmallPop(){
+	var pops  = $('.spop');
+	var popsC = $('.spop-container');
+
+	pops.removeClass('spop--in')
+popsC.remove();
+	// setTimeout(function () {
+	// 	popsC.remove();
+	// }, 300);
+}
+
+/**
+ * 将字符串转换为数字
+ * @param {Object} str
+ */
 function toNumber(str){
 	if(isNull(str)){
 		return 0;
 	}
 	return Number(str);
+}
+
+/**
+ * 如果是null,undefined就返回空字符串
+ * @param {Object} obj
+ */
+function formatStr(obj){
+	if(isNull(obj)){
+		return "";
+	} else {
+		return obj;
+	}
 }
 
 /**
@@ -435,6 +596,14 @@ function showInformation(title, msg, level){
 }
 
 /**
+ * 清空提示信息
+ */
+function hideInformation(){
+	closeToastr();//清空toastr
+	closeSmallPop();//清空smallpop
+}
+
+/**
  * 将字符串转换成ascll(","分隔)
  * @param {String} str
  */
@@ -467,4 +636,17 @@ function imgToBase64(fileEle, callBack){
 		callBack(this.result);
 	} 
 	reader.readAsDataURL(file);
+}
+
+/**
+ * 修改checkbox选中状态
+ * @param {Object} switchElement
+ * @param {Booleam} checkedBool
+ * @example var ele = new Switchery(document.getElementById("urlParamRequired"), {color: '#1AB394'}); <br> setSwitchery(ele, false);
+ */
+function setSwitchery(switchElement, checkedBool) {
+    if((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
+        switchElement.setPosition(true);
+        switchElement.handleOnchange(true);
+    }
 }

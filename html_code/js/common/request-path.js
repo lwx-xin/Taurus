@@ -8,13 +8,26 @@ const requestPath = {
 	code:{"url":"/code", "type":"get"},
 	// 清除session以及cookie
 	clearLoginInfo:{"url":"/clearLoginInfo", "type":"delete"},
+	// 获取ajax参数验证所需的json数据
+	getAjaxCheckJson:{"url":"/getAjaxCheckJson", "type":"get"},
+	// 根据用户获取菜单列表(首页菜单)
+	getMenuByUser:{"url":"/getMenuByUser", "type":"get"},
 	
 	// 登录
 	login:{"url":"/web/login/login", "type":"post"},
 	// 退出登录
 	logout:{"url":"/web/login/logout", "type":"post"},
+	
 	// 获取菜单列表
 	menuList:{"url":"/web/menu", "type":"get"},
+	// 添加菜单
+	menuInsert:{"url":"/web/menu", "type":"post"},
+	// 菜单详细信息
+	menuDetail:{"url":"/web/menu/{menuId}", "type":"get"},
+	// 编辑菜单信息
+	menuUpdate:{"url":"/web/menu/{menuId}", "type":"put"},
+	// 禁用启用-菜单
+	menurDelete:{"url":"/web/menu/{menuId}", "type":"delete"},
 	
 	// 用户列表
 	userList:{"url":"/web/user", "type":"get"},
@@ -51,5 +64,13 @@ const requestPath = {
 	
 	// 请求参数列表
 	urlParamList:{"url":"/web/url-param", "type":"get"},
+	// 添加请求参数
+	urlParamInsert:{"url":"/web/url-param", "type":"post"},
+	// 请求参数详细信息
+	urlParamDetail:{"url":"/web/url-param/{urlParamId}", "type":"get"},
+	// 编辑请求参数信息
+	urlParamUpdate:{"url":"/web/url-param/{urlParamId}", "type":"put"},
+	// 禁用启用-请求参数
+	urlParamDelete:{"url":"/web/url-param/{urlParamId}", "type":"delete"},
 }
 $.deepFreeze(requestPath);

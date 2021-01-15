@@ -18,6 +18,8 @@
         <result column="FILE_FOLDER" property="fileFolder"/>
     	<!-- 文件所有者 -->
         <result column="FILE_OWNER" property="fileOwner"/>
+    	<!-- 文件路径 -->
+        <result column="FILE_PATH" property="filePath"/>
     	<!-- 删除标识 -->
         <result column="FILE_DEL_FLG" property="fileDelFlg"/>
     	<!-- 创建时间 -->

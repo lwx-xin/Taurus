@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.taurus.common.util.JsonUtil;
+import org.taurus.common.util.ListUtil;
 import org.taurus.common.util.MapUtil;
 import org.taurus.common.util.StrUtil;
 import org.taurus.dao.SMenuDao;
@@ -28,45 +28,57 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
  */
 @Service
 public class SMenuServiceImpl extends ServiceImpl<SMenuDao, SMenuEntity> implements SMenuService {
-	
+
 	@Resource
 	private SMenuDao menuDao;
 
 	@Override
-	public List<SMenuEntityEx> getMenuListByUser(String userId) {
-		List<SMenuEntity> menuSource = menuDao.getMenuListByUser(userId);
-		
+	public List<SMenuEntityEx> getMenuList() {
+		List<SMenuEntityEx> menuList = menuDao.getMenuList();
+		return processingMenuData(menuList);
+	}
+
+	@Override
+	public List<SMenuEntityEx> processingMenuData(List<SMenuEntityEx> menuSource) {
+
 		List<SMenuEntityEx> menuList = new ArrayList<SMenuEntityEx>();
-		
-		Map<String, SMenuEntityEx> menuMap = new HashMap<String, SMenuEntityEx>();
-		
-		for (SMenuEntity menu : menuSource) {
-			String menuParent = menu.getMenuParent();
-			Integer menuOrder = menu.getMenuOrder();
-			
-			SMenuEntityEx menuEntityEx = JsonUtil.toEntity(JsonUtil.toMap(menu), SMenuEntityEx.class);
-			if (StrUtil.isEmpty(menuParent)) {
-				menuList.add(menuEntityEx);
-			} else {
-				menuMap.put(menuParent+"-"+menuOrder, menuEntityEx);
+
+		if (ListUtil.isNotEmpty(menuSource)) {
+
+			Map<String, SMenuEntityEx> menuMap = new HashMap<String, SMenuEntityEx>();
+
+			for (SMenuEntityEx menu : menuSource) {
+				String menuParent = menu.getMenuParent();
+				Integer menuOrder = menu.getMenuOrder();
+
+				if (StrUtil.isEmpty(menuParent)) {
+					menuList.add(menu);
+				} else {
+					menuMap.put(menuParent + "-" + menuOrder, menu);
+				}
+			}
+
+			for (SMenuEntityEx menu : menuList) {
+				setChildrens(menu, menuMap);
 			}
 		}
-		
-		for (SMenuEntityEx menu : menuList) {
-			setChildrens(menu, menuMap);
-		}
-		
+
 		return menuList;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void setChildrens(SMenuEntityEx nowNode, Map<String, SMenuEntityEx> menuMap) {
 		String menuId = nowNode.getMenuId();
-		List<SMenuEntityEx> childrens = MapUtil.get(menuMap, menuId+"-");
+		List<SMenuEntityEx> childrens = MapUtil.get(menuMap, menuId + "-");
 		for (SMenuEntityEx menu : childrens) {
 			setChildrens(menu, menuMap);
 		}
 		nowNode.setChildrens(childrens);
 	}
-	
+
+	@Override
+	public SMenuEntityEx getMenuDetail(String menuId) {
+		return menuDao.getMenuDetail(menuId);
+	}
+
 }

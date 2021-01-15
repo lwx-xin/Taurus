@@ -12,6 +12,9 @@ const commonField = {
 	// 后端返回的异常信息
 	"sys_err_msg": "systemErrMsg",
 	"sys_err_redirect": "systemErrRedirect",
-	"sys_err_source_path": "systemErrSourcePath"
+	"sys_err_source_path": "systemErrSourcePath",
+	
+	// ajax参数验证所需的json数据
+	"ajax_check_json": "ajaxCheckJson"
 }
 $.deepFreeze(commonField);

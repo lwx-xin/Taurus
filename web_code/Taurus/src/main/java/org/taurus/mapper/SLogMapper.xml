@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.taurus.dao.SLogDao">
+ 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="entity" type="org.taurus.entity.SLogEntity">
+        <!-- 日志id -->
+        <id column="LOG_ID" property="logId"/>
+    	<!-- 异常发生时间 -->
+        <result column="LOG_HAPPEN_TIME" property="logHappenTime"/>
+    	<!-- 日志文件ID -->
+        <result column="LOG_FILE" property="logFile"/>
+    	<!-- 异常状态(待解决,已解决) -->
+        <result column="LOG_STATUS" property="logStatus"/>
+    	<!-- 触发异常的用户 -->
+        <result column="LOG_USER" property="logUser"/>
+    	<!-- 备注 -->
+        <result column="LOG_REMARK" property="logRemark"/>
+    	<!-- 引发异常的模块 -->
+        <result column="LOG_MODULE" property="logModule"/>
+    </resultMap>
+    
+</mapper>

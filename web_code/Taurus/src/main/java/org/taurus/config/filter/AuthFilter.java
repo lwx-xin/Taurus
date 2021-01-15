@@ -290,8 +290,16 @@ public class AuthFilter implements Filter {
 
 		// aa 判断请求参数是否正确
 		for (SUrlEntityEx urlEntityEx : urlList) {
-			if (!validateParam(urlEntityEx, parameterMap)) {
-				return CheckCode.AUTH_FILTER_PARAM_ERR;
+			Map<String, Object> validateParam = validateParam(urlEntityEx, parameterMap);
+			boolean status = (Boolean) validateParam.get("status");
+			String errHint = StrUtil.format(validateParam.get("errHint"));
+
+			if (!status) {
+				if (StrUtil.isNotEmpty(errHint)) {
+					return CheckCode.changeName(errHint, CheckCode.AUTH_FILTER_PARAM_ERR);
+				} else {
+					return CheckCode.AUTH_FILTER_PARAM_ERR;
+				}
 			}
 		}
 
@@ -317,6 +325,8 @@ public class AuthFilter implements Filter {
 				|| "/html/error/err-unknownUrl.html".equals(url)) {
 			return true;
 		} else if (url.startsWith("/f/")) {
+			return true;
+		} else if("/getAjaxCheckJson".equals(url)) {
 			return true;
 		}
 
@@ -380,14 +390,16 @@ public class AuthFilter implements Filter {
 	 * @param parameterMap
 	 * @return
 	 */
-	private boolean validateParam(SUrlEntity urlEntity, Map<String, String[]> parameterMap) {
+	private Map<String, Object> validateParam(SUrlEntity urlEntity, Map<String, String[]> parameterMap) {
 		SUrlParamEntity queryParam = new SUrlParamEntity();
 		queryParam.setUrlId(urlEntity.getUrlId());
 		queryParam.setUrlParamDelFlg(Code.DEL_FLG_1.getValue());
 		QueryWrapper<SUrlParamEntity> queryWrapper = new QueryWrapper<SUrlParamEntity>(queryParam);
 		List<SUrlParamEntity> urlParamList = urlParamService.list(queryWrapper);
 
-		boolean paramCheck = true;
+		Map<String, Object> returnMap = new HashMap<>();
+		boolean status = true;
+		String errHint = "";
 
 		if (ListUtil.isNotEmpty(urlParamList)) {
 			if (parameterMap != null) {
@@ -400,11 +412,14 @@ public class AuthFilter implements Filter {
 					String paramRequired = urlParam.getUrlParamRequired();
 					// aa 是否允许空值
 					String paramNull = urlParam.getUrlParamNull();
+					// aa 参数异常时候的提示
+					String paramErrHint = urlParam.getUrlParamErrHint();
 
 					String[] params = parameterMap.get(paramName);
 					if (ListUtil.isEmpty(params)) {
 						if (Code.YES.getValue().equals(paramRequired)) {
-							paramCheck = false;
+							status = false;
+							errHint = paramErrHint;
 							break A;
 						}
 						continue A;
@@ -413,21 +428,25 @@ public class AuthFilter implements Filter {
 					B: for (String param : params) {
 						if (StrUtil.isEmpty(param)) {
 							if (Code.NO.getValue().equals(paramNull)) {
-								paramCheck = false;
+								status = false;
+								errHint = paramErrHint;
 								break A;
 							}
 							continue B;
 						}
 
 						if (!Pattern.matches(paramValue, param)) {
-							paramCheck = false;
+							status = false;
+							errHint = paramErrHint;
 							break A;
 						}
 					}
 				}
 			}
 		}
-		return paramCheck;
+		returnMap.put("status", status);
+		returnMap.put("errHint", errHint);
+		return returnMap;
 	}
 
 }

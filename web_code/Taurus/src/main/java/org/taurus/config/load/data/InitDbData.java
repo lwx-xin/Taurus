@@ -22,7 +22,7 @@ import org.taurus.service.SUserService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
-//@Configuration
+@Configuration
 public class InitDbData {
 
 	/**

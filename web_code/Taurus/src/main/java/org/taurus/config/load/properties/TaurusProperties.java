@@ -53,6 +53,11 @@ public class TaurusProperties {
 	 */
 	@Value("${system.folder.headImg.name}")
 	private String folderHeadImgName;
+	/**
+	 * 日志目录
+	 */
+	@Value("${system.folder.log.name}")
+	private String folderLogName;
 
 	public String getAccountId() {
 		return accountId;
@@ -140,6 +145,14 @@ public class TaurusProperties {
 
 	public void setFolderHeadImgName(String folderHeadImgName) {
 		this.folderHeadImgName = folderHeadImgName;
+	}
+
+	public String getFolderLogName() {
+		return folderLogName;
+	}
+
+	public void setFolderLogName(String folderLogName) {
+		this.folderLogName = folderLogName;
 	}
 
 }

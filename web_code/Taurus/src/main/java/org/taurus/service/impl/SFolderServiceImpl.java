@@ -106,6 +106,8 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
 		String systemFolderId = createFolder(taurusProperties.getFolderSystemName(), rootFolderId, folderOwner, operator);
 		// aa 添加头像图片资源目录
 		String headFolderId = createFolder(taurusProperties.getFolderHeadImgName(), systemFolderId, folderOwner, operator);
+		// aa 添加头像图片资源目录
+		String logFolderId = createFolder(taurusProperties.getFolderLogName(), systemFolderId, folderOwner, operator);
 	}
 
 	@Override

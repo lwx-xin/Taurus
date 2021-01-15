@@ -43,6 +43,19 @@ public class UrlParamController {
 	}
 
 	/**
+	 * 根据id获取请求参数信息
+	 */
+	@ApiOperation(value = "根据id获取请求参数信息")
+	@RequestMapping(value = "/{urlParamId}", method = RequestMethod.GET)
+	public Result<SUrlParamEntity> getById(@PathVariable("urlParamId") String urlParamId) {
+
+		LoggerUtil.printParam(logger, "urlParamId", urlParamId);
+
+		SUrlParamEntity data = urlParamService.getURLParamDetail(urlParamId);
+		return new Result<SUrlParamEntity>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+	}
+
+	/**
 	 * 添加请求参数信息
 	 */
 	@ApiOperation(value = "添加请求参数信息")

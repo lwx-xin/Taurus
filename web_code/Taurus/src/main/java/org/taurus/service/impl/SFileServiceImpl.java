@@ -6,6 +6,7 @@ import org.taurus.common.code.Code;
 import org.taurus.common.code.ExecptionType;
 import org.taurus.common.exception.CustomException;
 import org.taurus.common.util.DateUtil;
+import org.taurus.common.util.FileUtil;
 import org.taurus.common.util.StrUtil;
 import org.taurus.config.load.properties.TaurusProperties;
 import org.taurus.dao.SFileDao;
@@ -57,9 +58,11 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
 		// aa 当前时间
 		LocalDateTime nowTime = DateUtil.getLocalDateTime();
 
-		SFileEntity fileEntity = getInfoByFile(file, nowTime);
+		SFileEntity fileEntity = FileUtil.getInfoByFile(file, nowTime);
 		fileEntity.setFileFolder(folderId);
 		fileEntity.setFileOwner(fileOwner);
+		fileEntity.setFilePath(
+				folderService.getFolderRelativePath(folderId, fileOwner) + fileEntity.getFileNameTimestamp());
 		fileEntity.setFileCreateUser(fileOwner);
 		fileEntity.setFileModifyUser(operator);
 
@@ -123,53 +126,18 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
 		return fileEntity;
 	}
 
-	/**
-	 * 将文件信息保存到fileEntity
-	 * 
-	 * @param file
-	 * @return
-	 */
-	private SFileEntity getInfoByFile(MultipartFile file, LocalDateTime nowTime) {
-		// aa 时间戳
-		String timeStamp = String.valueOf(new Date().getTime());
-		// aa 文件名
-		String fileName = file.getOriginalFilename();
-		// aa 后缀
-		String extension = FilenameUtils.getExtension(fileName);
-		// aa 带时间戳的文件名
-		String fileNameTimestamp = FilenameUtils.getBaseName(fileName) + timeStamp + "." + extension;
-		// aa 文件大小(B)
-		long fileLength = file.getSize();
-		// aa 文件大小(KB)保留两位小数，四舍五入
-		String fileSize = new BigDecimal(fileLength).divide(new BigDecimal("1024"))
-				.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-
-		SFileEntity fileEntity = new SFileEntity();
-		fileEntity.setFileId(StrUtil.getUUID());
-		fileEntity.setFileName(fileName);
-		fileEntity.setFileNameTimestamp(fileNameTimestamp);
-		fileEntity.setFileSize(fileSize);
-		fileEntity.setFileType(StrUtil.getFileType(fileName));
-//		fileEntity.setFileFolder(folderId);
-//		fileEntity.setFileOwner(fileOwner);
-		fileEntity.setFileDelFlg(Code.DEL_FLG_1.getValue());
-		fileEntity.setFileCreateTime(nowTime);
-//		fileEntity.setFileCreateUser(fileOwner);
-		fileEntity.setFileModifyTime(nowTime);
-//		fileEntity.setFileModifyUser(operator);
-		return fileEntity;
-	}
-
 	@Override
 	public String getFilePath(String fileId, String owner) {
 		String filePath = "";
 		if (StrUtil.isNotEmpty(fileId) && StrUtil.isNotEmpty(owner)) {
-			SFileEntity fileEntity = getById(fileId);
-			if (fileEntity == null) {
-				return filePath;
+			SFileEntity queryFileEntity = new SFileEntity();
+			queryFileEntity.setFileId(fileId);
+			queryFileEntity.setFileOwner(owner);
+			QueryWrapper<SFileEntity> fileQueryWrapper = new QueryWrapper<SFileEntity>(queryFileEntity);
+			SFileEntity fileEntity = getOne(fileQueryWrapper);
+			if (fileEntity != null) {
+				filePath = taurusProperties.getFolderRoot() + fileEntity.getFilePath();
 			}
-			String fileFolder = fileEntity.getFileFolder();
-			filePath = folderService.getFolderPath(fileFolder, owner) + fileEntity.getFileNameTimestamp();
 		}
 		return filePath;
 	}
@@ -178,13 +146,16 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
 	public String getFileUrl(String fileId, String owner) {
 		String filePath = "";
 		if (StrUtil.isNotEmpty(fileId) && StrUtil.isNotEmpty(owner)) {
-			SFileEntity fileEntity = getById(fileId);
-			if (fileEntity == null) {
-				return filePath;
+			SFileEntity queryFileEntity = new SFileEntity();
+			queryFileEntity.setFileId(fileId);
+			queryFileEntity.setFileOwner(owner);
+			QueryWrapper<SFileEntity> fileQueryWrapper = new QueryWrapper<SFileEntity>(queryFileEntity);
+			SFileEntity fileEntity = getOne(fileQueryWrapper);
+			if (fileEntity != null) {
+				String virtualPath = taurusProperties.getFolderRootVirtual().substring(0,
+						taurusProperties.getFolderRootVirtual().lastIndexOf("**"));
+				filePath = virtualPath + fileEntity.getFilePath();
 			}
-			String fileFolder = fileEntity.getFileFolder();
-			filePath = "/f/" + folderService.getFolderRelativePath(fileFolder, owner)
-					+ fileEntity.getFileNameTimestamp();
 		}
 		return filePath;
 	}

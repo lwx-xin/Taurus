@@ -18,6 +18,8 @@
         <result column="URL_PARAM_NULL" property="urlParamNull"/>
     	<!-- 参数备注 -->
         <result column="URL_PARAM_REMARK" property="urlParamRemark"/>
+    	<!-- 参数异常时候的提示 -->
+        <result column="URL_PARAM_ERR_HINT" property="urlParamErrHint"/>
     	<!-- 删除标识 -->
         <result column="URL_PARAM_DEL_FLG" property="urlParamDelFlg"/>
     	<!-- 创建时间 -->
@@ -29,5 +31,38 @@
     	<!-- 编辑者 -->
         <result column="URL_PARAM_MODIFY_USER" property="urlParamModifyUser"/>
     </resultMap>
+    
+    <resultMap id="entityEx" type="org.taurus.extendEntity.SUrlParamEntityEx" extends="entity">
+    	<association property="urlEntity" javaType="org.taurus.entity.SUrlEntity">
+			<!--请求id-->
+			<id property="urlId" column="URL_ID" />
+			<!--请求地址-->
+			<result property="urlPath" column="URL_PATH" />
+			<!--请求方式(get,post)-->
+			<result property="urlType" column="URL_TYPE" />
+			<!--系统平台(pc,移动端)-->
+			<result property="urlPlatform" column="URL_PLATFORM" />
+			<!--备注-->
+			<result property="urlRemarks" column="URL_REMARKS" />
+			<!--删除标识-->
+			<result property="urlDelFlg" column="URL_DEL_FLG" />
+			<!--创建时间-->
+			<result property="urlCreateTime" column="URL_CREATE_TIME" />
+			<!--创建者-->
+			<result property="urlCreateUser" column="URL_CREATE_USER" />
+			<!--编辑时间-->
+			<result property="urlModifyTime" column="URL_MODIFY_TIME" />
+			<!--编辑者-->
+			<result property="urlModifyUser" column="URL_MODIFY_USER" />
+    	</association>
+    </resultMap>
+    
+    <select id="getList_url" resultMap="entityEx" parameterType="org.taurus.entity.SUrlParamEntity">
+		SELECT 
+			up.*,u.*
+		FROM s_url_param up, s_url u
+		where up.URL_ID = u.URL_ID
+			AND up.URL_PARAM_DEL_FLG = '1'
+    </select>
     
 </mapper>

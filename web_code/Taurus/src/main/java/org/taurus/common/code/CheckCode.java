@@ -33,7 +33,7 @@ public enum CheckCode {
 	/** 用户验证-验证成功 */
 	USER_SUCCESS("user_info", "验证成功", "0"),
 	/** 用户验证-验证失败 */
-	USER_ERR("user_info","验证失败","1"),
+	USER_ERR("user_info", "验证失败", "1"),
 	/** 用户验证-验证失败-令牌解析失败 */
 	USER_ERR_TOKEN_ERR("user_info", "验证失败-令牌解析失败", "2"),
 	/** 用户验证-验证失败-令牌过期 */
@@ -100,4 +100,15 @@ public enum CheckCode {
 		return value;
 	}
 
+	/**
+	 * 修改code的name
+	 * 
+	 * @param name
+	 * @param checkCode
+	 * @return
+	 */
+	public static CheckCode changeName(String name, CheckCode checkCode) {
+		checkCode.name = name;
+		return checkCode;
+	}
 }

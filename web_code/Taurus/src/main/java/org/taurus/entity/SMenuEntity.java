@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author 欣
- * @since 2020-11-09
+ * @since 2021-01-13
  */
 @TableName("s_menu")
 public class SMenuEntity implements Serializable {
@@ -48,6 +48,12 @@ public class SMenuEntity implements Serializable {
 	 */
 	@TableField("MENU_URL")
 	private String menuUrl;
+
+	/**
+	 * 是否为菜单组
+	 */
+	@TableField("MENU_GROUP")
+	private String menuGroup;
 
 	/**
 	 * 菜单图标
@@ -125,6 +131,14 @@ public class SMenuEntity implements Serializable {
 		this.menuUrl = menuUrl;
 	}
 
+	public String getMenuGroup() {
+		return menuGroup;
+	}
+
+	public void setMenuGroup(String menuGroup) {
+		this.menuGroup = menuGroup;
+	}
+
 	public String getMenuIcon() {
 		return menuIcon;
 	}
@@ -176,8 +190,8 @@ public class SMenuEntity implements Serializable {
 	@Override
 	public String toString() {
 		return "SMenuEntity{" + "menuId=" + menuId + ", menuText=" + menuText + ", menuParent=" + menuParent
-				+ ", menuOrder=" + menuOrder + ", menuUrl=" + menuUrl + ", menuIcon=" + menuIcon + ", menuDelFlg="
-				+ menuDelFlg + ", menuCreateTime=" + menuCreateTime + ", menuCreateUser=" + menuCreateUser
-				+ ", menuModifyTime=" + menuModifyTime + ", menuModifyUser=" + menuModifyUser + "}";
+				+ ", menuOrder=" + menuOrder + ", menuUrl=" + menuUrl + ", menuGroup=" + menuGroup + ", menuIcon="
+				+ menuIcon + ", menuDelFlg=" + menuDelFlg + ", menuCreateTime=" + menuCreateTime + ", menuCreateUser="
+				+ menuCreateUser + ", menuModifyTime=" + menuModifyTime + ", menuModifyUser=" + menuModifyUser + "}";
 	}
 }

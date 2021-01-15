@@ -182,13 +182,13 @@
 			}],
 	        "columns": [
 	            { 
-	            	className: "display-none",
+	            	"className": "display-none",
 	            	"data": null,"render": function (data, type, row, meta) {
 	            		return "<span name='authId'>"+data.authId+"</span>";
 					}
 	            },
 	            { 
-	            	className: "row-no",
+	            	"className": "row-no",
 	            	"data": null,"render": function (data, type, row, meta) {
 	            		return "";
 					}
@@ -212,10 +212,10 @@
 	            	"data": null,"render": function (data, type, row, meta) {
 						var html = "";
 						if(data.authDelFlg == Code.DEL_FLG_0.value){
-							html += "&nbsp;&nbsp;<a href='#' class='unlock-auth-btn' ><i class='fa fa-unlock text-navy'> 启用</i></a>";
+							html += "&nbsp;&nbsp;<a href='javascript:void(0);' class='unlock-auth-btn' ><i class='fa fa-unlock text-navy'> 启用</i></a>";
 						} else {
-							html += "<a href='#' class='edit-auth-btn' ><i class='fa fa-edit text-navy'> 编辑</i></a>";
-							html += "&nbsp;&nbsp;<a href='#' class='lock-auth-btn' ><i class='fa fa-lock text-navy'> 禁用</i></a>";
+							html += "<a href='javascript:void(0);' class='edit-auth-btn' ><i class='fa fa-edit text-navy'> 编辑</i></a>";
+							html += "&nbsp;&nbsp;<a href='javascript:void(0);' class='lock-auth-btn' ><i class='fa fa-lock text-navy'> 禁用</i></a>";
 						}
 	            		return html;
 					}

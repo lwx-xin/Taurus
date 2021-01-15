@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import org.taurus.common.util.JsonUtil;
 import org.taurus.common.util.LoggerUtil;
 import org.taurus.common.util.SessionUtil;
 import org.taurus.common.util.StrUtil;
+import org.taurus.extendEntity.SMenuEntityEx;
 import org.taurus.extendEntity.SUserEntityEx;
 import org.taurus.service.CommonService;
 import org.taurus.service.SFileService;
@@ -81,7 +83,7 @@ public class CommonController {
 	}
 
 	/**
-	 * 修改录用户信息
+	 * 修改登录用户信息
 	 */
 	@ApiOperation(value = "修改录用户信息")
 	@RequestMapping(value = "/loginUser", method = RequestMethod.PUT)
@@ -112,6 +114,29 @@ public class CommonController {
 		CookieUtil.clearCookie(response);
 
 		return new Result<SUserEntityEx>(null, false, CheckCode.INTERFACE_ERR_CODE_0);
+	}
+
+	/**
+	 * 获取ajax参数验证所需的json数据
+	 */
+	@ApiOperation(value = "获取ajax参数验证所需的json数据")
+	@RequestMapping(value = "/getAjaxCheckJson", method = RequestMethod.GET)
+	public Result<String> getAjaxCheckJson() {
+		String ajaxCheckJson = commonService.getAjaxCheckJson();
+		return new Result<String>(ajaxCheckJson, false, CheckCode.INTERFACE_ERR_CODE_0);
+	}
+
+	/**
+	 * 根据用户获取菜单列表
+	 */
+	@ApiOperation(value = "根据用户获取菜单列表")
+	@RequestMapping(value = "/getMenuByUser", method = RequestMethod.GET)
+	public Result<List<SMenuEntityEx>> getMenu(HttpSession session, HttpServletResponse response) {
+
+		String userId = SessionUtil.getUserId(session);
+		List<SMenuEntityEx> menuList = commonService.getMenuListByUser(userId);
+
+		return new Result<List<SMenuEntityEx>>(menuList, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 }

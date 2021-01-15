@@ -4,9 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.UUID;
 
-import org.apache.commons.io.FilenameUtils;
-import org.taurus.common.code.Code;
-
 public class StrUtil {
 
 	/**
@@ -106,42 +103,5 @@ public class StrUtil {
 			}
 		}
 		return sbu.toString();
-	}
-
-	/**
-	 * 获取文件类型
-	 * 
-	 * @param fileName
-	 * @return
-	 */
-	public static String getFileType(String fileName) {
-		String type = Code.FILE_TYPE_OTHER.getValue();
-		// aa 后缀 - 小写
-		String extension = FilenameUtils.getExtension(fileName).toLowerCase();
-		if (isNotEmpty(extension)) {
-			switch (extension) {
-			case "mp3":
-				type = Code.FILE_TYPE_AUDIO.getValue();
-				break;
-			case "mp4":
-				type = Code.FILE_TYPE_VIDEO.getValue();
-				break;
-			case "text":
-			case "txt":
-				type = Code.FILE_TYPE_TXT.getValue();
-				break;
-			case "log":
-				type = Code.FILE_TYPE_LOG.getValue();
-				break;
-			case "png":
-			case "jpg":
-				type = Code.FILE_TYPE_PICTURE.getValue();
-				break;
-			default:
-				type = Code.FILE_TYPE_OTHER.getValue();
-				break;
-			}
-		}
-		return type;
 	}
 }

@@ -35,8 +35,8 @@
                         <h5>请求参数</h5>
                     </div>
                     <div class="ibox-content">
-						<div class="add-auth">
-                            <a href="javascript:void(0);" class="btn btn-primary add-auth-btn">添加权限</a>
+						<div class="add-url-param">
+                            <a href="javascript:void(0);" class="btn btn-primary add-url-param-btn">添加权限</a>
                         </div>
                         <table class="table table-striped table-bordered table-hover" id="urlParamDataTable">
                             <thead>
@@ -45,8 +45,8 @@
                                     <th>NO</th>
                                     <th>参数名称</th>
                                     <th>参数值</th>
-                                    <th>必须</th>
-                                    <th>空值</th>
+                                    <th>是否必须</th>
+                                    <th>允许空值</th>
                                     <th>备注</th>
                                     <th>操作</th>
                                 </tr>
@@ -84,6 +84,29 @@
 	});
 	
 	function initEvent(){
+		//新增参数
+		$(".add-url-param-btn").click(function(){
+			layer.open({
+				  type: 2,
+				  title: "添加参数",
+				  area: ['800px', '550px'],
+				  fixed: false, //不固定
+				  maxmin: true,
+				  content: 'url-param-edit.html?urlId='+ pageParams.urlId
+			});
+		})
+		//编辑参数
+		$("#urlParamDataTable").on("click",".edit-url-param-btn",function(){
+			var urlParamId = $(this).parents("tr").find("span[name='urlParamId']").html();
+			layer.open({
+				  type: 2,
+				  title: "编辑参数",
+				  area: ['800px', '550px'],
+				  fixed: false, //不固定
+				  maxmin: true,
+				  content: 'url-param-edit.html?urlParamId='+urlParamId
+			});
+		});
 		
 	}
 	
@@ -101,33 +124,38 @@
 			}],
 	        "columns": [
 	            { 
-	            	className: "display-none",
+	            	"className": "display-none",
 	            	"data": null,"render": function (data, type, row, meta) {
 	            		return "<span name='urlParamId'>"+data.urlParamId+"</span>";
 					}
 	            },
 	            { 
-	            	className: "row-no",
+					"sWidth": "5%",
+	            	"className": "row-no",
 	            	"data": null,"render": function (data, type, row, meta) {
 	            		return "";
 					}
 	            },
 	            { 
+					"sWidth": "15%",
 	            	"data": null,"render": function (data, type, row, meta) {
 	            		return "<span name='urlParamName'>"+data.urlParamName+"</span>";
 					}
 	            },
 	            { 
+					"sWidth": "40%",
 	            	"data": null,"render": function (data, type, row, meta) {
 	            		return "<span name='urlParamValue'>"+data.urlParamValue+"</span>";
 					}
 	            },
 	            { 
+					"sWidth": "7%",
 	            	"data": null,"render": function (data, type, row, meta) {
 	            		return getCodeName("yes_no", data.urlParamRequired);
 					}
 	            },
 	            { 
+					"sWidth": "7%",
 	            	"data": null,"render": function (data, type, row, meta) {
 	            		return getCodeName("yes_no", data.urlParamNull);
 					}
@@ -140,12 +168,12 @@
 	            { 
 	            	"data": null,"render": function (data, type, row, meta) {
 						var html = "";
-						html += "<a href='#' class='edit-auth-btn' ><i class='fa fa-edit text-navy'> 编辑</i></a>";
-						// if(data.authDelFlg == Code.DEL_FLG_0.value){
-						// 	html += "&nbsp;&nbsp;<a href='#' class='unlock-auth-btn' ><i class='fa fa-unlock text-navy'> 启用</i></a>";
+						html += "<a href='javascript:void(0);' class='edit-url-param-btn' ><i class='fa fa-edit text-navy'> 编辑</i></a>";
+						// if(data.urlParamDelFlg == Code.DEL_FLG_0.value){
+						// 	html += "&nbsp;&nbsp;<a href='javascript:void(0);' class='unlock-url-param-btn' ><i class='fa fa-unlock text-navy'> 启用</i></a>";
 						// } else {
-						// 	html += "<a href='#' class='edit-auth-btn' ><i class='fa fa-edit text-navy'> 编辑</i></a>";
-						// 	html += "&nbsp;&nbsp;<a href='#' class='lock-auth-btn' ><i class='fa fa-lock text-navy'> 禁用</i></a>";
+						// 	html += "<a href='javascript:void(0);' class='edit-url-param-btn' ><i class='fa fa-edit text-navy'> 编辑</i></a>";
+						// 	html += "&nbsp;&nbsp;<a href='javascript:void(0);' class='lock-url-param-btn' ><i class='fa fa-lock text-navy'> 禁用</i></a>";
 						// }
 	            		return html;
 					}

@@ -7,7 +7,7 @@ import org.taurus.entity.SMenuEntity;
 import org.taurus.extendEntity.SMenuEntityEx;
 
 import com.baomidou.mybatisplus.extension.service.IService;
- 
+
 /**
  * <p>
  * 系统菜单 服务类
@@ -19,12 +19,28 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 @Service
 public interface SMenuService extends IService<SMenuEntity> {
-	
+
 	/**
-	 * 获取用户能显示的菜单
-	 * @param userId
+	 * 获取菜单列表
+	 * 
 	 * @return
 	 */
-	public List<SMenuEntityEx> getMenuListByUser(String userId);
+	public List<SMenuEntityEx> getMenuList();
+
+	/**
+	 * 转换菜单列表数据格式（树形结构）
+	 * 
+	 * @param menuSource
+	 * @return
+	 */
+	public List<SMenuEntityEx> processingMenuData(List<SMenuEntityEx> menuSource);
+
+	/**
+	 * 根据id获取菜单信息
+	 * 
+	 * @param menuId
+	 * @return
+	 */
+	public SMenuEntityEx getMenuDetail(String menuId);
 
 }

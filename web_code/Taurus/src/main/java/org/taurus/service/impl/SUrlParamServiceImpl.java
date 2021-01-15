@@ -44,6 +44,11 @@ public class SUrlParamServiceImpl extends ServiceImpl<SUrlParamDao, SUrlParamEnt
 	}
 
 	@Override
+	public SUrlParamEntity getURLParamDetail(String urlParamId) {
+		return getById(urlParamId);
+	}
+
+	@Override
 	public SUrlParamEntity insert(SUrlParamEntity urlParamEntity, String operator) {
 		// aa 当前时间
 		LocalDateTime nowTime = DateUtil.getLocalDateTime();
@@ -56,7 +61,8 @@ public class SUrlParamServiceImpl extends ServiceImpl<SUrlParamDao, SUrlParamEnt
 		urlParamEntity_insert.setUrlParamRequired(urlParamEntity.getUrlParamRequired());
 		urlParamEntity_insert.setUrlParamNull(urlParamEntity.getUrlParamNull());
 		urlParamEntity_insert.setUrlParamRemark(urlParamEntity.getUrlParamRemark());
-		urlParamEntity_insert.setUrlParamDelFlg(urlParamEntity.getUrlParamDelFlg());
+		urlParamEntity_insert.setUrlParamErrHint(urlParamEntity.getUrlParamErrHint());
+		urlParamEntity_insert.setUrlParamDelFlg(Code.DEL_FLG_1.getValue());
 		urlParamEntity_insert.setUrlParamCreateTime(nowTime);
 		urlParamEntity_insert.setUrlParamCreateUser(operator);
 		urlParamEntity_insert.setUrlParamModifyTime(nowTime);
@@ -82,7 +88,8 @@ public class SUrlParamServiceImpl extends ServiceImpl<SUrlParamDao, SUrlParamEnt
 		urlParamEntity_update.setUrlParamRequired(urlParamEntity.getUrlParamRequired());
 		urlParamEntity_update.setUrlParamNull(urlParamEntity.getUrlParamNull());
 		urlParamEntity_update.setUrlParamRemark(urlParamEntity.getUrlParamRemark());
-		urlParamEntity_update.setUrlParamDelFlg(urlParamEntity.getUrlParamDelFlg());
+		urlParamEntity_update.setUrlParamErrHint(urlParamEntity.getUrlParamErrHint());
+//		urlParamEntity_update.setUrlParamDelFlg(urlParamEntity.getUrlParamDelFlg());
 		urlParamEntity_update.setUrlParamModifyTime(nowTime);
 		urlParamEntity_update.setUrlParamModifyUser(operator);
 

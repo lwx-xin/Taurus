@@ -215,7 +215,14 @@
 				
 				setLocalStorage(commonField.sys_config_toastr_using, unUsingCode);
 				setLocalStorage(commonField.sys_config_toastr_timeOut, "0");
+			} else {
+				setLocalStorage(commonField.sys_config_smallpop_using, unUsingCode);
+				setLocalStorage(commonField.sys_config_smallpop_timeOut, "0");
+				
+				setLocalStorage(commonField.sys_config_toastr_using, unUsingCode);
+				setLocalStorage(commonField.sys_config_toastr_timeOut, "0");
 			}
+			hideInformation();
 			showInformation("系统提示","配置修改成功","success");
 		});
 	}
@@ -224,25 +231,8 @@
 	 * 加载权限code列表
 	 */
 	function initAuthCodeList(){
-		//初始化权限下拉框
-		ajax({
-			url: requestPath.authList.url,
-			type: requestPath.authList.type,
-			success: function(data){
-				if(data.status && isNotNull(data.data)){
-					$.each(data.data, function(i, v){
-						//权限id
-						var authId = v.authId;
-						//名称
-						var name = v.authName;
-						$("#authId").append("<option value='"+authId+"'>"+name+"</option>");
-					});
-				}
-			},
-			error: function(data){
-			}
-		});
-		$("#authId").chosen();
+		$("select[name='authId']").attr("code-tag", "auth");
+		loadCodeList();
 	}
 	
 	/**
