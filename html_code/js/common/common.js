@@ -3,6 +3,25 @@ $(function(){
 	showCookieErrMsg();
 });
 
+/**
+ * 加载图标选择器
+ */
+function initIconPicker(){
+	var iconArr = new Array();
+	$.each(commonIcon, function(k, iconObj){
+		var value = iconObj.value;
+		if(value!=""){
+			iconArr.push(value);
+		}
+	});
+	$(".icon-picker").iconPicker({
+		"icons": iconArr
+	});
+}
+
+/**
+ * 加载codelist
+ */
 function loadCodeList(){
 	var groups = new Array();
 	$("[code-tag]").each(function(){

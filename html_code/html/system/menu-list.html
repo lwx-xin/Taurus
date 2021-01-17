@@ -81,10 +81,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">图标：</label>
                                 <div class="col-sm-8">
-	                                <!-- <select id="menuIcon" name="menuIcon" data-placeholder="请选择图标..." class="chosen-select" style="width:490px;" tabindex="2" aria-required="true">
-										<option value="">请选择</option>
-									</select> -->
-									<input type="text" class="icon-picker"/>
+									<input id="menuIcon" name="menuIcon" placeholder="请选择图标" type="text" class="icon-picker"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -113,13 +110,10 @@
 <script type="text/javascript">
 
 	$(function(){
-		$(".icon-picker").iconPicker({
-			"icons": [commonIcon.system_manager.value]
-			// "defaultIcon": "fa fa-wrench"
-		});
+		
+		initIconPicker();
 		
 		initCodeList();
-		$("#menuInfoDiv").hide();
 		
 		//加载数据
 		initData()
@@ -178,11 +172,11 @@
 			showTags: true,
 		    data: menuData,
 			onNodeSelected: function (event, node) {
-				$("#menuInfoDiv").show();
+				// $("#menuInfoDiv").show();
 				loadMenuData(node.menuId);
 			},
 			onNodeUnselected: function(event, node){
-				$("#menuInfoDiv").hide();
+				// $("#menuInfoDiv").hide();
 				loadMenuData(null);
 			}
 		});
@@ -199,7 +193,8 @@
 			$("#menuGroup").val("");
 			$("#menuUrl").val("");
 			$("#menuOrder").val("");
-			$("#menuIcon").val("");
+			$("#menuIcon").iconPicker("");
+			$("#menuAuth").val("");
 			
 			$(".chosen-select").trigger("chosen:updated");
 			$(".chosen-select").chosen();
@@ -213,7 +208,7 @@
 						$("#menuText").val(data.data.menuText);
 						$("#menuGroup").val(data.data.menuText);
 						$("#menuOrder").val(data.data.menuOrder);
-						$("#menuIcon").val(data.data.menuIcon);
+						$("#menuIcon").iconPicker(data.data.menuIcon);
 						$("#menuUrl").val(data.data.menuUrl);
 						
 						var authList = data.data.authList;
