@@ -75,14 +75,17 @@
     
     <select id="getMenuListByUser" parameterType="java.lang.String" resultMap="entityEx">
 		SELECT 
-			u.URL_PATH,a.AUTH_ID,m.*
-		FROM s_menu m
-		LEFT JOIN s_auth_menu am ON am.MENU_ID = m.MENU_ID
-		LEFT JOIN s_auth a ON am.AUTH_ID = a.AUTH_ID
-		LEFT JOIN s_url u ON u.URL_ID = m.MENU_URL
+			u.URL_PATH,a.AUTH_ID,m.* 
+		FROM s_menu m 
+		LEFT JOIN s_auth_menu am ON am.MENU_ID = m.MENU_ID 
+		LEFT JOIN s_auth a ON am.AUTH_ID = a.AUTH_ID 
+		LEFT JOIN s_url u ON u.URL_ID = m.MENU_URL 
 		WHERE 
-			EXISTS ( SELECT 1 FROM s_auth_user WHERE AUTH_ID = am.AUTH_ID AND USER_ID = #{userId} )
-			OR NOT EXISTS (SELECT 1 FROM s_auth_menu WHERE MENU_ID = m.MENU_ID)
+		(
+			EXISTS ( SELECT 1 FROM s_auth_user WHERE AUTH_ID = am.AUTH_ID AND USER_ID = #{userId} ) 
+			OR NOT EXISTS (SELECT 1 FROM s_auth_menu WHERE MENU_ID = m.MENU_ID) 
+		)
+		AND m.MENU_DEL_FLG = '1'
 		ORDER BY m.MENU_ORDER
     </select>
     

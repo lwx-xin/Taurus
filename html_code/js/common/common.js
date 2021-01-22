@@ -253,23 +253,23 @@ function ajax(param){
 			var redirectUrl = request.getResponseHeader(commonField.sys_err_redirect);
 			var sourcePath = request.getResponseHeader(commonField.sys_err_source_path);
 			
-			if(isNotNull(sysErrMessage)){ console.log("错误信息:"+toUTF8(sysErrMessage)); }
-			if(isNotNull(redirectUrl)){ console.log("重定向页面:"+toUTF8(redirectUrl)); }
-			if(isNotNull(sourcePath)){ console.log("异常资源:"+toUTF8(sourcePath)); }
+			if(isNotNull(sysErrMessage)){ console.log("错误信息:"+decodeStr(sysErrMessage)); }
+			if(isNotNull(redirectUrl)){ console.log("重定向页面:"+decodeStr(redirectUrl)); }
+			if(isNotNull(sourcePath)){ console.log("异常资源:"+decodeStr(sourcePath)); }
 			
 			var errInfo = "";
 			if(isNotNull(sysErrMessage)){
 				if(isNull(redirectUrl)){
-					errInfo += "异常信息<b>:</b>"+toUTF8(sysErrMessage)+"<br/>";
+					errInfo += "异常信息<b>:</b>"+decodeStr(sysErrMessage)+"<br/>";
 				} else {
-					setCookie(commonField.sys_err_msg, toUTF8(sysErrMessage))
+					setCookie(commonField.sys_err_msg, decodeStr(sysErrMessage))
 				}
 			}
 			if(isNotNull(sourcePath)){
 				if(isNull(redirectUrl)){
-					errInfo += "异常资源<b>:</b>"+toUTF8(sourcePath)+"<br/>";
+					errInfo += "异常资源<b>:</b>"+decodeStr(sourcePath)+"<br/>";
 				} else {
-					setCookie(commonField.sys_err_source_path, toUTF8(sourcePath))
+					setCookie(commonField.sys_err_source_path, decodeStr(sourcePath))
 				}
 			}
 			
@@ -278,7 +278,7 @@ function ajax(param){
 			}
 			
 			if(isNotNull(redirectUrl)){
-				redirectUrl = toUTF8(redirectUrl);
+				redirectUrl = decodeStr(redirectUrl);
 				if(redirectUrl=="/html/login.html"){
 					top.location.href=redirectUrl;
 				} else {
@@ -432,7 +432,7 @@ function setCookie(key, value){
  * @param {String} key
  */
 function getCookie(key){
-	return toUTF8($.cookie(key));
+	return decodeStr($.cookie(key));
 }
 
 /**
@@ -574,11 +574,23 @@ function logout(){
 }
 
 /**
- * 转换编码格式
- * @param {String} str 
- * @return {String}
+ * 编码
+ * @param {String} str
  */
-function toUTF8(str){
+function encodeStr(str){
+	var encode_str = "";
+	if(isNotNull(str)){
+		var ascllStr = toAscll(str);
+		encode_str = encodeURIComponent(ascllStr);
+	}
+	return encode_str;
+}
+
+/**
+ * 解码
+ * @param {String} str
+ */
+function decodeStr(str){
 	var ascll_str = ""
 	if(isNotNull(str)){
 		// 带","的ascll编码

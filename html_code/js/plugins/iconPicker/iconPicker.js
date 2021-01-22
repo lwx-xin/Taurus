@@ -140,7 +140,11 @@
 					$(".icon-list li a",$popup).click(function(e){
 						e.preventDefault();
 						var title=$(this).attr("title");
-						$element.val(title);
+						if($element.is("input")){
+							$element.val(title);
+						} else {
+							$element.html(title);
+						}
 						$element.parent(".input-group").find(".input-group-addon i").attr("class", title);
 						removeInstance();
 					});

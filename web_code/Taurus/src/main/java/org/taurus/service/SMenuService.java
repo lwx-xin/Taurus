@@ -43,4 +43,48 @@ public interface SMenuService extends IService<SMenuEntity> {
 	 */
 	public SMenuEntityEx getMenuDetail(String menuId);
 
+	/**
+	 * 添加菜单信息
+	 * 
+	 * @param menuEntityEx
+	 * @param operator     操作人员
+	 * @return
+	 */
+	public SMenuEntityEx insert(SMenuEntityEx menuEntityEx, String operator);
+
+	/**
+	 * 修改菜单信息
+	 * 
+	 * @param menuId
+	 * @param menuEntityEx
+	 * @param operator     操作人员
+	 * @return
+	 */
+	public SMenuEntityEx update(String menuId, SMenuEntityEx menuEntityEx, String operator);
+
+	/**
+	 * 删除菜单信息
+	 * 
+	 * @param menuId
+	 * @param operator 操作人员
+	 * @return
+	 */
+	public void lock_unLock(String menuId, String operator);
+
+	/**
+	 * 获取当前菜单下的全部子菜单(不包括子菜单的子菜单)
+	 * 
+	 * @param menuId
+	 * @return
+	 */
+	public List<SMenuEntity> getMenuChildren(String menuId);
+
+	/**
+	 * 获取当前菜单下的全部子菜单(包括子菜单的子菜单)
+	 * 
+	 * @param menuId
+	 * @return
+	 */
+	public List<SMenuEntity> getMenuAllChildren(String menuId);
+
 }

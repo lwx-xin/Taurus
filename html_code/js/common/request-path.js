@@ -27,7 +27,7 @@ const requestPath = {
 	// 编辑菜单信息
 	menuUpdate:{"url":"/web/menu/{menuId}", "type":"put"},
 	// 禁用启用-菜单
-	menurDelete:{"url":"/web/menu/{menuId}", "type":"delete"},
+	menuDelete:{"url":"/web/menu/{menuId}", "type":"delete"},
 	
 	// 用户列表
 	userList:{"url":"/web/user", "type":"get"},
