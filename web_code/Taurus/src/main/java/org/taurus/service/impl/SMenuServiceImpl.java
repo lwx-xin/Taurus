@@ -161,7 +161,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuDao, SMenuEntity> impleme
 			menuEntityEx.setAuthList(authList);
 		}
 
-		return null;
+		return menuEntityEx;
 	}
 
 	@SuppressWarnings("unchecked")

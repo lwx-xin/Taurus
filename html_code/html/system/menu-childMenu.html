@@ -93,12 +93,25 @@
 
 		initCodeList();
 		
+		$("#menuUrl").parents(".form-group").hide();
+		
+		
 		initData();
 		
 		initEvent();
 	})
 	
 	function initEvent(){
+		
+		$("#menuGroup").change(function(){
+			var menuGroup = $(this).val();
+			if(menuGroup==Code.NO.value){
+				$("#menuUrl").parents(".form-group").show();
+			} else {
+				$("#menuUrl").parents(".form-group").hide();
+			}
+		});
+		
 		$(".insert-btn").click(function(){
 			var param = new Object();
 			param["menuText"] = $("#menuText").val();

@@ -112,12 +112,14 @@
 <script type="text/javascript">
 
 	$(function(){
-		$(".update-btn").hide();
-		$(".delete-btn").hide();
 		
 		initIconPicker();
 		
 		initCodeList();
+		
+		$(".update-btn").hide();
+		$(".delete-btn").hide();
+		$("#menuUrl").parents(".form-group").hide();
 		
 		//加载数据
 		initData()
@@ -126,6 +128,16 @@
 	});
 	
 	function initEvent(){
+		
+		$("#menuGroup").change(function(){
+			var menuGroup = $(this).val();
+			if(menuGroup==Code.NO.value){
+				$("#menuUrl").parents(".form-group").show();
+			} else {
+				$("#menuUrl").parents(".form-group").hide();
+			}
+		});
+		
 		//编辑菜单
 		$(".update-btn").click(function(){
 			var param = new Object();
@@ -264,10 +276,12 @@
 				success: function(data){
 					if(data.status){
 						$("#menuText").val(data.data.menuText);
-						$("#menuGroup").val(data.data.menuText);
+						$("#menuGroup").val(data.data.menuGroup);
 						$("#menuOrder").val(data.data.menuOrder);
 						$("#menuIcon").iconPicker(data.data.menuIcon);
 						$("#menuUrl").val(data.data.menuUrl);
+						
+						$("#menuGroup").change();
 						
 						var authList = data.data.authList;
 						if(isNotNull(authList)){
