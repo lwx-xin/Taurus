@@ -239,6 +239,11 @@
 				// $("#menuInfoDiv").show();
 				selectedNode = node;
 				loadMenuData(node.menuId);
+				if(node.menuGroup==Code.YES.value){
+					$(".insert-children-btn").show();
+				} else {
+					$(".insert-children-btn").hide();
+				}
 				$(".update-btn").show();
 				$(".delete-btn").show();
 			},
@@ -379,6 +384,7 @@
 	function convertMenuEntity(menuEntityEx){
 		var treeObj = new Object();
 		treeObj["menuId"] = menuEntityEx.menuId;
+		treeObj["menuGroup"] = menuEntityEx.menuGroup;
 		treeObj["text"] = menuEntityEx.menuText;
 		treeObj["href"] = "";
 		treeObj["state"] = { 
