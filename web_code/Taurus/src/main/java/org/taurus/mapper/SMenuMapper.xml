@@ -77,7 +77,7 @@
 		SELECT 
 			u.URL_PATH,a.AUTH_ID,m.* 
 		FROM s_menu m 
-		LEFT JOIN s_auth_menu am ON am.MENU_ID = m.MENU_ID 
+		LEFT JOIN s_auth_menu am ON am.MENU_ID = m.MENU_ID AND am.AUTH_MENU_DEL_FLG = '1'
 		LEFT JOIN s_auth a ON am.AUTH_ID = a.AUTH_ID 
 		LEFT JOIN s_url u ON u.URL_ID = m.MENU_URL 
 		WHERE 
