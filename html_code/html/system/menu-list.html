@@ -25,7 +25,7 @@
 			display: none;
 		}
 		
-		.form-group input,select{
+		.form-group input,select ,.input-group{
 			width: 490px;
 		}
 		
@@ -39,9 +39,18 @@
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>菜单管理</h5>
+						<!-- <div class="ibox-tools">
+							<a class="dropdown-toggle" data-toggle="dropdown">
+								<i class="fa fa-wrench"></i>
+							</a>
+							<ul class="dropdown-menu dropdown-user">
+								<li><a class="insert-children-btn">添加菜单</a></li>
+							</ul>
+						</div> -->
                     </div>
                     <div class="ibox-content">
 						<div id="menuTree" class=""></div>
+						<a class="btn btn-block btn-primary insert-root-btn">添加菜单</a>
                     </div>
                 </div>
             </div>
@@ -95,8 +104,8 @@
                             <div class="form-group">
                                 <div class="col-sm-8 col-sm-offset-3">
                                     <button class="btn btn-primary update-btn" type="button">修改</button>
-                                    <button class="btn btn-primary insert-children-btn" type="button">添加子菜单</button>
                                     <button class="btn btn-primary delete-btn" type="button">删除菜单</button>
+                                    <button class="btn btn-primary insert-children-btn" type="button">添加子菜单</button>
                                 </div>
                             </div>
                         </form>
@@ -117,7 +126,8 @@
 		
 		initCodeList();
 		
-		$(".update-btn").hide();
+		$("#menuInfoDiv").hide();
+		
 		$(".delete-btn").hide();
 		$("#menuUrl").parents(".form-group").hide();
 		
@@ -170,8 +180,24 @@
 		});
 		
 		$(".insert-children-btn").click(function(){
+			if($(this).attr("disabled")){
+				return false;
+			}
 			var menuParent = selectedNode==null ? "":selectedNode.menuId;
 			var menuParentText = selectedNode==null ? "":selectedNode.text;
+			layer.open({
+				  type: 2,
+				  title: "添加子菜单",
+				  area: ['800px', '550px'],
+				  fixed: false, //不固定
+				  maxmin: true,
+				  content: 'menu-childMenu.html?menuParent='+menuParent+"&menuParentText="+encodeStr(menuParentText)
+			});
+		});
+		
+		$(".insert-root-btn").click(function(){
+			var menuParent = "";
+			var menuParentText = "";
 			layer.open({
 				  type: 2,
 				  title: "添加子菜单",
@@ -236,23 +262,23 @@
 			showTags: true,
 		    data: menuData,
 			onNodeSelected: function (event, node) {
-				// $("#menuInfoDiv").show();
+				$("#menuInfoDiv").show();
 				selectedNode = node;
-				loadMenuData(node.menuId);
-				if(node.menuGroup==Code.YES.value){
-					$(".insert-children-btn").show();
-				} else {
-					$(".insert-children-btn").hide();
-				}
-				$(".update-btn").show();
+				var menuData = loadMenuData(node.menuId);
+				
 				$(".delete-btn").show();
+				if(menuData.menuGroup == Code.NO.value){
+					$("#menuInfoDiv .insert-children-btn").hide();
+				} else {
+					$("#menuInfoDiv .insert-children-btn").show();
+				}
 			},
 			onNodeUnselected: function(event, node){
-				// $("#menuInfoDiv").hide();
+				$("#menuInfoDiv").hide();
 				selectedNode = null;
 				loadMenuData(null);
-				$(".update-btn").hide();
-				$(".delete-btn").hide();
+				
+				$("#menuInfoDiv .insert-children-btn").show();
 			}
 		});
 	}
@@ -262,7 +288,13 @@
 		initMenuTree();
 	}
 	
+	/**
+	 * 根据菜单ID加载菜单数据<br>并返回菜单数据
+	 * @param {String} menuId
+	 * @return {Object} 菜单数据
+	 */
 	function loadMenuData(menuId){
+		var menuData = null;
 		if(isNull(menuId)){
 			$("#menuText").val("");
 			$("#menuGroup").val("");
@@ -280,6 +312,7 @@
 				type: requestPath.menuDetail.type,
 				success: function(data){
 					if(data.status){
+						menuData = data.data;
 						$("#menuText").val(data.data.menuText);
 						$("#menuGroup").val(data.data.menuGroup);
 						$("#menuOrder").val(data.data.menuOrder);
@@ -304,6 +337,7 @@
 				}
 			});
 		}
+		return menuData;
 	}
 	
 	function initCodeList(){
@@ -384,7 +418,6 @@
 	function convertMenuEntity(menuEntityEx){
 		var treeObj = new Object();
 		treeObj["menuId"] = menuEntityEx.menuId;
-		treeObj["menuGroup"] = menuEntityEx.menuGroup;
 		treeObj["text"] = menuEntityEx.menuText;
 		treeObj["href"] = "";
 		treeObj["state"] = { 
