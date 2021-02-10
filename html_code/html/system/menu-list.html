@@ -171,7 +171,9 @@
 				type: requestPath.menuUpdate.type,
 				success: function(data){
 					if(data.status){
-						showInformation("系统提示","修改成功","success")
+						showInformation("系统提示","修改成功","success");
+						initData();
+						$('#menuTree').treeview('expandRealNode', [selectedNode, { silent: true }]);
 					}
 				},
 				error: function(data){
@@ -421,7 +423,7 @@
 		treeObj["text"] = menuEntityEx.menuText;
 		treeObj["href"] = "";
 		treeObj["state"] = { 
-			checked: false, //指示一个节点是否处于checked状态，用一个checkbox图标表示。
+			checked: selectedNode==null?false:selectedNode.menu==menuEntityEx.menuId,//false, //指示一个节点是否处于checked状态，用一个checkbox图标表示。
 			disabled: false, //指示一个节点是否处于disabled状态。（不是selectable，expandable或checkable）
 			expanded: false, //指示一个节点是否处于展开状态。
 			selected: false //指示一个节点是否可以被选择。

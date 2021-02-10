@@ -123,6 +123,7 @@
 			collapseNode: $.proxy(this.collapseNode, this),
 			expandAll: $.proxy(this.expandAll, this),
 			expandNode: $.proxy(this.expandNode, this),
+			expandRealNode: $.proxy(this.expandRealNode, this),
 			toggleNodeExpanded: $.proxy(this.toggleNodeExpanded, this),
 			revealNode: $.proxy(this.revealNode, this),
 
@@ -892,6 +893,27 @@
 			this.setExpandedState(node, true, options);
 			if (node.nodes && (options && options.levels)) {
 				this.expandLevels(node.nodes, options.levels-1, options);
+			}
+		}, this));
+
+		this.render();
+	};
+	
+	/**
+	 * 自己添加的函数
+	 * @param {Object} identifiers
+	 * @param {Object} options
+	 */
+	Tree.prototype.expandRealNode = function (identifiers, options) {
+		this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
+			var real = node;
+			while (true) {
+				real = this.getParent(real);
+				console.log(real);
+				if (!real || !real.hasOwnProperty('nodeId')) {
+					break;
+				}
+				this.setExpandedState(real, true, options);
 			}
 		}, this));
 
