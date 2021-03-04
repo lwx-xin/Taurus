@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <title>H+ 后台主题UI框架 - 主页</title>
+
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+    <link rel="shortcut icon" href="../../img/logo.ico"> 
+	
+	<style>
+		.wrapper-content{
+			padding: 15px;
+		}
+		
+		.link-span{
+			color: blue;
+			cursor:pointer;
+		}
+		
+		.display-none{
+			display: none;
+		}
+		
+		.form-group input,select ,.input-group{
+			width: 490px;
+		}
+		
+	</style>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+			
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>文件管理</h5>
+                    </div>
+                    <div class="ibox-content">
+						<div id="folderTree" class=""></div>
+						<a class="btn btn-block btn-primary insert-root-btn">添加文件夹</a>
+                    </div>
+                </div>
+            </div>
+			
+			<div class="col-sm-9" id="fileList">
+                
+            </div>
+			
+        </div>
+    </div>
+
+</body>
+<script src="../../js/common/base.js"></script>
+<script type="text/javascript">
+
+	$(function(){
+		
+		//加载数据
+		initData()
+		
+		initEvent();
+	});
+	
+	function initEvent(){
+
+	}
+	
+	var selectedNode;
+	function drawTree(folderData){
+		$('#folderTree').treeview({
+			showTags: true,
+		    data: folderData,
+			onNodeSelected: function (event, node) {
+				selectedNode = node;
+			},
+			onNodeUnselected: function(event, node){
+				selectedNode = null;
+			}
+		});
+	}
+	
+	function initData(){
+		// 初始化文件夹
+		initFolderTree();
+	}
+	
+	/**
+	 * 根据文件夹ID加载文件列表<br>并返回文件列表
+	 * @param {String} folderId
+	 * @return {Object} 文件列表
+	 */
+	function loadFileData(folderId){
+		var folderData = null;
+		if(isNull(folderId)){
+			
+		} else {
+			// ajax({
+			// 	url: requestPath.menuDetail.url,
+			// 	data: {"menuId": menuId},
+			// 	type: requestPath.menuDetail.type,
+			// 	success: function(data){
+			// 		if(data.status){
+						
+			// 		}
+			// 	},
+			// 	error: function(data){
+			// 	}
+			// });
+		}
+		return folderData;
+	}
+	
+	/**
+	 * 初始化文件夹列表
+	 */
+	function initFolderTree(){
+		ajax({
+			url: requestPath.folderList.url,
+			type: requestPath.folderList.type,
+			success: function(data){
+				if(data.status){
+					var folderTree = processingFolderData(data.data);
+					if(isNotNull(folderTree)){
+						//渲染Tree
+						drawTree(folderTree);
+					} else {
+						//showInformation("提示","未查找到菜单数据","info")
+					}
+				}
+			},
+			error: function(data){
+			}
+		});
+	}
+	
+	/**
+	 * 将文件夹列表转换成bootstrap-tree接受的格式
+	 * @param {Array} folderData
+	 */
+	function processingFolderData(folderData){
+		if(isNull(folderData)){
+			return null;
+		}
+		
+		var folderTree = new Array();
+		
+		$.each(folderData, function(i, folderEntityEx){
+			var treeObj = convertFolderEntity(folderEntityEx);
+			folderTree.push(treeObj);
+		});
+		return folderTree;
+	}
+	
+	/**
+	 * 转换菜单实体
+	 * @param {Object} folderEntityEx
+	 */
+	function convertFolderEntity(folderEntityEx){
+		var treeObj = new Object();
+		treeObj["folderId"] = folderEntityEx.folderId;
+		treeObj["text"] = folderEntityEx.folderName;
+		treeObj["href"] = "";
+		treeObj["state"] = { 
+			checked: selectedNode==null?false:selectedNode.folderId==folderEntityEx.folderId,//false, //指示一个节点是否处于checked状态，用一个checkbox图标表示。
+			disabled: false, //指示一个节点是否处于disabled状态。（不是selectable，expandable或checkable）
+			expanded: false, //指示一个节点是否处于展开状态。
+			selected: false //指示一个节点是否可以被选择。
+		};
+		treeObj["selectable"] = true; //指定列表树的节点是否可选择。设置为false将使节点展开，并且不能被选择。
+		
+		treeObj["tags"] = "";
+		
+		var nodeArr = null;
+		if(isNotNull(folderEntityEx.childrens)){
+			nodeArr = new Array();
+			$.each(folderEntityEx.childrens, function(i, childrenFolderEntityEx){
+				var childrenTreeObj = convertFolderEntity(childrenFolderEntityEx);
+				nodeArr.push(childrenTreeObj);
+			});
+		}
+		treeObj["nodes"] = nodeArr;
+		return treeObj;
+	}
+	
+</script>
+</html>
