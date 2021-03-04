@@ -1,27 +1,32 @@
 package org.taurus.service.impl;
 
-import org.taurus.entity.SFolderEntity;
-import org.taurus.common.code.Code;
-import org.taurus.common.code.ExecptionType;
-import org.taurus.common.exception.CustomException;
-import org.taurus.common.util.DateUtil;
-import org.taurus.common.util.ListUtil;
-import org.taurus.common.util.StrUtil;
-import org.taurus.config.load.properties.TaurusProperties;
-import org.taurus.dao.SFolderDao;
-import org.taurus.service.SFolderService;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.taurus.common.code.Code;
+import org.taurus.common.code.ExecptionType;
+import org.taurus.common.exception.CustomException;
+import org.taurus.common.util.DateUtil;
+import org.taurus.common.util.JsonUtil;
+import org.taurus.common.util.ListUtil;
+import org.taurus.common.util.MapUtil;
+import org.taurus.common.util.StrUtil;
+import org.taurus.config.load.properties.TaurusProperties;
+import org.taurus.dao.SFolderDao;
+import org.taurus.entity.SFolderEntity;
+import org.taurus.extendEntity.SFolderEntityEx;
+import org.taurus.service.SFolderService;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 /**
  * <p>
@@ -103,9 +108,11 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
 		// aa 添加用户根目录
 		String rootFolderId = createFolder(folderOwner, "", folderOwner, operator);
 		// aa 添加系统资源目录
-		String systemFolderId = createFolder(taurusProperties.getFolderSystemName(), rootFolderId, folderOwner, operator);
+		String systemFolderId = createFolder(taurusProperties.getFolderSystemName(), rootFolderId, folderOwner,
+				operator);
 		// aa 添加头像图片资源目录
-		String headFolderId = createFolder(taurusProperties.getFolderHeadImgName(), systemFolderId, folderOwner, operator);
+		String headFolderId = createFolder(taurusProperties.getFolderHeadImgName(), systemFolderId, folderOwner,
+				operator);
 		// aa 添加头像图片资源目录
 		String logFolderId = createFolder(taurusProperties.getFolderLogName(), systemFolderId, folderOwner, operator);
 	}
@@ -136,7 +143,7 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
 		// aa 当前时间
 		LocalDateTime nowTime = DateUtil.getLocalDateTime();
 		folderId = StrUtil.getUUID();
-		
+
 		SFolderEntity folderEntity = new SFolderEntity();
 		folderEntity.setFolderId(folderId);
 		folderEntity.setFolderName(folderName);
@@ -153,6 +160,61 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
 		}
 
 		return folderId;
+	}
+
+	@Override
+	public List<SFolderEntity> getFolderListByUser(String userId) {
+
+		SFolderEntity folderQueryEntity = new SFolderEntity();
+		folderQueryEntity.setFolderOwner(userId);
+		QueryWrapper<SFolderEntity> folderQueayWrapper = new QueryWrapper<SFolderEntity>(folderQueryEntity);
+		return list(folderQueayWrapper);
+	}
+
+	@Override
+	public List<SFolderEntityEx> getFolderTreeByUser(String userId) {
+		return processingFolderData(getFolderListByUser(userId));
+	}
+
+	@Override
+	public List<SFolderEntityEx> processingFolderData(List<SFolderEntity> folderSource) {
+
+		List<SFolderEntityEx> folderList = new ArrayList<SFolderEntityEx>();
+
+		if (ListUtil.isNotEmpty(folderSource)) {
+
+			Map<String, SFolderEntityEx> folderMap = new HashMap<String, SFolderEntityEx>();
+
+			for (SFolderEntity folder : folderSource) {
+				String folderId = folder.getFolderId();
+				String folderParent = folder.getFolderParent();
+
+				SFolderEntityEx folderEx = JsonUtil.toEntity(folder, SFolderEntityEx.class);
+
+				if (StrUtil.isEmpty(folderParent)) {
+					// aa一级菜单
+					folderList.add(folderEx);
+				} else {
+					folderMap.put(folderParent + "-" + folderId, folderEx);
+				}
+			}
+
+			for (SFolderEntityEx folder : folderList) {
+				setChildrens(folder, folderMap);
+			}
+		}
+
+		return folderList;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setChildrens(SFolderEntityEx nowNode, Map<String, SFolderEntityEx> folderMap) {
+		String folderId = nowNode.getFolderId();
+		List<SFolderEntityEx> childrens = MapUtil.get(folderMap, folderId + "-");
+		for (SFolderEntityEx folder : childrens) {
+			setChildrens(folder, folderMap);
+		}
+		nowNode.setChildrens(childrens);
 	}
 
 }

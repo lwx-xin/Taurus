@@ -1,7 +1,10 @@
 package org.taurus.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.taurus.entity.SFolderEntity;
+import org.taurus.extendEntity.SFolderEntityEx;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -53,5 +56,28 @@ public interface SFolderService extends IService<SFolderEntity> {
 	 * @return
 	 */
 	public String createFolder(String folderName, String parentFolder, String folderOwner, String operator);
+
+	/**
+	 * 获取用户能显示的文件夹列表(列表结构，不是树状结构)
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<SFolderEntity> getFolderListByUser(String userId);
+
+	/**
+	 * 获取用户能显示的文件夹列表(树状结构，不是列表结构)
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<SFolderEntityEx> getFolderTreeByUser(String userId);
+	
+	/**
+	 * 将文件夹列表从列表结构改成树状结构
+	 * @param userId
+	 * @return
+	 */
+	public List<SFolderEntityEx> processingFolderData(List<SFolderEntity> folderList);
 
 }
