@@ -98,10 +98,10 @@ public class AuthFilter implements Filter {
 
             String msg = "异常请求\n:" +
                     "{\"参数\":\"" + JsonUtil.toJson(parameterMap) + "\"," +
-                    "\"请求地址\":\"“+url+”\"," +
-                    "\"请求方法\":\"“+method+”\"," +
-                    "\"重定向\":\"“+redirectUrl+”\"," +
-                    "\"错误消息\":\"“+errMessage+”\"";
+                    "\"请求地址\":\""+url+"\"," +
+                    "\"请求方法\":\""+method+"\"," +
+                    "\"重定向\":\""+redirectUrl+"\"," +
+                    "\"错误消息\":\""+errMessage+"\"}";
             System.err.println(msg);
             logger.error(msg);
 
