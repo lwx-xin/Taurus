@@ -22,7 +22,9 @@ public class HtmlConfig implements WebMvcConfigurer {
 	 */
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		// 访问前端HTML的虚拟路径
 		registry.addResourceHandler(pathProperties.getVirtualPath()).addResourceLocations("file:" + pathProperties.getRealPath());
+		// 在线访问文件的虚拟路径
 		registry.addResourceHandler(taurusProperties.getFolderRootVirtual()).addResourceLocations("file:" + taurusProperties.getFolderRoot());
 	}
 }
