@@ -54,7 +54,7 @@
 		FROM
 			s_auth_url au
 			LEFT JOIN s_url u ON au.URL_ID = u.URL_ID AND u.URL_DEL_FLG = '1'
-		WHERE au.AUTH_URL_DEL_FLG = '1' AND au.AUTH_ID = '#{authId}'
+		WHERE au.AUTH_URL_DEL_FLG = '1' AND au.AUTH_ID = #{authId}
 	</select>
 	
 	<!-- 查询当前权限下能够访问的请求 -->
@@ -78,7 +78,7 @@
 			s_auth_url au
 			LEFT JOIN s_url u ON au.URL_ID = u.URL_ID AND u.URL_DEL_FLG = '1'
 		WHERE au.AUTH_URL_DEL_FLG = '1' AND EXISTS (
-			SELECT 1 FROM s_auth_user WHERE AUTH_ID = au.AUTH_ID AND USER_ID = '#{userId}'
+			SELECT 1 FROM s_auth_user WHERE AUTH_ID = au.AUTH_ID AND USER_ID = #{userId}
 		)
 	</select>
 	
