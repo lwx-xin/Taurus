@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -158,6 +159,12 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
 			}
 		}
 		return filePath;
+	}
+
+	@Override
+	public List<SFileEntity> getList(SFileEntity fileEntity){
+		QueryWrapper<SFileEntity> queryWrapper = new QueryWrapper<>(fileEntity);
+		return list(queryWrapper);
 	}
 
 }

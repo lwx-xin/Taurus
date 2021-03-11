@@ -5,6 +5,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.taurus.entity.SFileEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 文件信息 服务类
@@ -20,7 +22,7 @@ public interface SFileService extends IService<SFileEntity> {
 	/**
 	 * 保存文件
 	 * 
-	 * @param file
+	 * @param file 文件
 	 * @param folderId  所属文件夹
 	 * @param operator  操作人员
 	 * @param fileOwner 文件所有者
@@ -31,8 +33,8 @@ public interface SFileService extends IService<SFileEntity> {
 	/**
 	 * 保存用户头像文件
 	 * 
-	 * @param file
-	 * @param userId
+	 * @param file 文件
+	 * @param userId 用户id
 	 * @param operator 操作人员
 	 * @return
 	 */
@@ -55,5 +57,12 @@ public interface SFileService extends IService<SFileEntity> {
 	 * @return /f/xxx/xxxx/x.txt
 	 */
 	public String getFileUrl(String fileId, String owner);
+
+	/**
+	 * 获取文件列表
+	 * @param fileEntity 过滤条件
+	 * @return 文件列表数据
+	 */
+	public List<SFileEntity> getList(SFileEntity fileEntity);
 
 }

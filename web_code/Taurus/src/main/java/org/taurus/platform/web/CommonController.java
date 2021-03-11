@@ -1,4 +1,4 @@
-package org.taurus.controller;
+package org.taurus.platform.web;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping()
 public class CommonController {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Resource
 	private CommonService commonService;
@@ -59,7 +59,7 @@ public class CommonController {
 		List<String> list = JsonUtil.toList(codeGroup, String.class);
 		Map<String, List<CodeElement>> code = commonService.code(list);
 
-		return new Result<Map<String, List<CodeElement>>>(code, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(code, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -77,9 +77,9 @@ public class CommonController {
 			String userHead = userDetail.getUserHead();
 			// aa 用户头像文件请求路径
 			userDetail.setHeadFilePath(fileService.getFileUrl(userHead, userId));
-			return new Result<SUserEntityEx>(userDetail, true, CheckCode.INTERFACE_ERR_CODE_0);
+			return new Result<>(userDetail, true, CheckCode.INTERFACE_ERR_CODE_0);
 		}
-		return new Result<SUserEntityEx>(null, false, CheckCode.INTERFACE_ERR_CODE_2.getValue(), "未获取到用户信息");
+		return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_2.getValue(), "未获取到用户信息");
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class CommonController {
 
 		response.setHeader(CommonField.SYSTEM_ERR_REDIRECT, StrUtil.toUTF8("/html/login.html"));
 		response.setHeader(CommonField.SYSTEM_ERR_MSG, StrUtil.toUTF8(CheckCode.INTERFACE_ERR_CODE_reLogin.getName()));
-		return new Result<SUserEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_reLogin);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_reLogin);
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class CommonController {
 		SessionUtil.clearSession(request);
 		CookieUtil.clearCookie(response);
 
-		return new Result<SUserEntityEx>(null, false, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class CommonController {
 	@RequestMapping(value = "/getAjaxCheckJson", method = RequestMethod.GET)
 	public Result<String> getAjaxCheckJson() {
 		String ajaxCheckJson = commonService.getAjaxCheckJson();
-		return new Result<String>(ajaxCheckJson, false, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(ajaxCheckJson, false, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -131,12 +131,12 @@ public class CommonController {
 	 */
 	@ApiOperation(value = "根据用户获取菜单列表")
 	@RequestMapping(value = "/getMenuByUser", method = RequestMethod.GET)
-	public Result<List<SMenuEntityEx>> getMenu(HttpSession session, HttpServletResponse response) {
+	public Result<List<SMenuEntityEx>> getMenu(HttpSession session) {
 
 		String userId = SessionUtil.getUserId(session);
 		List<SMenuEntityEx> menuList = commonService.getMenuListByUser(userId);
 
-		return new Result<List<SMenuEntityEx>>(menuList, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(menuList, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 }

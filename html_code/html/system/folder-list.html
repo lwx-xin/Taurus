@@ -77,9 +77,11 @@
 		    data: folderData,
 			onNodeSelected: function (event, node) {
 				selectedNode = node;
+				loadFileList(node.folderId);
 			},
 			onNodeUnselected: function(event, node){
 				selectedNode = null;
+				loadFileList(null);
 			}
 		});
 	}
@@ -94,23 +96,23 @@
 	 * @param {String} folderId
 	 * @return {Object} 文件列表
 	 */
-	function loadFileData(folderId){
+	function loadFileList(folderId){
 		var folderData = null;
 		if(isNull(folderId)){
-			
+			$("#fileList").html("");
 		} else {
-			// ajax({
-			// 	url: requestPath.menuDetail.url,
-			// 	data: {"menuId": menuId},
-			// 	type: requestPath.menuDetail.type,
-			// 	success: function(data){
-			// 		if(data.status){
-						
-			// 		}
-			// 	},
-			// 	error: function(data){
-			// 	}
-			// });
+			ajax({
+				url: requestPath.fileList.url,
+				data: {"fileFolder": folderId},
+				type: requestPath.fileList.type,
+				success: function(data){
+					if(data.status){
+						console.log(data.data)
+					}
+				},
+				error: function(data){
+				}
+			});
 		}
 		return folderData;
 	}

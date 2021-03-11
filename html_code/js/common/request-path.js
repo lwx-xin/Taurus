@@ -84,5 +84,16 @@ const requestPath = {
 	// 禁用启用-文件夹
 	folderDelete:{"url":"/web/folder/{folderId}", "type":"delete"},
 	
+	// 文件列表
+	fileList:{"url":"/web/file", "type":"get"},
+	// 添加文件
+	fileInsert:{"url":"/web/file", "type":"post"},
+	// 文件详细信息
+	fileDetail:{"url":"/web/file/{fileId}", "type":"get"},
+	// 编辑文件信息
+	fileUpdate:{"url":"/web/file/{fileId}", "type":"put"},
+	// 禁用启用-文件
+	fileDelete:{"url":"/web/file/{fileId}", "type":"delete"}
+	
 }
 $.deepFreeze(requestPath);

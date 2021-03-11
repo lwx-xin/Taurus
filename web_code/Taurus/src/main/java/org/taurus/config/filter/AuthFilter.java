@@ -47,7 +47,7 @@ import io.jsonwebtoken.Claims;
 
 public class AuthFilter implements Filter {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Resource
     private SUrlService urlService;
@@ -167,8 +167,8 @@ public class AuthFilter implements Filter {
 
         if (userInfo_session == null) {
             returnMap.put("code", CheckCode.USER_ERR);
-            returnMap.put("userInfo", userInfo);
-            returnMap.put("authIdList", authIdList);
+            returnMap.put("userInfo", null);
+            returnMap.put("authIdList", null);
             return returnMap;
         }
 

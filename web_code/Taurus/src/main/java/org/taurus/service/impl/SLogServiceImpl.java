@@ -41,7 +41,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SLogServiceImpl extends ServiceImpl<SLogDao, SLogEntity> implements SLogService {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Resource
 	private TaurusProperties taurusProperties;
@@ -64,7 +64,7 @@ public class SLogServiceImpl extends ServiceImpl<SLogDao, SLogEntity> implements
 		rootFolderEntity_query.setFolderOwner(userId);
 		rootFolderEntity_query.setFolderParent("");
 		rootFolderEntity_query.setFolderDelFlg(Code.DEL_FLG_1.getValue());
-		QueryWrapper<SFolderEntity> rootQueryWrapper = new QueryWrapper<SFolderEntity>(rootFolderEntity_query);
+		QueryWrapper<SFolderEntity> rootQueryWrapper = new QueryWrapper<>(rootFolderEntity_query);
 		SFolderEntity rootFolderEntity = folderService.getOne(rootQueryWrapper);
 		if (rootFolderEntity == null) {
 			return;
@@ -76,7 +76,7 @@ public class SLogServiceImpl extends ServiceImpl<SLogDao, SLogEntity> implements
 		systemFolderEntity_query.setFolderOwner(userId);
 		systemFolderEntity_query.setFolderParent(rootFolderEntity.getFolderId());
 		systemFolderEntity_query.setFolderDelFlg(Code.DEL_FLG_1.getValue());
-		QueryWrapper<SFolderEntity> systemQueryWrapper = new QueryWrapper<SFolderEntity>(systemFolderEntity_query);
+		QueryWrapper<SFolderEntity> systemQueryWrapper = new QueryWrapper<>(systemFolderEntity_query);
 		SFolderEntity systemFolderEntity = folderService.getOne(systemQueryWrapper);
 		if (systemFolderEntity == null) {
 			return;
@@ -88,7 +88,7 @@ public class SLogServiceImpl extends ServiceImpl<SLogDao, SLogEntity> implements
 		logFolderEntity_query.setFolderOwner(userId);
 		logFolderEntity_query.setFolderParent(systemFolderEntity.getFolderId());
 		logFolderEntity_query.setFolderDelFlg(Code.DEL_FLG_1.getValue());
-		QueryWrapper<SFolderEntity> logQueryWrapper = new QueryWrapper<SFolderEntity>(logFolderEntity_query);
+		QueryWrapper<SFolderEntity> logQueryWrapper = new QueryWrapper<>(logFolderEntity_query);
 		SFolderEntity logFolderEntity = folderService.getOne(logQueryWrapper);
 		if (logFolderEntity == null) {
 			return;
@@ -143,7 +143,7 @@ public class SLogServiceImpl extends ServiceImpl<SLogDao, SLogEntity> implements
 			stream = new PrintStream(file);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			throw new CustomException(ExecptionType.SYSTEM, null, "记录日志文件失败");
+			throw new CustomException(ExecptionType.SYSTEM_LOG, null, "记录日志文件失败");
 		}
 		exception.printStackTrace(stream);
 		// aa 关闭输出流

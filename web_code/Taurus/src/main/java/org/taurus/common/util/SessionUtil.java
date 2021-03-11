@@ -11,7 +11,7 @@ import org.taurus.entity.SUserEntity;
 public class SessionUtil {
 
 	/**
-	 * 清除全部session
+	 * 清除session全部数据
 	 * 
 	 * @param session
 	 */
@@ -23,9 +23,9 @@ public class SessionUtil {
 	}
 
 	/**
-	 * 清除全部session
+	 * 清除session全部数据
 	 * 
-	 * @param session
+	 * @param request
 	 */
 	public static void clearSession(HttpServletRequest request) {
 		clearSession(request.getSession());
