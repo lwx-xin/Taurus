@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("web/url-param")
 public class UrlParamController {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Resource
 	private SUrlParamService urlParamService;
@@ -39,7 +39,7 @@ public class UrlParamController {
 		LoggerUtil.printParam(logger, "urlParamEntity", urlParamEntity);
 
 		List<SUrlParamEntity> data = urlParamService.getUrlParamList(urlParamEntity);
-		return new Result<List<SUrlParamEntity>>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class UrlParamController {
 		LoggerUtil.printParam(logger, "urlParamId", urlParamId);
 
 		SUrlParamEntity data = urlParamService.getURLParamDetail(urlParamId);
-		return new Result<SUrlParamEntity>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -66,9 +66,9 @@ public class UrlParamController {
 
 		SUrlParamEntity data = urlParamService.insert(urlParamEntity, SessionUtil.getUserId(request));
 		if (data == null) {
-			return new Result<SUrlParamEntity>(data, false, CheckCode.INTERFACE_ERR_CODE_3);
+			return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_3);
 		}
-		return new Result<SUrlParamEntity>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -84,9 +84,9 @@ public class UrlParamController {
 
 		SUrlParamEntity data = urlParamService.update(urlParamId, urlParamEntity, SessionUtil.getUserId(request));
 		if (data == null) {
-			return new Result<SUrlParamEntity>(data, false, CheckCode.INTERFACE_ERR_CODE_4);
+			return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_4);
 		}
-		return new Result<SUrlParamEntity>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 }

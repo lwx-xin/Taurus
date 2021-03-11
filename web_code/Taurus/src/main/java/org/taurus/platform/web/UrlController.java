@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("web/url")
 public class UrlController {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Resource
 	private SUrlService urlService;
@@ -40,7 +40,7 @@ public class UrlController {
 		LoggerUtil.printParam(logger, "urlEntity", urlEntity);
 
 		List<SUrlEntityEx> data = urlService.getUrlList(urlEntity);
-		return new Result<List<SUrlEntityEx>>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -54,9 +54,9 @@ public class UrlController {
 
 		SUrlEntityEx data = urlService.getUrlDetail(urlId);
 		if (data == null) {
-			return new Result<SUrlEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_2);
+			return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_2);
 		}
-		return new Result<SUrlEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -70,9 +70,9 @@ public class UrlController {
 
 		SUrlEntityEx data = urlService.insert(urlEntityEx, SessionUtil.getUserId(request));
 		if (data == null) {
-			return new Result<SUrlEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_3);
+			return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_3);
 		}
-		return new Result<SUrlEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -87,9 +87,9 @@ public class UrlController {
 
 		SUrlEntityEx data = urlService.update(urlId, urlEntityEx, SessionUtil.getUserId(request));
 		if (data == null) {
-			return new Result<SUrlEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_4);
+			return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_4);
 		}
-		return new Result<SUrlEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 }

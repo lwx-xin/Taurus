@@ -131,7 +131,7 @@ public class JsonUtil {
 	/**
 	 * 实体转json字符串
 	 * 
-	 * @param list
+	 * @param obj
 	 * @return
 	 */
 	public static String toJson(Object obj) {

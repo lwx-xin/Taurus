@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +26,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("web/auth")
 public class AuthController {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Resource
 	private SAuthService authService;
@@ -42,7 +41,7 @@ public class AuthController {
 		LoggerUtil.printParam(logger, "authEntity", authEntity);
 		List<SAuthEntityEx> data = authService.getAuthList(authEntity);
 
-		return new Result<List<SAuthEntityEx>>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -55,7 +54,7 @@ public class AuthController {
 		LoggerUtil.printParam(logger, "authId", authId);
 		SAuthEntityEx data = authService.getAuthDetail(authId);
 
-		return new Result<SAuthEntity>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -69,9 +68,9 @@ public class AuthController {
 
 		SAuthEntityEx data = authService.insert(authEntityEx, SessionUtil.getUserId(request));
 		if (data == null) {
-			return new Result<SAuthEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_3);
+			return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_3);
 		}
-		return new Result<SAuthEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -87,9 +86,9 @@ public class AuthController {
 
 		SAuthEntityEx data = authService.update(authId, authEntityEx, SessionUtil.getUserId(request));
 		if (data == null) {
-			return new Result<SAuthEntityEx>(data, false, CheckCode.INTERFACE_ERR_CODE_4);
+			return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_4);
 		}
-		return new Result<SAuthEntityEx>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 	/**
@@ -98,14 +97,14 @@ public class AuthController {
 	@ApiOperation(value = "禁用启用-权限(如果有【用户，请求，菜单】使用过该权限将无法禁用)")
 	@RequestMapping(value = "/{authId}", method = RequestMethod.DELETE)
 	public Result<SUserEntityEx> lock_unLock(@PathVariable("authId") String authId, SAuthEntityEx authEntityEx,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request) {
 
 		LoggerUtil.printParam(logger, "authId", authId);
 		LoggerUtil.printParam(logger, "authEntityEx", authEntityEx);
 
 		authService.lock_unLock(authId, SessionUtil.getUserId(request));
 
-		return new Result<SUserEntityEx>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 }

@@ -34,7 +34,7 @@ public class LoginController {
 		SUserEntity userEntity = userService.getUser(userNumber, userPwd);
 		
 		if (userEntity==null) {
-			return new Result<String>(null, false, CheckCode.LOGIN_WEB_ERROR);
+			return new Result<>(null, false, CheckCode.LOGIN_WEB_ERROR);
 		}
 		
 		String userId = userEntity.getUserId();
@@ -50,7 +50,7 @@ public class LoginController {
 		
 		RepeatLogin.addUser(userId, session);
 
-		return new Result<String>(null, true, CheckCode.LOGIN_WEB_SUCCESS);
+		return new Result<>(null, true, CheckCode.LOGIN_WEB_SUCCESS);
 	}
 
 	@RequestMapping(value = "/logout", method = RequestMethod.POST)
@@ -62,7 +62,7 @@ public class LoginController {
 		SessionUtil.clearSession(session);
 		CookieUtil.clearCookie(response);
 
-		return new Result<String>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 }

@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("web/folder")
 public class FolderController {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Resource
 	private SFolderService folderService;
@@ -41,7 +41,7 @@ public class FolderController {
 
 		List<SFolderEntityEx> data = folderService.getFolderTreeByUser(userId);
 
-		return new Result<List<SFolderEntityEx>>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
 	}
 
 }
