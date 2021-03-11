@@ -47,8 +47,12 @@
                 </div>
             </div>
 			
-			<div class="col-sm-9" id="fileList">
-                
+			<div class="col-sm-9 animated fadeInRight">
+                <div class="row">
+                    <div class="col-sm-12" id="fileList">
+						
+					</div>
+				</div>
             </div>
 			
         </div>
@@ -77,10 +81,16 @@
 		    data: folderData,
 			onNodeSelected: function (event, node) {
 				selectedNode = node;
+				// 加载文件列表
 				loadFileList(node.folderId);
+				// 添加选中缩放动画
+				$('.file-box').each(function () {
+					animationHover(this, 'pulse');
+				});
 			},
 			onNodeUnselected: function(event, node){
 				selectedNode = null;
+				// 清除文件列表
 				loadFileList(null);
 			}
 		});
@@ -107,7 +117,9 @@
 				type: requestPath.fileList.type,
 				success: function(data){
 					if(data.status){
-						console.log(data.data)
+						$.each(data.data, function(i, fileEntity){
+							$("#fileList").append(fileBoxTemplate(fileEntity));
+						});
 					}
 				},
 				error: function(data){
@@ -115,6 +127,74 @@
 			});
 		}
 		return folderData;
+	}
+	
+	/**
+	 * 获取文件模板
+	 * @param {Object} fileEntity 文件信息
+	 */
+	function fileBoxTemplate(fileEntity){
+		// 文件id
+		var fileId = fileEntity.fileId;
+		// 文件名称
+		var fileName = fileEntity.fileName;
+		// 文件大小 KB
+		var fileSize = fileEntity.fileSize;
+		// 文件类型 code->file_type
+		var fileType = fileEntity.fileType;
+		// 最后一次修改时间
+		var fileModifyTime = fileEntity.fileModifyTime;
+		
+		var fileTypeDiv = getFileTypeDiv(fileType);
+		
+		var html = "<div class='file-box'>"+
+			"	<a href='#'>"+
+			"		<div class='file'>"+
+			"			<span class='corner'></span>"+
+			fileTypeDiv +
+			"			<div class='file-name'>"+ fileName +"<br/>"+
+			"				<small>"+ new Date(fileModifyTime).toStr("yyyy-MM-dd HH:mm:ss") +"&nbsp;"+ fileSize +"KB</small>"+
+			"			</div>"+
+			"		</div>"+
+			"	</a>"+
+			"</div>";
+		return html;
+	}
+	
+	/**
+	 * 获取文件分類样式
+	 * @param {String} fileType 文件類型
+	 */
+	function getFileTypeDiv(fileType){
+		var fileTypeDiv = "";
+		switch (fileType){
+			case Code.FILE_TYPE_AUDIO.value:
+				/** 文件类型-音频*/
+				fileTypeDiv = "<div class='icon'><i class='fa fa-music'></i></div>";;
+				break;
+			case Code.FILE_TYPE_VIDEO.value:
+				/** 文件类型-视频*/
+				fileTypeDiv = "<div class='icon'><i class='fa fa-film'></i></div>";
+				break;
+			case Code.FILE_TYPE_TXT.value:
+				/** 文件类型-文本*/
+				fileTypeDiv = "<div class='icon'><i class='fa fa-file-text-o'></i></div>";
+				break;
+			case Code.FILE_TYPE_LOG.value:
+				/** 文件类型-日志*/
+				fileTypeDiv = "<div class='icon'><i class='fa fa-file-text-o'></i></div>";
+				break;
+			case Code.FILE_TYPE_PICTURE.value:
+				/** 文件类型-图片*/
+				fileTypeDiv = "<div class='icon'><i class='fa fa-file-text-o'></i></div>";
+				//fileTypeDiv = "<div class='image'><img alt='image' class='img-responsive' src='../../img/default-picture.png'></div>";
+				break;
+			default:
+				/** 文件类型-其它*/
+				fileTypeDiv = "<div class='icon'><i class='fa fa-file'></i></div>";
+				break;
+		}
+		return fileTypeDiv;
 	}
 	
 	/**
