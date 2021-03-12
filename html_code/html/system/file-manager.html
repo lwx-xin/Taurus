@@ -75,7 +75,63 @@
 		$("#fileList").on("click",".file-box",function(){
 			var fileId = $(this).attr("file-id");
 			var fileType = $(this).attr("file-type");
+			openFile(fileId);
 		});
+	}
+	
+	/**
+	 * 在线打开文件
+	 * @param {String} fileId 文件id 
+	 */
+	function openFile(fileId){
+		var fileEntity = null;
+		ajax({
+			url: requestPath.fileDetail.url,
+			data: {"fileId": fileId},
+			type: requestPath.fileDetail.type,
+			success: function(data){
+				if(data.status){
+					fileEntity = data.data;
+				}
+			},
+			error: function(data){
+			}
+		});
+		
+		if(isNull(fileEntity)){
+			showInformation("提示", "文件异常", "info");
+			return false;
+		}
+		
+		// 文件请求路径
+		var filePath = "../../"+fileEntity.fileUrl;
+	
+		switch (fileEntity.fileType){
+			case Code.FILE_TYPE_AUDIO.value:
+				/** 文件类型-音频*/
+				
+				break;
+			case Code.FILE_TYPE_VIDEO.value:
+				/** 文件类型-视频*/
+				
+				break;
+			case Code.FILE_TYPE_TXT.value:
+				/** 文件类型-文本*/
+				
+				break;
+			case Code.FILE_TYPE_LOG.value:
+				/** 文件类型-日志*/
+				
+				break;
+			case Code.FILE_TYPE_PICTURE.value:
+				/** 文件类型-图片*/
+				parent.addMenuTab(filePath, fileEntity.fileName, 1);
+				break;
+			default:
+				/** 文件类型-其它*/
+				
+				break;
+		}
 	}
 	
 	var selectedNode;

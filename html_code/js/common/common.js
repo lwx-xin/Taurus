@@ -231,7 +231,7 @@ function ajax(param){
 			//console.log(data)
 			
 			if(isNotNull(data.message)){
-				showInformation("提示", data.message, "info;");
+				showInformation("提示", data.message, "info");
 			}
 			
 			if(param.success!=null){
