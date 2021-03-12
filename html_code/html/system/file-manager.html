@@ -42,7 +42,7 @@
                     </div>
                     <div class="ibox-content">
 						<div id="folderTree" class=""></div>
-						<a class="btn btn-block btn-primary insert-root-btn">添加文件夹</a>
+						<!-- <a class="btn btn-block btn-primary insert-root-btn">添加文件夹</a> -->
                     </div>
                 </div>
             </div>
@@ -71,7 +71,11 @@
 	});
 	
 	function initEvent(){
-
+		// 文件box点击事件
+		$("#fileList").on("click",".file-box",function(){
+			var fileId = $(this).attr("file-id");
+			var fileType = $(this).attr("file-type");
+		});
 	}
 	
 	var selectedNode;
@@ -147,8 +151,8 @@
 		
 		var fileTypeDiv = getFileTypeDiv(fileType);
 		
-		var html = "<div class='file-box'>"+
-			"	<a href='#'>"+
+		var html = "<div class='file-box' file-id='"+ fileId +"' file-type='"+ fileType +"'>"+
+			"	<a href='javascript:void(0);'>"+
 			"		<div class='file'>"+
 			"			<span class='corner'></span>"+
 			fileTypeDiv +
