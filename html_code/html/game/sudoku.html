@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta http-equiv="Content-Style-Type" content="text/css">
 	<meta http-equiv="Content-Script-Type" content="text/javascript">
-	<link href="sudoku.css" rel="stylesheet">
+	<link href="../../css/game/sudoku/sudoku.css" rel="stylesheet">
 	
 </head>
 
@@ -19,8 +19,7 @@
 
 </body>
 
-<script src="../jquery-3.4.1.min.js"></script>
-<script src="../array-expand.js"></script>
+<script type="text/javascript" src="../../js/jquery.min.js"></script>
 <script>
 
 var width=9;
@@ -278,6 +277,41 @@ function numberObject(thisNumber,usedNumber){
 	obj["thisNumber"] = thisNumber;
 	obj["usedNumber"] = usedNumber;
 	return obj;
+}
+
+//移除数组中的元素
+Array.prototype.removeAll = function(data){
+	if(data==null || data.length==0){
+		return this;
+	}
+	var arr = new Array();
+	for(var i=0;i<this.length;i++){
+		var bool = true;
+		for(var j=0;j<data.length;j++){
+			if(this[i]==data[j] || JSON.stringify(this[i])==JSON.stringify(data[j])){
+				bool = false;
+			}
+		}
+		if(bool){
+			arr.push(this[i]);
+		}
+	}
+	return arr;
+}
+
+//数组是否包含元素
+Array.prototype.contains = function(data){
+	if(this==null || this.length==0){
+		return false;
+	}
+	var bool = false;
+	for(var i=0;i<this.length;i++){
+		if(this[i]==data || JSON.stringify(this[i])==JSON.stringify(data)){
+			bool = true;
+			break;
+		}
+	}
+	return bool;
 }
 </script>
 </html>
