@@ -35,19 +35,7 @@
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
 			
-            <div class="col-sm-3">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>文件管理</h5>
-                    </div>
-                    <div class="ibox-content">
-						<div id="folderTree" class=""></div>
-						<!-- <a class="btn btn-block btn-primary insert-root-btn">添加文件夹</a> -->
-                    </div>
-                </div>
-            </div>
-			
-			<div class="col-sm-9 animated fadeInRight">
+			<div class="col-sm-12 animated fadeInRight">
                 <div class="row">
                     <div class="col-sm-12" id="fileList">
 						
@@ -76,9 +64,14 @@
 		
 		// 文件box点击事件 -- 打开文件
 		$("#fileList").on("click",".file-box",function(){
-			var fileId = $(this).attr("file-id");
 			var fileType = $(this).attr("file-type");
-			openFile(fileId);
+			if(fileType==Code.FILE_TYPE_FOLDER.value){
+				var folderId = $(this).attr("folder-id");
+				initFolderAndFile(folderId);
+			} else {
+				var fileId = $(this).attr("file-id");
+				openFile(fileId);
+			}
 		});
 	}
 	
@@ -122,7 +115,7 @@
 			type: requestPath.fileInsert.type,
 			success: function(data){
 				if(data.status){
-					loadFileList(selectedNode.folderId);
+					initFolderAndFile(selectedNode.folderId);
 				}
 			},
 			error: function(data){
@@ -185,58 +178,9 @@
 		}
 	}
 	
-	var selectedNode;
-	function drawTree(folderData){
-		$('#folderTree').treeview({
-			showTags: true,
-		    data: folderData,
-			onNodeSelected: function (event, node) {
-				selectedNode = node;
-				// 加载文件列表
-				loadFileList(node.folderId);
-			},
-			onNodeUnselected: function(event, node){
-				selectedNode = null;
-				// 清除文件列表
-				loadFileList(null);
-			}
-		});
-	}
-	
 	function initData(){
-		// 初始化文件夹
-		initFolderTree();
-	}
-	
-	/**
-	 * 根据文件夹ID加载文件列表<br>并返回文件列表
-	 * @param {String} folderId
-	 * @return {Object} 文件列表
-	 */
-	function loadFileList(folderId){
-		var folderData = null;
-		$("#fileList").html("");
-		if(isNotNull(folderId)){
-			ajax({
-				url: requestPath.fileList.url,
-				data: {"fileFolder": folderId},
-				type: requestPath.fileList.type,
-				success: function(data){
-					if(data.status){
-						$.each(data.data, function(i, fileEntityEx){
-							$("#fileList").append(fileBoxTemplate(fileEntityEx));
-						});
-					}
-				},
-				error: function(data){
-				}
-			});
-			// 添加选中缩放动画
-			$('.file-box').each(function () {
-				animationHover(this, 'pulse');
-			});
-		}
-		return folderData;
+		// 加载文件夹以及文件
+		initFolderAndFile("");
 	}
 	
 	/**
@@ -276,6 +220,36 @@
 	}
 	
 	/**
+	 * 获取文件夹模板
+	 * @param {Object} folderEntityEx 文件夹信息
+	 */
+	function folderBoxTemplate(folderEntityEx){
+		// 文件夹id
+		var folderId = folderEntityEx.folderId;
+		// 文件夹名称
+		var folderName = folderEntityEx.folderName;
+		// 最后一次修改时间
+		var folderModifyTime = folderEntityEx.folderModifyTime;
+		// 文件类型--文件夹
+		var fileType = Code.FILE_TYPE_FOLDER.value;
+		
+		var fileTypeDiv = getFileTypeDiv(fileType, "");
+		
+		var html = "<div class='file-box' folder-id='"+ folderId +"' file-type='"+ fileType +"'>"+
+			"	<a href='javascript:void(0);'>"+
+			"		<div class='file'>"+
+			"			<span class='corner'></span>"+
+			fileTypeDiv +
+			"			<div class='file-name'>"+ folderName +"<br/>"+
+			"				<small>"+ new Date(folderModifyTime).toStr("yyyy-MM-dd HH:mm:ss") +"</small>"+
+			"			</div>"+
+			"		</div>"+
+			"	</a>"+
+			"</div>";
+		return html;
+	}
+	
+	/**
 	 * 获取文件分類样式
 	 * @param {String} fileType 文件類型
 	 * @param {String} fileThumbnailsUrl 略缩图的请求路径（不是图片的文件该字段为空）
@@ -283,6 +257,10 @@
 	function getFileTypeDiv(fileType, fileThumbnailsUrl){
 		var fileTypeDiv = "";
 		switch (fileType){
+			case Code.FILE_TYPE_FOLDER.value:
+				/** 文件类型-文件夹*/
+				fileTypeDiv = "<div class='icon'><i class='fa fa-folder-open-o'></i></div>";;
+				break;
 			case Code.FILE_TYPE_AUDIO.value:
 				/** 文件类型-音频*/
 				fileTypeDiv = "<div class='icon'><i class='fa fa-music'></i></div>";;
@@ -315,18 +293,26 @@
 	/**
 	 * 初始化文件夹列表
 	 */
-	function initFolderTree(){
+	function initFolderAndFile(folderId){
+		$("#fileList").html("");
 		ajax({
-			url: requestPath.folderTreeList.url,
-			type: requestPath.folderTreeList.type,
+			url: requestPath.folderList.url,
+			data: {"folderId": folderId},
+			type: requestPath.folderList.type,
 			success: function(data){
 				if(data.status){
-					var folderTree = processingFolderData(data.data);
-					if(isNotNull(folderTree)){
-						//渲染Tree
-						drawTree(folderTree);
-					} else {
-						//showInformation("提示","未查找到菜单数据","info")
+					console.log(data.data);
+					var folders = data.data.childrens;
+					var files = data.data.childrenFiles;
+					if(isNotNull(folders)){
+						$.each(folders, function(i, folderEntityEx){
+							$("#fileList").append(folderBoxTemplate(folderEntityEx));
+						});
+					}
+					if(isNotNull(files)){
+						$.each(files, function(i, fileEntityEx){
+							$("#fileList").append(fileBoxTemplate(fileEntityEx));
+						});
 					}
 				}
 			},
@@ -334,55 +320,6 @@
 			}
 		});
 	}
-	
-	/**
-	 * 将文件夹列表转换成bootstrap-tree接受的格式
-	 * @param {Array} folderData
-	 */
-	function processingFolderData(folderData){
-		if(isNull(folderData)){
-			return null;
-		}
-		
-		var folderTree = new Array();
-		
-		$.each(folderData, function(i, folderEntityEx){
-			var treeObj = convertFolderEntity(folderEntityEx);
-			folderTree.push(treeObj);
-		});
-		return folderTree;
-	}
-	
-	/**
-	 * 转换菜单实体
-	 * @param {Object} folderEntityEx
-	 */
-	function convertFolderEntity(folderEntityEx){
-		var treeObj = new Object();
-		treeObj["folderId"] = folderEntityEx.folderId;
-		treeObj["text"] = folderEntityEx.folderName;
-		treeObj["href"] = "";
-		treeObj["state"] = { 
-			checked: selectedNode==null?false:selectedNode.folderId==folderEntityEx.folderId,//false, //指示一个节点是否处于checked状态，用一个checkbox图标表示。
-			disabled: false, //指示一个节点是否处于disabled状态。（不是selectable，expandable或checkable）
-			expanded: false, //指示一个节点是否处于展开状态。
-			selected: false //指示一个节点是否可以被选择。
-		};
-		treeObj["selectable"] = true; //指定列表树的节点是否可选择。设置为false将使节点展开，并且不能被选择。
-		
-		treeObj["tags"] = "";
-		
-		var nodeArr = null;
-		if(isNotNull(folderEntityEx.childrens)){
-			nodeArr = new Array();
-			$.each(folderEntityEx.childrens, function(i, childrenFolderEntityEx){
-				var childrenTreeObj = convertFolderEntity(childrenFolderEntityEx);
-				nodeArr.push(childrenTreeObj);
-			});
-		}
-		treeObj["nodes"] = nodeArr;
-		return treeObj;
-	}
-	
+
 </script>
 </html>

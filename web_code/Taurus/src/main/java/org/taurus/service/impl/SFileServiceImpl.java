@@ -168,13 +168,8 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
         return filePath;
     }
 
-    /**
-     * 获取文件的请求路径
-     *
-     * @param filePath 文件路径
-     * @return /f/xxx/xxxx/x.txt
-     */
-    private String getFileUrl(String filePath) {
+    @Override
+    public String getFileUrl(String filePath) {
         if (StrUtil.isNotEmpty(filePath)) {
             String virtualPath = taurusProperties.getFolderRootVirtual().substring(0,
                     taurusProperties.getFolderRootVirtual().lastIndexOf("**"));
@@ -183,13 +178,8 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
         return "";
     }
 
-    /**
-     * 获取图片略缩图的请求路径
-     *
-     * @param filePath 文件路径
-     * @return /f/xxx/xxxx/xx_thumbnails.png
-     */
-    private String getFileThumbnailsUrl(String filePath) {
+    @Override
+    public String getFileThumbnailsUrl(String filePath) {
         if (StrUtil.isNotEmpty(filePath)) {
             String virtualPath = taurusProperties.getFolderRootVirtual().substring(0,
                     taurusProperties.getFolderRootVirtual().lastIndexOf("**"));
@@ -223,8 +213,8 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
                 SFileEntityEx fileEntityEx = JsonUtil.toEntity(fileEntity, SFileEntityEx.class);
                 if (fileEntityEx != null) {
                     // 文件请求路径
-                    String fileUrl = getFileUrl(fileEntityEx.getFilePath());
-                    fileEntityEx.setFileUrl(fileUrl);
+//                    String fileUrl = getFileUrl(fileEntityEx.getFilePath());
+//                    fileEntityEx.setFileUrl(fileUrl);
 
                     // 略缩图路径
                     if (Code.FILE_TYPE_PICTURE.getValue().equals(fileEntityEx.getFileType())) {

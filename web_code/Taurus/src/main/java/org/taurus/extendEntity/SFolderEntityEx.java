@@ -13,6 +13,11 @@ public class SFolderEntityEx extends SFolderEntity {
 	 */
 	private List<SFolderEntityEx> childrens;
 
+	/**
+	 * 该目录下的文件
+	 */
+	private List<SFileEntityEx> childrenFiles;
+
 	public List<SFolderEntityEx> getChildrens() {
 		return childrens;
 	}
@@ -21,4 +26,11 @@ public class SFolderEntityEx extends SFolderEntity {
 		this.childrens = childrens;
 	}
 
+	public List<SFileEntityEx> getChildrenFiles() {
+		return childrenFiles;
+	}
+
+	public void setChildrenFiles(List<SFileEntityEx> childrenFiles) {
+		this.childrenFiles = childrenFiles;
+	}
 }

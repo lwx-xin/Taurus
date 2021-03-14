@@ -212,8 +212,8 @@ function ajax(param){
 			return false;
 		}
 	}
-	console.log(data);
-	console.log(param);
+	// console.log(data);
+	// console.log(param);
 	
 	$.ajax({
 		url: param.url,

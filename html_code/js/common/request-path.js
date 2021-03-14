@@ -73,7 +73,9 @@ const requestPath = {
 	// 禁用启用-请求参数
 	urlParamDelete:{"url":"/web/url-param/{urlParamId}", "type":"delete"},
 	
-	// 文件夹列表
+	// 文件夹列表--树状结构
+	folderTreeList:{"url":"/web/folder/tree", "type":"get"},
+	// 文件夹列表--平铺结构(包含文件夹下是文件以及文件夹)
 	folderList:{"url":"/web/folder", "type":"get"},
 	// 添加文件夹
 	folderInsert:{"url":"/web/folder", "type":"post"},

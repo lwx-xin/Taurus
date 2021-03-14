@@ -23,25 +23,45 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("web/folder")
 public class FolderController {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Resource
-	private SFolderService folderService;
+    @Resource
+    private SFolderService folderService;
 
-	/**
-	 * 获取文件夹列表
-	 */
-	@ApiOperation(value = "获取文件夹列表")
-	@RequestMapping(method = RequestMethod.GET)
-	public Result<List<SFolderEntityEx>> getList(SFolderEntityEx folderEntityEx, HttpSession session) {
+    /**
+     * 获取文件夹下的文件以及文件夹
+     */
+    @ApiOperation(value = "获取文件夹下的文件以及文件夹")
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public Result<SFolderEntityEx> getList(SFolderEntityEx folderEntityEx, HttpSession session) {
 
-		LoggerUtil.printParam(logger, "folderEntityEx", folderEntityEx);
+        LoggerUtil.printParam(logger, "folderEntityEx", folderEntityEx);
 
-		String userId = SessionUtil.getUserId(session);
+        String userId = SessionUtil.getUserId(session);
 
-		List<SFolderEntityEx> data = folderService.getFolderTreeByUser(userId);
+        SFolderEntityEx data = folderService.getFolderDetail(userId, folderEntityEx.getFolderId());
+        if (data==null){
+            return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_2);
+        }
+        return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+    }
 
-		return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
-	}
+    /**
+     * 获取文件夹列表--树状结构(不包含文件)
+     */
+    @ApiOperation(value = "获取文件夹列表--树状结构(不包含文件)")
+    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    public Result<List<SFolderEntityEx>> getTreeList(SFolderEntityEx folderEntityEx, HttpSession session) {
+
+        LoggerUtil.printParam(logger, "folderEntityEx", folderEntityEx);
+
+        String userId = SessionUtil.getUserId(session);
+
+        List<SFolderEntityEx> data = folderService.getFolderTreeByUser(userId);
+        if (data==null){
+            return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_2);
+        }
+        return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+    }
 
 }

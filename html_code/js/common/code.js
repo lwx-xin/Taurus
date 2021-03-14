@@ -36,6 +36,8 @@ const Code = {
 	/** 启用 */
 	"enable": {"group":"use_type", "name":"启用", "value":"1"},
 	
+	/** 文件类型-文件夹*/
+	"FILE_TYPE_FOLDER": {"group":"file_type", "name":"folder", "value":"-1"},
 	/** 文件类型-其它*/
 	"FILE_TYPE_OTHER": {"group":"file_type", "name":"other", "value":"0"},
 	/** 文件类型-音频*/
