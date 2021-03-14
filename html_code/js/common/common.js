@@ -191,7 +191,10 @@ function ajax(param){
 			$.each(param.data, function(k, v){
 				formData.append(k, v);
 			});
-			formData.append("files", param.data.files);
+			var files = param.data.files;
+			for(var i=0;i<files.length;i++){
+				formData.append("files", files[i]);
+			}
 			processData = false;
 			contentType = false;
 			data = formData;
@@ -209,6 +212,8 @@ function ajax(param){
 			return false;
 		}
 	}
+	console.log(data);
+	console.log(param);
 	
 	$.ajax({
 		url: param.url,

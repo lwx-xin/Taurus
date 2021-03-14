@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.taurus.entity.SFileEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.taurus.entity.SFolderEntity;
 import org.taurus.extendEntity.SFileEntityEx;
 
 import java.util.List;
@@ -68,6 +69,14 @@ public interface SFileService extends IService<SFileEntity> {
     public List<SFileEntity> getList(SFileEntity fileEntity);
 
     /**
+     * 获取当前文件夹下的文件列表
+     *
+     * @param folderId 文件所属文件夹
+     * @return 文件列表数据
+     */
+    public List<SFileEntityEx> getList(String folderId);
+
+    /**
      * 根据id获取文件信息
      *
      * @param fileId 文件id
@@ -75,5 +84,15 @@ public interface SFileService extends IService<SFileEntity> {
      * @return
      */
     public SFileEntityEx getFileDetail(String fileId, String owner);
+
+    /**
+     * 添加文件
+     *
+     * @param fileFolder 文件所属文件夹
+     * @param files      文件
+     * @param owner      文件所有者
+     * @return 状态
+     */
+    public boolean insert(String fileFolder, MultipartFile[] files, String owner);
 
 }

@@ -71,11 +71,62 @@
 	});
 	
 	function initEvent(){
-		// 文件box点击事件
+		// 处理文件拖拽上传
+		fileDragEvent();
+		
+		// 文件box点击事件 -- 打开文件
 		$("#fileList").on("click",".file-box",function(){
 			var fileId = $(this).attr("file-id");
 			var fileType = $(this).attr("file-type");
 			openFile(fileId);
+		});
+	}
+	
+	/**
+	 * 处理文件拖拽上传
+	 */
+	function fileDragEvent(){
+		$('body').on('dragover', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+		});
+		$('body').on('dragenter', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+		});
+		$('body').on('drop', function(e){
+			if(e.originalEvent.dataTransfer){
+				if(e.originalEvent.dataTransfer.files.length) {
+					e.preventDefault();
+					e.stopPropagation();
+					/*UPLOAD FILES HERE*/
+					var files = e.originalEvent.dataTransfer.files;
+					uploadFile(files);
+				}
+			}
+		});
+	}
+	
+	function uploadFile(files){
+		if(selectedNode==null || isNull(selectedNode.folderId)){
+			showInformation("提示", "请选择左侧文件夹", "info");
+			return false;
+		}
+		var param = new Object();
+		param["files"] = files;
+		param["folderId"] = selectedNode.folderId;
+			
+		ajax({
+			url: requestPath.fileInsert.url,
+			data: param,
+			type: requestPath.fileInsert.type,
+			success: function(data){
+				if(data.status){
+					loadFileList(selectedNode.folderId);
+				}
+			},
+			error: function(data){
+			}
 		});
 	}
 	
@@ -143,10 +194,6 @@
 				selectedNode = node;
 				// 加载文件列表
 				loadFileList(node.folderId);
-				// 添加选中缩放动画
-				$('.file-box').each(function () {
-					animationHover(this, 'pulse');
-				});
 			},
 			onNodeUnselected: function(event, node){
 				selectedNode = null;
@@ -168,22 +215,25 @@
 	 */
 	function loadFileList(folderId){
 		var folderData = null;
-		if(isNull(folderId)){
-			$("#fileList").html("");
-		} else {
+		$("#fileList").html("");
+		if(isNotNull(folderId)){
 			ajax({
 				url: requestPath.fileList.url,
 				data: {"fileFolder": folderId},
 				type: requestPath.fileList.type,
 				success: function(data){
 					if(data.status){
-						$.each(data.data, function(i, fileEntity){
-							$("#fileList").append(fileBoxTemplate(fileEntity));
+						$.each(data.data, function(i, fileEntityEx){
+							$("#fileList").append(fileBoxTemplate(fileEntityEx));
 						});
 					}
 				},
 				error: function(data){
 				}
+			});
+			// 添加选中缩放动画
+			$('.file-box').each(function () {
+				animationHover(this, 'pulse');
 			});
 		}
 		return folderData;
@@ -191,21 +241,25 @@
 	
 	/**
 	 * 获取文件模板
-	 * @param {Object} fileEntity 文件信息
+	 * @param {Object} fileEntityEx 文件信息
 	 */
-	function fileBoxTemplate(fileEntity){
+	function fileBoxTemplate(fileEntityEx){
 		// 文件id
-		var fileId = fileEntity.fileId;
+		var fileId = fileEntityEx.fileId;
 		// 文件名称
-		var fileName = fileEntity.fileName;
+		var fileName = fileEntityEx.fileName;
 		// 文件大小 KB
-		var fileSize = fileEntity.fileSize;
+		var fileSize = fileEntityEx.fileSize;
 		// 文件类型 code->file_type
-		var fileType = fileEntity.fileType;
+		var fileType = fileEntityEx.fileType;
 		// 最后一次修改时间
-		var fileModifyTime = fileEntity.fileModifyTime;
+		var fileModifyTime = fileEntityEx.fileModifyTime;
+		// 文件的请求路径
+		var fileUrl = fileEntityEx.fileUrl;
+		// 略缩图的请求路径（不是图片的文件该字段为空）
+		var fileThumbnailsUrl = fileEntityEx.fileThumbnailsUrl;
 		
-		var fileTypeDiv = getFileTypeDiv(fileType);
+		var fileTypeDiv = getFileTypeDiv(fileType, fileThumbnailsUrl);
 		
 		var html = "<div class='file-box' file-id='"+ fileId +"' file-type='"+ fileType +"'>"+
 			"	<a href='javascript:void(0);'>"+
@@ -224,8 +278,9 @@
 	/**
 	 * 获取文件分類样式
 	 * @param {String} fileType 文件類型
+	 * @param {String} fileThumbnailsUrl 略缩图的请求路径（不是图片的文件该字段为空）
 	 */
-	function getFileTypeDiv(fileType){
+	function getFileTypeDiv(fileType, fileThumbnailsUrl){
 		var fileTypeDiv = "";
 		switch (fileType){
 			case Code.FILE_TYPE_AUDIO.value:
@@ -246,8 +301,8 @@
 				break;
 			case Code.FILE_TYPE_PICTURE.value:
 				/** 文件类型-图片*/
-				fileTypeDiv = "<div class='icon'><i class='fa fa-file-text-o'></i></div>";
-				//fileTypeDiv = "<div class='image'><img alt='image' class='img-responsive' src='../../img/default-picture.png'></div>";
+				// fileTypeDiv = "<div class='icon'><i class='fa fa-file-text-o'></i></div>";
+				fileTypeDiv = "<div class='image' align='center'><img alt='image' class='img-responsive' src='"+fileThumbnailsUrl+"'></div>";
 				break;
 			default:
 				/** 文件类型-其它*/

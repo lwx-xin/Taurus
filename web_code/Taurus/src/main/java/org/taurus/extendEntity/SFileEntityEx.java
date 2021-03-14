@@ -12,8 +12,21 @@ public class SFileEntityEx extends SFileEntity {
      */
     private String fileUrl;
 
+    /**
+     * 略缩图请求路径
+     */
+    private String fileThumbnailsUrl;
+
     public String getFileUrl() {
         return fileUrl;
+    }
+
+    public String getFileThumbnailsUrl() {
+        return fileThumbnailsUrl;
+    }
+
+    public void setFileThumbnailsUrl(String fileThumbnailsUrl) {
+        this.fileThumbnailsUrl = fileThumbnailsUrl;
     }
 
     public void setFileUrl(String fileUrl) {
