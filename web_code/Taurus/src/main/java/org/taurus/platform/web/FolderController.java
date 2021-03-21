@@ -3,6 +3,7 @@ package org.taurus.platform.web;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -14,6 +15,9 @@ import org.taurus.common.code.CheckCode;
 import org.taurus.common.result.Result;
 import org.taurus.common.util.LoggerUtil;
 import org.taurus.common.util.SessionUtil;
+import org.taurus.common.util.StrUtil;
+import org.taurus.entity.SFolderEntity;
+import org.taurus.extendEntity.SAuthEntityEx;
 import org.taurus.extendEntity.SFolderEntityEx;
 import org.taurus.service.SFolderService;
 
@@ -60,6 +64,27 @@ public class FolderController {
         List<SFolderEntityEx> data = folderService.getFolderTreeByUser(userId);
         if (data==null){
             return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_2);
+        }
+        return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+    }
+
+    /**
+     * 添加文件夹
+     */
+    @ApiOperation(value = "添加文件夹")
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public Result<SFolderEntity> insert(SFolderEntity folderEntity, HttpServletRequest request) {
+
+        LoggerUtil.printParam(logger, "folderEntity", folderEntity);
+
+        String userId = SessionUtil.getUserId(request);
+        String folderName = folderEntity.getFolderName();
+        String folderParent = folderEntity.getFolderParent();
+
+        String folderId = folderService.createFolder(folderName,folderParent,userId,userId);
+        SFolderEntity data = folderService.getById(folderId);
+        if (data == null) {
+            return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_3);
         }
         return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
     }

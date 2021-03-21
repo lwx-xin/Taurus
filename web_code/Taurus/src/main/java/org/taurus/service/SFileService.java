@@ -111,4 +111,13 @@ public interface SFileService extends IService<SFileEntity> {
      */
     public boolean insert(String fileFolder, MultipartFile[] files, String owner);
 
+    /**
+     * 验证文件夹下是否存在同名的文件
+     *
+     * @param fileFolder 文件夹
+     * @param files      文件
+     * @return
+     */
+    public boolean fileNameCheck(String fileFolder, MultipartFile[] files);
+
 }

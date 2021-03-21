@@ -40,7 +40,7 @@ public class FileController {
         LoggerUtil.printParam(logger, "fileFolder", fileFolder);
 
         List<SFileEntityEx> data = fileService.getList(fileFolder);
-        if (data==null){
+        if (data == null) {
             return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_2);
         }
         return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
@@ -67,6 +67,10 @@ public class FileController {
     public Result<SFileEntity> insert(String folderId, MultipartFile[] files, HttpServletRequest request) {
 
         LoggerUtil.printParam(logger, "folderId", folderId);
+
+        if (!fileService.fileNameCheck(folderId, files)) {
+            return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_3.getValue(), "存在同名的文件");
+        }
 
         boolean insert = fileService.insert(folderId, files, SessionUtil.getUserId(request));
         if (!insert) {

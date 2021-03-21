@@ -2,6 +2,7 @@ package org.taurus.service.impl;
 
 import org.apache.commons.io.FilenameUtils;
 import org.taurus.common.util.*;
+import org.taurus.entity.SAuthEntity;
 import org.taurus.entity.SFileEntity;
 import org.taurus.entity.SFolderEntity;
 import org.taurus.common.code.Code;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -252,6 +254,33 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
         if (ListUtil.isNotEmpty(files)) {
             for (MultipartFile file : files) {
                 saveFile(file, fileFolder, owner, owner);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean fileNameCheck(String fileFolder, MultipartFile[] files) {
+
+        if (StrUtil.isEmpty(fileFolder)) {
+            return false;
+        }
+
+        SFileEntity fileEntityQuery = new SFileEntity();
+        fileEntityQuery.setFileFolder(fileFolder);
+        QueryWrapper<SFileEntity> fileQueryWrapper = new QueryWrapper<>(fileEntityQuery);
+        List<SFileEntity> fileListByFolder = list(fileQueryWrapper);
+        if (ListUtil.isEmpty(fileListByFolder)) {
+            return true;
+        }
+
+        List<String> fileNameListByFolder = fileListByFolder.stream().map(SFileEntity::getFileName)
+                .collect(Collectors.toList());
+
+        for (MultipartFile file : files) {
+            SFileEntity fileEntityInfo = FileUtil.getInfoByFile(file, null);
+            if (fileNameListByFolder.contains(fileEntityInfo.getFileName())) {
+                return false;
             }
         }
         return true;
