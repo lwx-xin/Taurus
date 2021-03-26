@@ -23,7 +23,7 @@ import org.taurus.service.SUserService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 @Configuration
-public class InitDbData {
+public class InitAdminUserData {
 
 	/**
 	 * 当前时间
@@ -45,7 +45,6 @@ public class InitDbData {
 	@Resource
 	private SFolderService folderService;
 	
-	@Bean
 	@Transactional
 	public void initData() {
 		initUser();
