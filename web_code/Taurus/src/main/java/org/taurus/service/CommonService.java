@@ -3,6 +3,7 @@ package org.taurus.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
 import org.taurus.common.result.CodeElement;
 import org.taurus.extendEntity.SMenuEntityEx;
 

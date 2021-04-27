@@ -2,24 +2,18 @@ package org.taurus.service.impl;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.xml.crypto.Data;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.taurus.common.code.Code;
 import org.taurus.common.code.ExecptionType;
 import org.taurus.common.exception.CustomException;
-import org.taurus.common.util.DateUtil;
-import org.taurus.common.util.JsonUtil;
-import org.taurus.common.util.ListUtil;
-import org.taurus.common.util.MapUtil;
-import org.taurus.common.util.StrUtil;
+import org.taurus.common.util.*;
 import org.taurus.config.load.properties.TaurusProperties;
 import org.taurus.dao.SFolderDao;
 import org.taurus.entity.SFileEntity;
@@ -43,11 +37,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 @Service
 public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> implements SFolderService {
 
-    @Resource
+    @Autowired
     private TaurusProperties taurusProperties;
 
-    @Resource
+    @Autowired
     private SFileService fileService;
+
+    @Autowired
+    private SFolderDao folderDao;
 
     @Override
     public String getFolderPath(String folderId, String folderOwner) {
@@ -167,11 +164,19 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
     }
 
     @Override
-    public SFolderEntityEx getFolderDetail(String userId, String folderId) {
+    public SFolderEntityEx getFolderDetail(String userId, Map<String, Object> filter, String folderId) {
         if (StrUtil.isEmpty(userId)) {
             return null;
         }
 
+        // 文件类型
+        Object fileTypeObj = filter.get("fileType");
+        List<String> filter_fileTypes = null;
+        if (fileTypeObj != null) {
+            filter_fileTypes = new ArrayList<>(Arrays.asList((String[]) fileTypeObj));
+        }
+
+        // 获取当前文件夹的信息
         SFolderEntityEx returnFolder = null;
         if (StrUtil.isNotEmpty(folderId)) {
             returnFolder = JsonUtil.toEntity(getById(folderId), SFolderEntityEx.class);
@@ -193,6 +198,7 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
         List<SFolderEntity> folderList = list(folderQuery);
         if (ListUtil.isNotEmpty(folderList)) {
             returnFolder.setChildrens(JsonUtil.toList(JsonUtil.toJson(folderList), SFolderEntityEx.class));
+            returnFolder.setChildrenCount(folderList.size());
         }
 
         // 当前文件夹下的文件
@@ -202,11 +208,12 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
         List<SFileEntity> fileList = fileService.list(fileQuery);
         if (ListUtil.isNotEmpty(fileList)) {
             List<SFileEntityEx> fileExList = JsonUtil.toList(JsonUtil.toJson(fileList), SFileEntityEx.class);
+            List<SFileEntityEx> fileFilterList = new ArrayList<>();
 
             for (SFileEntityEx fileEntityEx : fileExList) {
-                // 文件请求路径
-//                String fileUrl = fileService.getFileUrl(fileEntityEx.getFilePath());
-//                fileEntityEx.setFileUrl(fileUrl);
+                if (ListUtil.isNotEmpty(filter_fileTypes) && !filter_fileTypes.contains("") && !filter_fileTypes.contains(fileEntityEx.getFileType())) {
+                    continue;
+                }
 
                 // 略缩图路径
                 if (Code.FILE_TYPE_PICTURE.getValue().equals(fileEntityEx.getFileType())) {
@@ -214,9 +221,11 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
                     String fileThumbnailsUrl = fileService.getFileThumbnailsUrl(fileEntityEx.getFilePath());
                     fileEntityEx.setFileThumbnailsUrl(fileThumbnailsUrl);
                 }
+                fileFilterList.add(fileEntityEx);
             }
 
-            returnFolder.setChildrenFiles(fileExList);
+            returnFolder.setChildrenFiles(fileFilterList);
+            returnFolder.setChildrenFileCount(fileFilterList.size());
         }
 
         return returnFolder;
@@ -275,6 +284,75 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
             setChildrens(folder, folderMap);
         }
         nowNode.setChildrens(childrens);
+    }
+
+    @Override
+    public SFolderEntityEx getFolderInfo(String folderId, String userId) {
+        if (StrUtil.isEmpty(userId)) {
+            return null;
+        }
+
+        SFolderEntityEx folderInfo = null;
+
+        if (StrUtil.isNotEmpty(folderId)) {
+            folderInfo = folderDao.getFolderInfo(folderId);
+        } else {
+            SFolderEntity folderEntity_query = new SFolderEntity();
+            folderEntity_query.setFolderName(userId);
+            QueryWrapper<SFolderEntity> folderQuery = new QueryWrapper<>(folderEntity_query);
+            SFolderEntity rootFolder = getOne(folderQuery);
+            if (rootFolder != null) {
+                folderInfo = folderDao.getFolderInfo(rootFolder.getFolderId());
+            }
+        }
+        return folderInfo;
+    }
+
+    @Override
+    public SFolderEntityEx updateFolderName(String folderId, SFolderEntityEx folderEntityEx, String operator) {
+        SFolderEntity folderInfo = getById(folderId);
+        if (folderInfo == null) {
+            return null;
+        }
+
+        // aa 当前时间
+        LocalDateTime nowTime = DateUtil.getLocalDateTime();
+
+        if (StrUtil.isNotEmpty(folderEntityEx.getFolderName())) {
+            folderInfo.setFolderName(folderEntityEx.getFolderName());
+        }
+
+        folderInfo.setFolderModifyTime(nowTime);
+        folderInfo.setFolderModifyUser(operator);
+        if (!updateById(folderInfo)) {
+            throw new CustomException(ExecptionType.FOLDER, null, "修改文件夹信息失败");
+        }
+
+        return JsonUtil.toEntity(folderInfo, SFolderEntityEx.class);
+    }
+
+    @Override
+    public boolean deleteFolder(String folderId, String operator) {
+
+        String folderPath = getFolderPath(folderId, operator);
+        if (StrUtil.isEmpty(folderPath)){
+            return false;
+        }
+
+        // 删除文件夹信息
+        if(!removeById(folderId)){
+            throw new CustomException(ExecptionType.FOLDER, null, "文件夹信息删除失败");
+        }
+
+        // 删除文件夹下的文件信息
+        if (!fileService.removeByParentFolderInfo(folderId)){
+            throw new CustomException(ExecptionType.FOLDER, null, "文件信息删除失败");
+        }
+
+        // 删除文件夹以及文件夹下的文件
+        FileUtil.deleteFile(folderPath);
+
+        return true;
     }
 
 }

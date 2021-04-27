@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,25 +48,25 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 @Service
 public class SUserServiceImpl extends ServiceImpl<SUserDao, SUserEntity> implements SUserService {
 
-	@Resource
+	@Autowired
 	private TaurusProperties taurusProperties;
 
-	@Resource
+	@Autowired
 	private SUserDao userDao;
 
-	@Resource
+	@Autowired
 	private SAuthDao authDao;
 
-	@Resource
+	@Autowired
 	private SAuthService authService;
 
-	@Resource
+	@Autowired
 	private SAuthUserService authUserService;
 
-	@Resource
+	@Autowired
 	private SFolderService folderService;
 
-	@Resource
+	@Autowired
 	private SFileService fileService;
 
 	@Override

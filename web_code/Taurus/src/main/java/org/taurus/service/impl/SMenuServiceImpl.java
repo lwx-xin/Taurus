@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.taurus.common.code.Code;
 import org.taurus.common.code.ExecptionType;
@@ -42,13 +43,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 @Service
 public class SMenuServiceImpl extends ServiceImpl<SMenuDao, SMenuEntity> implements SMenuService {
 
-	@Resource
+	@Autowired
 	private SMenuDao menuDao;
 
-	@Resource
+	@Autowired
 	private SAuthService authService;
 
-	@Resource
+	@Autowired
 	private SAuthMenuService authMenuService;
 
 	@Override

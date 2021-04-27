@@ -1,5 +1,6 @@
 package org.taurus.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.taurus.entity.SUrlParamEntity;
 import org.taurus.common.code.Code;
 import org.taurus.common.code.ExecptionType;
@@ -30,7 +31,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SUrlParamServiceImpl extends ServiceImpl<SUrlParamDao, SUrlParamEntity> implements SUrlParamService {
 
-	@Resource
+	@Autowired
 	private SUrlParamDao urlParamDao;
 
 	@Override

@@ -10,7 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -51,7 +51,7 @@ public class ${table.controllerName} {
     </#if>
     private Logger logger = LoggerFactory.getLogger(getClass());
     
-    @Resource
+    @Autowired
     private ${table.serviceName} ${(table.serviceName)?uncap_first};
  
     /**

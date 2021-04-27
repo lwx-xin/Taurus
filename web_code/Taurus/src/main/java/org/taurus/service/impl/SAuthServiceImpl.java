@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.taurus.common.code.Code;
 import org.taurus.common.code.ExecptionType;
@@ -39,16 +40,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 @Service
 public class SAuthServiceImpl extends ServiceImpl<SAuthDao, SAuthEntity> implements SAuthService {
 
-	@Resource
+	@Autowired
 	private SAuthDao authDao;
 
-	@Resource
+	@Autowired
 	private SAuthUrlService authUrlService;
 
-	@Resource
+	@Autowired
 	private SAuthUserService authUserService;
 
-	@Resource
+	@Autowired
 	private SAuthMenuService authMenuService;
 
 	@Override
@@ -58,6 +59,18 @@ public class SAuthServiceImpl extends ServiceImpl<SAuthDao, SAuthEntity> impleme
 
 		if (ListUtil.isNotEmpty(authEntityList)) {
 			return authEntityList.stream().map(SAuthEntity::getAuthId).collect(Collectors.toList());
+		}
+
+		return null;
+	}
+
+	@Override
+	public List<String> getAuthNameByUserId(String userId) {
+
+		List<SAuthEntity> authEntityList = authDao.getAuthByUserId(userId, Code.DEL_FLG_1.getValue());
+
+		if (ListUtil.isNotEmpty(authEntityList)) {
+			return authEntityList.stream().map(SAuthEntity::getAuthName).collect(Collectors.toList());
 		}
 
 		return null;

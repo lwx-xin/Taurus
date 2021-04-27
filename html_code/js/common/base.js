@@ -23,6 +23,7 @@ document.write("<link href='../../css/plugins/dropzone/basic.css?v="+version+"' 
 document.write("<link href='../../css/plugins/dropzone/dropzone.css?v="+version+"' rel='stylesheet'>");
 document.write("<link href='../../css/plugins/treeview/bootstrap-treeview.css?v="+version+"' rel='stylesheet'>");
 document.write("<link href='../../css/plugins/iconPicker/icon-picker.min.css?v="+version+"' rel='stylesheet'>");
+document.write("<link href='../../css/plugins/rightMenu/rightMenu.min.css?v="+version+"' rel='stylesheet'>");
 
 document.write("<link href='../../css/animate.css?v="+version+"' rel='stylesheet'>");
 document.write("<link href='../../css/style.css?v="+version+"' rel='stylesheet'>");
@@ -68,4 +69,4 @@ document.write("<script src='../../js/plugins/smallPop/spop.min.js?v="+version+"
 document.write("<script src='../../js/plugins/dropzone/dropzone.js?v="+version+"'></script>");
 document.write("<script src='../../js/plugins/treeview/bootstrap-treeview.js?v="+version+"'></script>");
 document.write("<script src='../../js/plugins/iconPicker/iconPicker.js?v="+version+"'></script>");
-
+document.write("<script src='../../js/plugins/rightMenu/rightMenu.js?v="+version+"'></script>");

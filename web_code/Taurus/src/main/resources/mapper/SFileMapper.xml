@@ -32,4 +32,8 @@
         <result column="FILE_MODIFY_USER" property="fileModifyUser"/>
     </resultMap>
     
+    <delete id="removeByParentFolder">
+        DELETE FROM s_file WHERE FILE_FOLDER = #{folderId}
+    </delete>
+    
 </mapper>

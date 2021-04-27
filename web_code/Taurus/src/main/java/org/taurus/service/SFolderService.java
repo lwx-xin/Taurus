@@ -1,6 +1,7 @@
 package org.taurus.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.taurus.entity.SFolderEntity;
@@ -17,7 +18,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @version v1.0
  * @since 2020-12-28
  */
-@Service
 public interface SFolderService extends IService<SFolderEntity> {
 
     /**
@@ -60,11 +60,12 @@ public interface SFolderService extends IService<SFolderEntity> {
     /**
      * 获取当前文件夹的详细信息(文件以及文件夹)
      *
-     * @param userId
-     * @param folderId
+     * @param userId   用户ID
+     * @param filter   过滤条件
+     * @param folderId 文件夹ID
      * @return
      */
-    public SFolderEntityEx getFolderDetail(String userId, String folderId);
+    public SFolderEntityEx getFolderDetail(String userId, Map<String, Object> filter, String folderId);
 
     /**
      * 获取用户能显示的文件夹列表(列表结构，不是树状结构)
@@ -89,5 +90,31 @@ public interface SFolderService extends IService<SFolderEntity> {
      * @return
      */
     public List<SFolderEntityEx> processingFolderData(List<SFolderEntity> folderList);
+
+    /**
+     * 获取文件夹信息（子文件夹个数，子文件个数）<br/>文件夹ID为空就查询当前用户根目录
+     *
+     * @param folderId 文件夹ID
+     * @param userId   用户ID
+     * @return
+     */
+    public SFolderEntityEx getFolderInfo(String folderId, String userId);
+
+    /**
+     * 修改文件夹信息
+     * @param folderId
+     * @param folderEntityEx
+     * @param operator
+     * @return
+     */
+    public SFolderEntityEx updateFolderName(String folderId, SFolderEntityEx folderEntityEx, String operator);
+
+    /**
+     * 删除文件夹
+     * @param folderId
+     * @param operator
+     * @return
+     */
+    public boolean deleteFolder(String folderId, String operator);
 
 }

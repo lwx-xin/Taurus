@@ -182,6 +182,7 @@ function ajax(param){
 	var formData;
 	var processData = true;
 	var contentType = "application/x-www-form-urlencoded";
+	var traditional = false;
 	if(isNotNull(param.data)){
 		$.each(param.data, function(k, v){
 			param.url = param.url.replace("{"+k+"}", v);
@@ -200,6 +201,9 @@ function ajax(param){
 			data = formData;
 		} else {
 			data = param.data;
+		}
+		if(param.traditional!=null){
+			traditional = param.traditional;
 		}
 	}
 	
@@ -223,6 +227,7 @@ function ajax(param){
 		async: isAsync,//false,同步；true,异步
 		processData: processData, 
 		contentType: contentType,
+		traditional: traditional,
 		headers: {  
 			"req-flg": "ajax"  
 		},
@@ -685,4 +690,23 @@ function setSwitchery(switchElement, checkedBool) {
         switchElement.setPosition(true);
         switchElement.handleOnchange(true);
     }
+}
+
+/**
+ * 文件单位转换
+ * @param {String} fileSize KB
+ */
+function formatFileSize(fileSize){
+	var size = toNumber(fileSize);
+	var units = ["KB","MB","GB","TB"];
+	var num = 0;
+	var result = "";
+	for(var i=0; i<=units.length; i++){
+		num = Math.pow(1024, i+1);
+		if(fileSize < num){
+			result = (fileSize/Math.pow(1024, i)).toFixed(2) + " " + units[i];
+			break;
+		}
+	}
+	return result;
 }

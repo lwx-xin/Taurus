@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.taurus.entity.SFolderEntity;
 import org.taurus.extendEntity.SFileEntityEx;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -18,7 +20,6 @@ import java.util.List;
  * @version v1.0
  * @since 2020-12-28
  */
-@Service
 public interface SFileService extends IService<SFileEntity> {
 
     /**
@@ -119,5 +120,39 @@ public interface SFileService extends IService<SFileEntity> {
      * @return
      */
     public boolean fileNameCheck(String fileFolder, MultipartFile[] files);
+
+    /**
+     * 获取文本文件内容
+     *
+     * @param fileId   文件ID
+     * @param operator 操作人员
+     * @return
+     */
+    public String getTxtContent(String fileId, String operator);
+
+    /**
+     * 获取图片文件内容
+     *
+     * @param fileId   文件ID
+     * @param operator 操作人员
+     * @param response
+     */
+    public void getImageContent(String fileId, String operator, HttpServletResponse response);
+
+    /**
+     * 获取视频文件内容
+     *
+     * @param fileId   文件ID
+     * @param operator 操作人员
+     * @param response
+     */
+    public void getVideoContent(String fileId, String operator, HttpServletResponse response, HttpServletRequest request);
+
+    /**
+     * 删除当前目录下的全部文件信息(删db不删文件)
+     * @param folderId
+     * @return
+     */
+    public boolean removeByParentFolderInfo(String folderId);
 
 }

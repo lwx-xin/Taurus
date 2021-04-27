@@ -1,5 +1,6 @@
 package org.taurus.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.taurus.entity.SFileEntity;
 import org.taurus.entity.SFolderEntity;
 import org.taurus.entity.SLogEntity;
@@ -43,13 +44,13 @@ public class SLogServiceImpl extends ServiceImpl<SLogDao, SLogEntity> implements
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Resource
+	@Autowired
 	private TaurusProperties taurusProperties;
 
-	@Resource
+	@Autowired
 	private SFolderService folderService;
 
-	@Resource
+	@Autowired
 	private SFileService fileService;
 
 	@Override
@@ -101,20 +102,17 @@ public class SLogServiceImpl extends ServiceImpl<SLogDao, SLogEntity> implements
 		String formatDate = DateUtil.formatDate(new Date(), DateFormat.LOG_NAME);
 		String logFileName = formatDate + ".log";
 
-		// aa 新建一个文件
-		File file = new File(folderPath + logFileName);
-		file.setReadOnly();
 		// aa 当前时间
 		LocalDateTime nowTime = DateUtil.getLocalDateTime();
 
-		SFileEntity fileEntity = FileUtil.getInfoByFile(file, nowTime);
+		SFileEntity fileEntity = FileUtil.getInfoByFile(logFileName, 0L, nowTime);
 		fileEntity.setFileFolder(logFolderId);
 		fileEntity.setFileOwner(userId);
 		fileEntity.setFilePath(
 				folderService.getFolderRelativePath(logFolderId, userId) + fileEntity.getFileNameTimestamp());
 		fileEntity.setFileCreateUser(userId);
 		fileEntity.setFileModifyUser(userId);
-		if (fileService.save(fileEntity)) {
+		if (!fileService.save(fileEntity)) {
 			throw new CustomException(ExecptionType.FILE, null, "记录日志文件信息失败");
 		}
 
@@ -139,6 +137,9 @@ public class SLogServiceImpl extends ServiceImpl<SLogDao, SLogEntity> implements
 
 		PrintStream stream = null;
 		try {
+			// aa 新建一个文件
+			File file = new File(folderPath + fileEntity.getFileNameTimestamp());
+			file.setReadOnly();
 			// aa 创建文件的输出流
 			stream = new PrintStream(file);
 		} catch (Exception e) {

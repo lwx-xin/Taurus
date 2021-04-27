@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,19 +31,19 @@ public class InitAdminUserData {
 	 */
 	private final LocalDateTime nowTime = DateUtil.getLocalDateTime();
 
-	@Resource
+	@Autowired
 	private TaurusProperties taurusProperties;
 
-	@Resource
+	@Autowired
 	private SUserService userService;
 
-	@Resource
+	@Autowired
 	private SAuthService authService;
 
-	@Resource
+	@Autowired
 	private SAuthUserService authUserService;
 	
-	@Resource
+	@Autowired
 	private SFolderService folderService;
 	
 	@Transactional

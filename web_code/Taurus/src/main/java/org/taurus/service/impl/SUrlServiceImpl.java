@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.taurus.common.code.Code;
@@ -40,13 +41,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 @Service
 public class SUrlServiceImpl extends ServiceImpl<SUrlDao, SUrlEntity> implements SUrlService {
 
-	@Resource
+	@Autowired
 	private SUrlDao urlDao;
 
-	@Resource
+	@Autowired
 	private SAuthService authService;
 
-	@Resource
+	@Autowired
 	private SAuthUrlService authUrlService;
 
 	@Override

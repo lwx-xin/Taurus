@@ -13,7 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-11-08
  * @version v1.0
  */
-@Service
 public interface MCodeService extends IService<MCodeEntity> {
 
 }

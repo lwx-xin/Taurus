@@ -14,7 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-01-13
  * @version v1.0
  */
-@Service
 public interface SLogService extends IService<SLogEntity> {
 
 	/**

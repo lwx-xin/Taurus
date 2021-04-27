@@ -15,7 +15,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-12-28
  * @version v1.0
  */
-@Service
 public interface SUrlParamService extends IService<SUrlParamEntity> {
 
 	/**

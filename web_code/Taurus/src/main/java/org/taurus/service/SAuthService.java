@@ -17,16 +17,23 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-11-08
  * @version v1.0
  */
-@Service
 public interface SAuthService extends IService<SAuthEntity> {
 
 	/**
 	 * 获取用户的权限ID
-	 * 
+	 *
 	 * @param userId 用户id
 	 * @return
 	 */
 	List<String> getAuthByUserId(String userId);
+
+	/**
+	 * 获取用户的权限名称
+	 *
+	 * @param userId 用户id
+	 * @return
+	 */
+	List<String> getAuthNameByUserId(String userId);
 
 	/**
 	 * 获取权限列表

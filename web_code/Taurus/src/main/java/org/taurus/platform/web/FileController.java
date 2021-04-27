@@ -3,6 +3,7 @@ package org.taurus.platform.web;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +19,7 @@ import org.taurus.service.SFileService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class FileController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Resource
+    @Autowired
     private SFileService fileService;
 
     /**
@@ -77,5 +79,45 @@ public class FileController {
             return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_3);
         }
         return new Result<>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
+    }
+
+    /**
+     * 获取文本文件内容
+     */
+    @ApiOperation(value = "获取文本文件内容")
+    @RequestMapping(value = "/txt/content/{fileId}", method = RequestMethod.GET)
+    public Result<String> getTxtFileContent(@PathVariable("fileId") String fileId, HttpServletRequest request){
+
+        LoggerUtil.printParam(logger, "fileId", fileId);
+
+        String content = fileService.getTxtContent(fileId, SessionUtil.getUserId(request));
+
+        return new Result<>(content, true, CheckCode.INTERFACE_ERR_CODE_0);
+    }
+
+    /**
+     * 获取图片文件内容
+     */
+    @ApiOperation(value = "获取图片文件内容")
+    @RequestMapping(value = "/image/content/{fileId}", method = RequestMethod.GET)
+    public void getImageFileContent(@PathVariable("fileId") String fileId, HttpServletRequest request, HttpServletResponse response){
+
+        LoggerUtil.printParam(logger, "fileId", fileId);
+
+        fileService.getImageContent(fileId, SessionUtil.getUserId(request), response);
+
+    }
+
+    /**
+     * 获取视频文件内容
+     */
+    @ApiOperation(value = "获取视频文件内容")
+    @RequestMapping(value = "/video/content/{fileId}", method = RequestMethod.GET)
+    public void getVideoFileContent(@PathVariable("fileId") String fileId, HttpServletRequest request, HttpServletResponse response){
+
+        LoggerUtil.printParam(logger, "fileId", fileId);
+
+        fileService.getVideoContent(fileId, SessionUtil.getUserId(request), response, request);
+
     }
 }

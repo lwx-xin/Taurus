@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,7 @@ import org.taurus.common.util.StrUtil;
 import org.taurus.extendEntity.SMenuEntityEx;
 import org.taurus.extendEntity.SUserEntityEx;
 import org.taurus.service.CommonService;
+import org.taurus.service.SAuthService;
 import org.taurus.service.SFileService;
 import org.taurus.service.SUserService;
 
@@ -38,14 +40,17 @@ public class CommonController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Resource
+	@Autowired
 	private CommonService commonService;
 
-	@Resource
+	@Autowired
 	private SFileService fileService;
 
-	@Resource
+	@Autowired
 	private SUserService userService;
+
+	@Autowired
+	private SAuthService authService;
 
 	/**
 	 * 获取code列表
@@ -77,6 +82,7 @@ public class CommonController {
 			String userHead = userDetail.getUserHead();
 			// aa 用户头像文件请求路径
 			userDetail.setHeadFilePath(fileService.getFileUrl(userHead, userId));
+
 			return new Result<>(userDetail, true, CheckCode.INTERFACE_ERR_CODE_0);
 		}
 		return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_2.getValue(), "未获取到用户信息");

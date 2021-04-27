@@ -7,13 +7,16 @@ public enum CheckCode {
 	/** 权限过滤器-未登录 */
 	AUTH_FILTER_NO_LOGIN("auth_filter", "请先登录后在访问", "/html/login.html"),
 	/** 权限过滤器-权限不足 */
-	AUTH_FILTER_NO_AUTH("auth_filter", "权限不足", "/html/error/err-noAuth.html"),
+//	AUTH_FILTER_NO_AUTH("auth_filter", "权限不足", "/html/error/err-noAuth.html"),
+	AUTH_FILTER_NO_AUTH("auth_filter", "权限不足", ""),
 	/** 权限过滤器-未知的请求 */
-	AUTH_FILTER_UNKNOWN_URL("auth_filter", "未知的请求", "/html/error/err-unknownUrl.html"),
+//	AUTH_FILTER_UNKNOWN_URL("auth_filter", "未知的请求", "/html/error/err-unknownUrl.html"),
+	AUTH_FILTER_UNKNOWN_URL("auth_filter", "未知的请求", ""),
 	/** 权限过滤器-无需重新登录 */
 	AUTH_FILTER_NO_NEED_LOGIN("auth_filter", "无需重新登录", "/html/error/home.html"),
 	/** 权限过滤器-参数异常 */
-	AUTH_FILTER_PARAM_ERR("auth_filter", "参数异常", "/html/error/err-paramsErr.html"),
+//	AUTH_FILTER_PARAM_ERR("auth_filter", "参数异常", "/html/error/err-paramsErr.html"),
+	AUTH_FILTER_PARAM_ERR("auth_filter", "参数异常", ""),
 	/** 权限过滤器-令牌过期 */
 	AUTH_FILTER_TOKEN_OVERDUE("auth_filter", "请重新登录", "/html/login.html"),
 	/** 权限过滤器-令牌验证失败 */
@@ -55,6 +58,8 @@ public enum CheckCode {
 	INTERFACE_ERR_CODE_4("interface_err_code", "编辑失败", "4"),
 	/** 接口返回异常状态码-其他异常 */
 	INTERFACE_ERR_CODE_5("interface_err_code", "其他异常", "5"),
+	/** 接口返回异常状态码-删除失败 */
+	INTERFACE_ERR_CODE_6("interface_err_code", "删除失败", "6"),
 
 	/** 登录状态(pc)-登录成功 */
 	LOGIN_WEB_SUCCESS("login_web", "登录成功", "0"),

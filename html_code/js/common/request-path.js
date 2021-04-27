@@ -95,7 +95,13 @@ const requestPath = {
 	// 编辑文件信息
 	fileUpdate:{"url":"/web/file/{fileId}", "type":"put"},
 	// 禁用启用-文件
-	fileDelete:{"url":"/web/file/{fileId}", "type":"delete"}
+	fileDelete:{"url":"/web/file/{fileId}", "type":"delete"},
+	// 获取TXT文件内容
+	fileTxtContent:{"url":"/web/file/txt/content/{fileId}", "type":"get"},
+	// 获取Image文件内容
+	fileImageContent:{"url":"/web/file/image/content/{fileId}", "type":"get"},
+	// 获取Video文件内容
+	fileVideoContent:{"url":"/web/file/video/content/{fileId}", "type":"get"},
 	
 }
 $.deepFreeze(requestPath);

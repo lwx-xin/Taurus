@@ -4,13 +4,14 @@ package org.taurus;
 import javax.annotation.Resource;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.taurus.common.LogManager;
 
 @SpringBootTest
 class TaurusApplicationTests {
 	
-	@Resource
+	@Autowired
 	private LogManager service;
 
 	@Test

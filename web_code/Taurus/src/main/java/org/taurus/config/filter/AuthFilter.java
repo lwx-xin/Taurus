@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.taurus.common.CommonField;
 import org.taurus.common.code.CheckCode;
 import org.taurus.common.code.Code;
@@ -49,13 +50,13 @@ public class AuthFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Resource
+    @Autowired
     private SUrlService urlService;
 
-    @Resource
+    @Autowired
     private SUserService userService;
 
-    @Resource
+    @Autowired
     private SUrlParamService urlParamService;
 
     @Override
@@ -131,18 +132,15 @@ public class AuthFilter implements Filter {
             if (isAjax) {
                 response.addHeader(CommonField.SYSTEM_ERR_MSG, errMessage_utf8);
                 response.addHeader(CommonField.SYSTEM_ERR_SOURCE_PATH, url_utf8);
-
-                if (CheckCode.AUTH_FILTER_PARAM_ERR.equals(authCheck)) {
-                    response.addHeader(CommonField.SYSTEM_ERR_REDIRECT, "");
-                } else {
-                    response.addHeader(CommonField.SYSTEM_ERR_REDIRECT, redirectUrl_utf8);
-                    // filterChain.doFilter(request, response);
-                }
+                response.addHeader(CommonField.SYSTEM_ERR_REDIRECT, redirectUrl_utf8);
+                // filterChain.doFilter(request, response);
             } else {
                 CookieUtil.createCookie(CommonField.SYSTEM_ERR_MSG, errMessage_utf8, response);
                 CookieUtil.createCookie(CommonField.SYSTEM_ERR_REDIRECT, redirectUrl_utf8, response);
                 CookieUtil.createCookie(CommonField.SYSTEM_ERR_SOURCE_PATH, url_utf8, response);
-                response.sendRedirect(redirectUrl);
+                if(StrUtil.isNotEmpty(redirectUrl)){
+                    response.sendRedirect(redirectUrl);
+                }
             }
         }
 

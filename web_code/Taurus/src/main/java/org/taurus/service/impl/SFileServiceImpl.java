@@ -1,6 +1,7 @@
 package org.taurus.service.impl;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.taurus.common.util.*;
 import org.taurus.entity.SAuthEntity;
 import org.taurus.entity.SFileEntity;
@@ -17,14 +18,16 @@ import org.taurus.service.SFolderService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
@@ -41,11 +44,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> implements SFileService {
 
-    @Resource
+    @Autowired
     private TaurusProperties taurusProperties;
 
-    @Resource
+    @Autowired
     private SFolderService folderService;
+
+    @Autowired
+    SFileDao fileDao;
 
     @Override
     public SFileEntity saveFile(MultipartFile file, String folderId, String operator, String fileOwner) {
@@ -284,6 +290,121 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
             }
         }
         return true;
+    }
+
+    @Override
+    public String getTxtContent(String fileId, String operator) {
+        String filePath = getFilePath(fileId, operator);
+
+        String content = FileUtil.getTxtContent(filePath);
+
+        return content;
+    }
+
+    @Override
+    public void getImageContent(String fileId, String operator, HttpServletResponse response) {
+        String filePath = getFilePath(fileId, operator);
+
+        if (StrUtil.isNotEmpty(filePath)) {
+            File filePic = new File(filePath);
+            if (filePic.exists()) {
+                FileInputStream is = null;
+                OutputStream toClient = null;
+                try {
+                    is = new FileInputStream(filePic);
+                    int i = is.available(); // 得到文件大小
+                    byte data[] = new byte[i];
+                    is.read(data); // 读数据
+                    response.setContentType("image/*"); // 设置返回的文件类型
+                    toClient = response.getOutputStream(); // 得到向客户端输出二进制数据的对象
+                    toClient.write(data); // 输出数据
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        is.close();
+                        toClient.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void getVideoContent(String fileId, String operator, HttpServletResponse response, HttpServletRequest request) {
+        String filePath = getFilePath(fileId, operator);
+
+        if (StrUtil.isNotEmpty(filePath)) {
+            response.reset();
+            // 获取从那个字节开始读取文件
+            String rangeString = request.getHeader("Range");
+            if (rangeString == null) {
+                return;
+            }
+
+            try {
+                // 获取响应的输出流
+                OutputStream outputStream = response.getOutputStream();
+                File file = new File(filePath);
+                if (file.exists()) {
+                    RandomAccessFile targetFile = new RandomAccessFile(file, "r");
+                    long fileLength = targetFile.length();
+                    // 播放
+                    if (rangeString != null) {
+                        long range = Long
+                                .valueOf(rangeString.substring(rangeString.indexOf("=") + 1, rangeString.indexOf("-")));
+                        // 设置内容类型
+                        response.setHeader("Content-Type", "video/mp4");
+                        // 设置此次相应返回的数据长度
+                        response.setHeader("Content-Length", String.valueOf(fileLength - range));
+                        // 设置此次相应返回的数据范围
+                        response.setHeader("Content-Range", "bytes " + range + "-" + (fileLength - 1) + "/" + fileLength);
+                        // 返回码需要为206，而不是200
+                        response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+                        // 设定文件读取开始位置（以字节为单位）
+                        targetFile.seek(range);
+                    }
+//				else {// 下载
+//					System.err.println("下载");
+//					// 设置响应头，把文件名字设置好
+//					response.setHeader("Content-Disposition", "attachment; filename=" + "test.mp4");
+//					// 设置文件长度
+//					response.setHeader("Content-Length", String.valueOf(fileLength));
+//					// 解决编码问题
+//					response.setHeader("Content-Type", "application/octet-stream");
+//				}
+
+                    byte[] cache = new byte[1024 * 300];
+                    int flag;
+                    while ((flag = targetFile.read(cache)) != -1) {
+                        outputStream.write(cache, 0, flag);
+                    }
+                } else {
+                    String message = "file:" + "test.mp4" + " not exists";
+                    // 解决编码问题
+                    response.setHeader("Content-Type", "application/json");
+                    outputStream.write(message.getBytes(StandardCharsets.UTF_8));
+                }
+
+                outputStream.flush();
+                outputStream.close();
+
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public boolean removeByParentFolderInfo(String folderId) {
+        if (fileDao.removeByParentFolder(folderId)>0){
+            return true;
+        }
+        return false;
     }
 
 }

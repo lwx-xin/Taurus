@@ -23,5 +23,21 @@
     	<!-- 编辑者 -->
         <result column="FOLDER_MODIFY_USER" property="folderModifyUser"/>
     </resultMap>
+
+    <resultMap id="entityEx" type="org.taurus.extendEntity.SFolderEntityEx" extends="entity">
+        <!--子文件夹个数-->
+        <result column="CHILDREN_COUNT" property="childrenCount"/>
+        <!--子文佳个数-->
+        <result column="CHILDREN_FILE_COUNT" property="childrenFileCount"/>
+    </resultMap>
+
+    <select id="getFolderInfo" resultMap="entityEx">
+        SELECT
+            f.*,
+            (SELECT COUNT(1) FROM s_folder WHERE FOLDER_PARENT = #{folderId}) AS CHILDREN_COUNT,
+            (SELECT COUNT(1) FROM s_file WHERE FILE_FOLDER = #{folderId}) AS CHILDREN_FILE_COUNT
+        from s_folder f
+        where f.FOLDER_ID = #{folderId}
+    </select>
     
 </mapper>

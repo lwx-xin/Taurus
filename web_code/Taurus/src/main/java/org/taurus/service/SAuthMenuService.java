@@ -13,7 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-12-11
  * @version v1.0
  */
-@Service
 public interface SAuthMenuService extends IService<SAuthMenuEntity> {
 
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.taurus.common.code.Code;
 import org.taurus.common.result.CodeElement;
@@ -30,16 +31,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 @Service
 public class CommonServiceImpl implements CommonService {
 
-	@Resource
+	@Autowired
 	private SAuthService authService;
 
-	@Resource
+	@Autowired
 	private SUrlParamDao urlParamDao;
 
-	@Resource
+	@Autowired
 	private SMenuService menuService;
 	
-	@Resource
+	@Autowired
 	private SUrlService urlService;
 
 	@Override
@@ -134,7 +135,7 @@ public class CommonServiceImpl implements CommonService {
 		return "";
 	}
 
-	@Resource
+	@Autowired
 	private SMenuDao menuDao;
 
 	@Override
