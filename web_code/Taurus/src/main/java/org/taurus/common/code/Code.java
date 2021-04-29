@@ -52,7 +52,14 @@ public enum Code {
 	/** 日志处理状态-已处理*/
 	LOG_STATUS_1("log_status","已处理","1"),
 	/** 日志处理状态-无需处理*/
-	LOG_STATUS_2("log_status","无需处理","2");
+	LOG_STATUS_2("log_status","无需处理","2"),
+
+	/** 资源类别-系统资源 */
+	RESOURCE_TYPE_SYSTEM("resource_type","系统资源","-1"),
+	/** 资源类别-用户根目录 */
+	RESOURCE_TYPE_ROOT("resource_type","用户根目录","0"),
+	/** 资源类别-自定义资源 */
+	RESOURCE_TYPE_CUSTOM("resource_type","自定义资源","1");
 
 	private String group;
 

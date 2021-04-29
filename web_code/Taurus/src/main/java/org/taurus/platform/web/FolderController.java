@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.taurus.common.RepeatLogin;
 import org.taurus.common.code.CheckCode;
+import org.taurus.common.code.Code;
 import org.taurus.common.result.Result;
 import org.taurus.common.util.JsonUtil;
 import org.taurus.common.util.LoggerUtil;
@@ -93,7 +94,7 @@ public class FolderController {
         String folderName = folderEntity.getFolderName();
         String folderParent = folderEntity.getFolderParent();
 
-        String folderId = folderService.createFolder(folderName, folderParent, userId, userId);
+        String folderId = folderService.createFolder(folderName, folderParent, userId, userId, Code.RESOURCE_TYPE_CUSTOM);
         SFolderEntity data = folderService.getById(folderId);
         if (data == null) {
             return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_3);
@@ -139,19 +140,19 @@ public class FolderController {
     }
 
     /**
-     * 修改文件夹信息
+     * 删除文件夹信息
      */
-    @ApiOperation(value = "修改文件夹信息")
+    @ApiOperation(value = "删除文件夹信息")
     @RequestMapping(value = "/{folderId}", method = RequestMethod.DELETE)
     public Result<SFolderEntityEx> delete(@PathVariable("folderId") String folderId, HttpServletRequest request) {
 
         LoggerUtil.printParam(logger, "folderId", folderId);
 
         boolean b = folderService.deleteFolder(folderId, SessionUtil.getUserId(request));
-        if (b) {
+        if (!b) {
             return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_6);
         }
-        return new Result<>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
+        return new Result<>(null, true, CheckCode.INTERFACE_ERR_CODE_0.getValue(), "删除成功");
     }
 
 }

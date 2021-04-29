@@ -12,144 +12,157 @@ import java.io.Serializable;
  * </p>
  *
  * @author 欣
- * @since 2020-12-29
+ * @since 2021-04-27
  */
 @TableName("s_folder")
 public class SFolderEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * 文件夹ID
-	 */
-	@TableId("FOLDER_ID")
-	private String folderId;
+    /**
+     * 文件夹ID
+     */
+    @TableId("FOLDER_ID")
+    private String folderId;
 
-	/**
-	 * 文件夹名称
-	 */
-	@TableField("FOLDER_NAME")
-	private String folderName;
+    /**
+     * 文件夹名称
+     */
+    @TableField("FOLDER_NAME")
+    private String folderName;
 
-	/**
-	 * 父文件夹
-	 */
-	@TableField("FOLDER_PARENT")
-	private String folderParent;
+    /**
+     * 父文件夹
+     */
+    @TableField("FOLDER_PARENT")
+    private String folderParent;
 
-	/**
-	 * 文件夹所有者
-	 */
-	@TableField("FOLDER_OWNER")
-	private String folderOwner;
+    /**
+     * 文件夹所有者
+     */
+    @TableField("FOLDER_OWNER")
+    private String folderOwner;
 
-	/**
-	 * 删除标识
-	 */
-	@TableField("FOLDER_DEL_FLG")
-	private String folderDelFlg;
+    /**
+     * 资源类型：系统资源，自定义资源
+     */
+    @TableField("FOLDER_RESOURCE_TYPE")
+    private String folderResourceType;
 
-	/**
-	 * 创建时间
-	 */
-	@TableField("FOLDER_CREATE_TIME")
-	private LocalDateTime folderCreateTime;
+    /**
+     * 删除标识
+     */
+    @TableField("FOLDER_DEL_FLG")
+    private String folderDelFlg;
 
-	/**
-	 * 创建者
-	 */
-	@TableField("FOLDER_CREATE_USER")
-	private String folderCreateUser;
+    /**
+     * 创建时间
+     */
+    @TableField("FOLDER_CREATE_TIME")
+    private LocalDateTime folderCreateTime;
 
-	/**
-	 * 编辑时间
-	 */
-	@TableField("FOLDER_MODIFY_TIME")
-	private LocalDateTime folderModifyTime;
+    /**
+     * 创建者
+     */
+    @TableField("FOLDER_CREATE_USER")
+    private String folderCreateUser;
 
-	/**
-	 * 编辑者
-	 */
-	@TableField("FOLDER_MODIFY_USER")
-	private String folderModifyUser;
+    /**
+     * 编辑时间
+     */
+    @TableField("FOLDER_MODIFY_TIME")
+    private LocalDateTime folderModifyTime;
 
-	public String getFolderId() {
-		return folderId;
-	}
+    /**
+     * 编辑者
+     */
+    @TableField("FOLDER_MODIFY_USER")
+    private String folderModifyUser;
 
-	public void setFolderId(String folderId) {
-		this.folderId = folderId;
-	}
+    public String getFolderId() {
+        return folderId;
+    }
 
-	public String getFolderName() {
-		return folderName;
-	}
+    public void setFolderId(String folderId) {
+        this.folderId = folderId;
+    }
+    public String getFolderName() {
+        return folderName;
+    }
 
-	public void setFolderName(String folderName) {
-		this.folderName = folderName;
-	}
+    public void setFolderName(String folderName) {
+        this.folderName = folderName;
+    }
+    public String getFolderParent() {
+        return folderParent;
+    }
 
-	public String getFolderParent() {
-		return folderParent;
-	}
+    public void setFolderParent(String folderParent) {
+        this.folderParent = folderParent;
+    }
+    public String getFolderOwner() {
+        return folderOwner;
+    }
 
-	public void setFolderParent(String folderParent) {
-		this.folderParent = folderParent;
-	}
+    public void setFolderOwner(String folderOwner) {
+        this.folderOwner = folderOwner;
+    }
+    public String getFolderResourceType() {
+        return folderResourceType;
+    }
 
-	public String getFolderOwner() {
-		return folderOwner;
-	}
+    public void setFolderResourceType(String folderResourceType) {
+        this.folderResourceType = folderResourceType;
+    }
+    public String getFolderDelFlg() {
+        return folderDelFlg;
+    }
 
-	public void setFolderOwner(String folderOwner) {
-		this.folderOwner = folderOwner;
-	}
+    public void setFolderDelFlg(String folderDelFlg) {
+        this.folderDelFlg = folderDelFlg;
+    }
+    public LocalDateTime getFolderCreateTime() {
+        return folderCreateTime;
+    }
 
-	public String getFolderDelFlg() {
-		return folderDelFlg;
-	}
+    public void setFolderCreateTime(LocalDateTime folderCreateTime) {
+        this.folderCreateTime = folderCreateTime;
+    }
+    public String getFolderCreateUser() {
+        return folderCreateUser;
+    }
 
-	public void setFolderDelFlg(String folderDelFlg) {
-		this.folderDelFlg = folderDelFlg;
-	}
+    public void setFolderCreateUser(String folderCreateUser) {
+        this.folderCreateUser = folderCreateUser;
+    }
+    public LocalDateTime getFolderModifyTime() {
+        return folderModifyTime;
+    }
 
-	public LocalDateTime getFolderCreateTime() {
-		return folderCreateTime;
-	}
+    public void setFolderModifyTime(LocalDateTime folderModifyTime) {
+        this.folderModifyTime = folderModifyTime;
+    }
+    public String getFolderModifyUser() {
+        return folderModifyUser;
+    }
 
-	public void setFolderCreateTime(LocalDateTime folderCreateTime) {
-		this.folderCreateTime = folderCreateTime;
-	}
+    public void setFolderModifyUser(String folderModifyUser) {
+        this.folderModifyUser = folderModifyUser;
+    }
 
-	public String getFolderCreateUser() {
-		return folderCreateUser;
-	}
-
-	public void setFolderCreateUser(String folderCreateUser) {
-		this.folderCreateUser = folderCreateUser;
-	}
-
-	public LocalDateTime getFolderModifyTime() {
-		return folderModifyTime;
-	}
-
-	public void setFolderModifyTime(LocalDateTime folderModifyTime) {
-		this.folderModifyTime = folderModifyTime;
-	}
-
-	public String getFolderModifyUser() {
-		return folderModifyUser;
-	}
-
-	public void setFolderModifyUser(String folderModifyUser) {
-		this.folderModifyUser = folderModifyUser;
-	}
-
-	@Override
-	public String toString() {
-		return "SFolderEntity{" + "folderId=" + folderId + ", folderName=" + folderName + ", folderParent="
-				+ folderParent + ", folderOwner=" + folderOwner + ", folderDelFlg=" + folderDelFlg
-				+ ", folderCreateTime=" + folderCreateTime + ", folderCreateUser=" + folderCreateUser
-				+ ", folderModifyTime=" + folderModifyTime + ", folderModifyUser=" + folderModifyUser + "}";
-	}
+    @Override
+    public String toString() {
+        return "SFolderEntity{" +
+            "folderId=" + folderId +
+            ", folderName=" + folderName +
+            ", folderParent=" + folderParent +
+            ", folderOwner=" + folderOwner +
+            ", folderResourceType=" + folderResourceType +
+            ", folderDelFlg=" + folderDelFlg +
+            ", folderCreateTime=" + folderCreateTime +
+            ", folderCreateUser=" + folderCreateUser +
+            ", folderModifyTime=" + folderModifyTime +
+            ", folderModifyUser=" + folderModifyUser +
+        "}";
+    }
 }

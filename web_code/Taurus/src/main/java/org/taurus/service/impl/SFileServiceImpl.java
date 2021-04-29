@@ -2,6 +2,7 @@ package org.taurus.service.impl;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.taurus.common.util.*;
 import org.taurus.entity.SAuthEntity;
 import org.taurus.entity.SFileEntity;
@@ -12,6 +13,7 @@ import org.taurus.common.exception.CustomException;
 import org.taurus.config.load.properties.TaurusProperties;
 import org.taurus.dao.SFileDao;
 import org.taurus.extendEntity.SFileEntityEx;
+import org.taurus.extendEntity.SFolderEntityEx;
 import org.taurus.service.SFileService;
 import org.taurus.service.SFolderService;
 
@@ -54,6 +56,7 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
     SFileDao fileDao;
 
     @Override
+    @Transactional
     public SFileEntity saveFile(MultipartFile file, String folderId, String operator, String fileOwner) {
 
         // 文件夹信息
@@ -266,6 +269,44 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
     }
 
     @Override
+    public SFileEntityEx updateFileName(String fileId, SFileEntityEx fileEntityEx, String operator) {
+        SFileEntity fileInfo = getById(fileId);
+        if (fileInfo == null) {
+            return null;
+        }
+
+        //验证文件所属文件夹是否可以修改
+        checkFolderResourceType(fileInfo.getFileFolder());
+
+        // aa 当前时间
+        LocalDateTime nowTime = DateUtil.getLocalDateTime();
+
+        fileInfo.setFileName(fileEntityEx.getFileName());
+        fileInfo.setFileModifyUser(operator);
+        fileInfo.setFileModifyTime(nowTime);
+        if (!updateById(fileInfo)) {
+            throw new CustomException(ExecptionType.FILE, null, "修改文件信息失败");
+        }
+
+        return JsonUtil.toEntity(fileInfo, SFileEntityEx.class);
+    }
+
+    /**
+     * 验证文件是否有编辑权限（判断是否是系统文件）
+     *
+     * @param folderId
+     */
+    private void checkFolderResourceType(String folderId) {
+        SFolderEntity folderInfo = folderService.getById(folderId);
+        if (folderInfo == null) {
+            throw new CustomException(ExecptionType.FOLDER, null, "文件夹信息获取失败");
+        }
+        if (Code.RESOURCE_TYPE_SYSTEM.getValue().equals(folderInfo.getFolderResourceType())) {
+            throw new CustomException(ExecptionType.FOLDER, null, "系统资源无法修改");
+        }
+    }
+
+    @Override
     public boolean fileNameCheck(String fileFolder, MultipartFile[] files) {
 
         if (StrUtil.isEmpty(fileFolder)) {
@@ -400,11 +441,43 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
     }
 
     @Override
-    public boolean removeByParentFolderInfo(String folderId) {
-        if (fileDao.removeByParentFolder(folderId)>0){
-            return true;
+    public int removeByParentFolderInfo(String folderId) {
+        return fileDao.removeByParentFolder(folderId);
+    }
+
+    @Override
+    public List<SFileEntity> getFiles(String parentFolder) {
+        if (StrUtil.isEmpty(parentFolder)) {
+            return null;
         }
-        return false;
+        SFileEntity file_query = new SFileEntity();
+        file_query.setFileFolder(parentFolder);
+        QueryWrapper<SFileEntity> fileQueryWrapper = new QueryWrapper<>(file_query);
+        return list(fileQueryWrapper);
+    }
+
+    @Override
+    @Transactional
+    public void deleteFile(String fileId, String operator) {
+        SFileEntity fileInfo = getById(fileId);
+        if (fileInfo == null) {
+            throw new CustomException(ExecptionType.FILE, null, "文件不存在");
+        }
+
+        //验证文件所属文件夹是否可以修改
+        checkFolderResourceType(fileInfo.getFileFolder());
+
+        String filePath = getFilePath(fileId, operator);
+        File willDelFile = new File(filePath);
+        if (StrUtil.isEmpty(filePath) || !willDelFile.exists() || !willDelFile.isFile()) {
+            throw new CustomException(ExecptionType.FILE, null, "文件不存在");
+        }
+
+        if (!removeById(fileId)) {
+            throw new CustomException(ExecptionType.FILE, null, "文件信息删除失败");
+        }
+
+        FileUtil.deleteFile(willDelFile);
     }
 
 }

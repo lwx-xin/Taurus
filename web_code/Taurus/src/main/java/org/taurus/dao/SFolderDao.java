@@ -1,5 +1,6 @@
 package org.taurus.dao;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.taurus.entity.SFolderEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

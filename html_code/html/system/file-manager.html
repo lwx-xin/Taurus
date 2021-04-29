@@ -110,6 +110,7 @@
 <script type="text/javascript">
 	
 	var nowFolderId = "";
+	var nowFolderResourceType = "";
 
 	$(function(){
 		initSelect();
@@ -118,6 +119,7 @@
 		initData()
 		
 		initEvent();
+		
 	});
 	
 	function initSelect(){
@@ -136,7 +138,7 @@
 				
 			if(resourceType==Code.FILE_TYPE_FOLDER.value){
 				nowFolderId = resourceId;
-				initFolderAndFile(nowFolderId);
+				initFolderAndFile();
 			} else {
 				var resourceName = $(this).attr("resource-name");
 				openFile(resourceId, resourceName, resourceType);
@@ -174,6 +176,10 @@
 		
 		// 添加文件夹
 		$(".add-folder-btn").click(function(){
+			if(nowFolderResourceType == Code.RESOURCE_TYPE_SYSTEM.value){
+				showInformation("提示", "系统资源无法新增文件夹", "warning");
+				return false;
+			}
 			addFolderEvent();
 		});
 		
@@ -225,29 +231,15 @@
 	}
 	
 	/**
-	 * 渲染右键菜单
+	 * 渲染文件，文件夹右键菜单
 	 */
-	function drawContextMenu(){
+	function drawResourceContextMenu(){
 		var thisMenu;
 		$(".file-box").contextMenu({
-			width: 120,// width
-			// itemHeight: 30,// 菜单项height
-			// bgColor: "#333",// 背景颜色
-			// color: "#fff",// 字体颜色
-			// fontSize: 12,// 字体大小
-			// hoverBgColor: "#99CC66",// hover背景颜色
 			target: function(ele) {// 当前元素
 				thisMenu = ele;
 			},
 			menu: [
-				{// 菜单项
-					text: "新增文件夹",
-					icon: "iconfont icon-ziyuan",
-					callback: function() {
-						addFolderEvent();
-						thisMenu = null;
-					}
-				},
 				{
 					text: "删除",
 					icon: "iconfont icon-lajitong",
@@ -258,8 +250,7 @@
 						deldeteSource(resourceType, resourceId, resourceName);
 						thisMenu = null;
 					}
-				},
-				{
+				},{
 					text: "编辑",
 					icon: "iconfont icon-bianji",
 					callback: function() {
@@ -280,6 +271,7 @@
 			editFolderName(id, name);
 		} else {
 			// 文件
+			editFileName(id, name);
 		}
 	}
 	
@@ -289,12 +281,83 @@
 			deleteFolder(id, name);
 		} else {
 			// 文件
+			deleteFile(id, name);
 		}
+	}
+	
+	/**
+	 * 编辑文件名称
+	 * @param {String} fileId 文件ID
+	 * @param {String} fileName 文件名称
+	 */
+	function editFileName(fileId, fileName){
+		var inputEle = $("<input class='swal-content__input' value='"+fileName+"'/>")[0]
+		swal("请输入文件名称:", {
+			content: inputEle
+		}).then((value) => {
+			var fileNewName = $(".swal-content__input").val();
+			if(fileNewName != fileName){
+				if(isNotNull(fileNewName) && fileNewName != "null"){
+					var param = new Object();
+					param["fileId"] = fileId;
+					param["fileName"] = fileNewName;
+						
+					ajax({
+						url: requestPath.fileUpdate.url,
+						data: param,
+						type: requestPath.fileUpdate.type,
+						success: function(data){
+							if(data.status){
+								initFolderAndFile();
+							}
+						},
+						error: function(data){
+						}
+					});
+				} else {
+					showInformation("提示", "文件名称不能为空", "warning");
+				}
+			}
+		});
+	}
+	
+	/**
+	 * 删除文件夹
+	 * @param {String} fileId 文件ID
+	 * @param {String} fileName 文件名称
+	 */
+	function deleteFile(fileId, fileName){
+		swal({
+		  title: "删除文件",
+		  text: "该操作会永久删除["+fileName+"]!",
+		  icon: "warning",
+		  buttons: ["取消","删除"],
+		  dangerMode: true,
+		}).then((willDelete) => {
+			if (willDelete) {
+				var param = new Object();
+				param["fileId"] = fileId;
+					
+				ajax({
+					url: requestPath.fileDelete.url,
+					data: param,
+					type: requestPath.fileDelete.type,
+					success: function(data){
+						if(data.status){
+							initFolderAndFile();
+						}
+					},
+					error: function(data){
+					}
+				});
+			} else {}
+		});
 	}
 	
 	/**
 	 * 编辑文件夹名称
 	 * @param {String} folderId 文件夹ID
+	 * @param {String} folderName 文件夹名称
 	 */
 	function editFolderName(folderId, folderName){
 		var inputEle = $("<input class='swal-content__input' value='"+folderName+"'/>")[0]
@@ -329,15 +392,15 @@
 	
 	/**
 	 * 删除文件夹
-	 * @param {String} folderId
-	 * @param {String} folderName
+	 * @param {String} folderId 文件夹ID
+	 * @param {String} folderName 文件夹名称
 	 */
 	function deleteFolder(folderId, folderName){
 		swal({
 		  title: "删除文件夹",
 		  text: "该操作会删除["+folderName+"]内的全部内容!",
 		  icon: "warning",
-		  buttons: ["取消","禁用"],
+		  buttons: ["取消","删除"],
 		  dangerMode: true,
 		}).then((willDelete) => {
 			if (willDelete) {
@@ -373,6 +436,10 @@
 			e.stopPropagation();
 		});
 		$('body').on('drop', function(e){
+			if(nowFolderResourceType == Code.RESOURCE_TYPE_SYSTEM.value){
+				showInformation("提示", "系统资源无法上传文件", "warning");
+				return false;
+			}
 			if(e.originalEvent.dataTransfer){
 				if(e.originalEvent.dataTransfer.files.length) {
 					e.preventDefault();
@@ -598,6 +665,7 @@
 			success: function(data){
 				if(data.status){
 					nowFolderId = data.data.folderId;
+					nowFolderResourceType = data.data.folderResourceType;
 					var folderName = data.data.folderName;
 					var folders = data.data.childrens;
 					var files = data.data.childrenFiles;
@@ -622,7 +690,7 @@
 					// $(".folder-create-time").html(new Date(data.data.folderCreateTime).toStr("yyyy-MM-dd HH:mm:ss"));
 					// $(".folder-children-folder-num").html(folders.length);
 					// $(".folder-children-file-num").html(files.length);
-					drawContextMenu();
+					drawResourceContextMenu();
 				}
 			},
 			error: function(data){

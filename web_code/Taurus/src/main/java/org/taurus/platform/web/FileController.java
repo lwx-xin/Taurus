@@ -15,6 +15,7 @@ import org.taurus.common.util.LoggerUtil;
 import org.taurus.common.util.SessionUtil;
 import org.taurus.entity.SFileEntity;
 import org.taurus.extendEntity.SFileEntityEx;
+import org.taurus.extendEntity.SFolderEntityEx;
 import org.taurus.service.SFileService;
 
 import javax.annotation.Resource;
@@ -79,6 +80,37 @@ public class FileController {
             return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_3);
         }
         return new Result<>(null, true, CheckCode.INTERFACE_ERR_CODE_0);
+    }
+
+    /**
+     * 修改文件信息
+     */
+    @ApiOperation(value = "修改文件信息")
+    @RequestMapping(value = "/{fileId}", method = RequestMethod.PUT)
+    public Result<SFileEntityEx> updateFileName(@PathVariable("fileId") String fileId, SFileEntityEx fileEntityEx,
+                                                    HttpServletRequest request) {
+
+        LoggerUtil.printParam(logger, "fileId", fileId);
+        LoggerUtil.printParam(logger, "fileEntityEx", fileEntityEx);
+
+        SFileEntityEx data = fileService.updateFileName(fileId, fileEntityEx, SessionUtil.getUserId(request));
+        if (data == null) {
+            return new Result<>(null, false, CheckCode.INTERFACE_ERR_CODE_4);
+        }
+        return new Result<>(data, true, CheckCode.INTERFACE_ERR_CODE_0);
+    }
+
+    /**
+     * 删除文件信息
+     */
+    @ApiOperation(value = "删除文件信息")
+    @RequestMapping(value = "/{fileId}", method = RequestMethod.DELETE)
+    public Result<SFileEntityEx> delete(@PathVariable("fileId") String fileId, HttpServletRequest request) {
+
+        LoggerUtil.printParam(logger, "fileId", fileId);
+
+        fileService.deleteFile(fileId, SessionUtil.getUserId(request));
+        return new Result<>(null, true, CheckCode.INTERFACE_ERR_CODE_0.getValue(), "删除成功");
     }
 
     /**

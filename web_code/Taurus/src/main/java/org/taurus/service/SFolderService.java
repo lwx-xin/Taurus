@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.taurus.common.code.Code;
 import org.taurus.entity.SFolderEntity;
 import org.taurus.extendEntity.SFolderEntityEx;
 
@@ -53,9 +54,10 @@ public interface SFolderService extends IService<SFolderEntity> {
      * @param parentFolder 父文件夹id
      * @param folderOwner  文件夹所有者
      * @param operator     操作人员
+     * @param resourceType 资源类别
      * @return
      */
-    public String createFolder(String folderName, String parentFolder, String folderOwner, String operator);
+    public String createFolder(String folderName, String parentFolder, String folderOwner, String operator, Code resourceType);
 
     /**
      * 获取当前文件夹的详细信息(文件以及文件夹)
@@ -102,6 +104,7 @@ public interface SFolderService extends IService<SFolderEntity> {
 
     /**
      * 修改文件夹信息
+     *
      * @param folderId
      * @param folderEntityEx
      * @param operator
@@ -111,10 +114,19 @@ public interface SFolderService extends IService<SFolderEntity> {
 
     /**
      * 删除文件夹
+     *
      * @param folderId
      * @param operator
      * @return
      */
     public boolean deleteFolder(String folderId, String operator);
+
+    /**
+     * 获取目录下的文件夹（不递归）
+     *
+     * @param parentFolder
+     * @return
+     */
+    public List<SFolderEntity> getFolders(String parentFolder);
 
 }

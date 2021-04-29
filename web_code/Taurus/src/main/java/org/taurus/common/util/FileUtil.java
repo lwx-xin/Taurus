@@ -3,7 +3,9 @@ package org.taurus.common.util;
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -188,6 +190,21 @@ public class FileUtil {
             File[] children = file.listFiles();
             for (int i = 0; i < children.length; i++) {
                 deleteFile(children[i]);
+            }
+        }
+
+
+        String fileName = file.getName();
+        String fileType = getFileType(fileName);
+        // 图片文件还要额外删除略缩图文件
+        if (Code.FILE_TYPE_PICTURE.getValue().equals(fileType)) {
+            // 获取略缩图地址
+            String thumbnailsName = ImageUtil.getThumbnailsName(fileName);
+            String filePath = file.getPath();
+            String thumbnailsPath = filePath.replace(fileName, thumbnailsName);
+            File thumbnails = new File(thumbnailsPath);
+            if (thumbnails.exists() && thumbnails.isFile()) {
+                thumbnails.delete();
             }
         }
         file.delete();

@@ -50,5 +50,12 @@ const Code = {
 	"FILE_TYPE_LOG": {"group":"file_type", "name":"log", "value":"4"},
 	/** 文件类型-图片*/
 	"FILE_TYPE_PICTURE": {"group":"file_type", "name":"picture", "value":"5"},
+	
+	/** 资源类别-系统资源 */
+	"RESOURCE_TYPE_SYSTEM": {"group":"resource_type", "name":"系统资源", "value":"-1"},
+	/** 资源类别-用户根目录 */
+	"RESOURCE_TYPE_ROOT": {"group":"resource_type", "name":"用户根目录", "value":"0"},
+	/** 资源类别-自定义资源 */
+	"RESOURCE_TYPE_CUSTOM": {"group":"resource_type", "name":"自定义资源", "value":"1"},
 }
 $.deepFreeze(Code);

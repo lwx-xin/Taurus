@@ -12,6 +12,8 @@
         <result column="FOLDER_PARENT" property="folderParent"/>
     	<!-- 文件夹所有者 -->
         <result column="FOLDER_OWNER" property="folderOwner"/>
+        <!-- 资源类型：系统资源，自定义资源 -->
+        <result column="FOLDER_RESOURCE_TYPE" property="folderResourceType"/>
     	<!-- 删除标识 -->
         <result column="FOLDER_DEL_FLG" property="folderDelFlg"/>
     	<!-- 创建时间 -->

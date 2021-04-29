@@ -5,11 +5,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
-import javax.xml.crypto.Data;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.taurus.common.code.Code;
 import org.taurus.common.code.ExecptionType;
 import org.taurus.common.exception.CustomException;
@@ -62,7 +60,7 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
 //		queryEntity.setFolderId(folderId);
         queryEntity.setFolderOwner(folderOwner);
 
-        QueryWrapper<SFolderEntity> queryWrapper = new QueryWrapper<SFolderEntity>(queryEntity);
+        QueryWrapper<SFolderEntity> queryWrapper = new QueryWrapper<>(queryEntity);
         List<SFolderEntity> folderList = list(queryWrapper);
 
         if (ListUtil.isNotEmpty(folderList)) {
@@ -106,21 +104,21 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
 
     @Override
     public void createInitFolder(String folderOwner, String operator) {
+
         // aa 添加用户根目录
-        String rootFolderId = createFolder(folderOwner, "", folderOwner, operator);
+        String rootFolderId = createFolder(folderOwner, "", folderOwner, operator, Code.RESOURCE_TYPE_ROOT);
         // aa 添加系统资源目录
         String systemFolderId = createFolder(taurusProperties.getFolderSystemName(), rootFolderId, folderOwner,
-                operator);
+                operator, Code.RESOURCE_TYPE_SYSTEM);
         // aa 添加头像图片资源目录
         String headFolderId = createFolder(taurusProperties.getFolderHeadImgName(), systemFolderId, folderOwner,
-                operator);
-        // aa 添加头像图片资源目录
-        String logFolderId = createFolder(taurusProperties.getFolderLogName(), systemFolderId, folderOwner, operator);
+                operator, Code.RESOURCE_TYPE_SYSTEM);
+        // aa 添加日志资源目录
+        String logFolderId = createFolder(taurusProperties.getFolderLogName(), systemFolderId, folderOwner, operator, Code.RESOURCE_TYPE_SYSTEM);
     }
 
     @Override
-    public String createFolder(String folderName, String parentFolder, String folderOwner, String operator) {
-        String folderId = "";
+    public String createFolder(String folderName, String parentFolder, String folderOwner, String operator, Code resourceType) {
 
         // aa 判断文件夹是否存在
         SFolderEntity queryEntity = new SFolderEntity();
@@ -128,10 +126,9 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
         queryEntity.setFolderOwner(folderOwner);
         queryEntity.setFolderParent(parentFolder);
         queryEntity.setFolderDelFlg(Code.DEL_FLG_1.getValue());
-        QueryWrapper<SFolderEntity> queryWrapper = new QueryWrapper<SFolderEntity>(queryEntity);
+        QueryWrapper<SFolderEntity> queryWrapper = new QueryWrapper<>(queryEntity);
         SFolderEntity systemFolderEntity = getOne(queryWrapper);
         if (systemFolderEntity != null) {
-            folderId = systemFolderEntity.getFolderId();
             throw new CustomException(ExecptionType.FOLDER, null, "文件夹已存在");
         }
 
@@ -143,13 +140,14 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
 
         // aa 当前时间
         LocalDateTime nowTime = DateUtil.getLocalDateTime();
-        folderId = StrUtil.getUUID();
+        String folderId = StrUtil.getUUID();
 
         SFolderEntity folderEntity = new SFolderEntity();
         folderEntity.setFolderId(folderId);
         folderEntity.setFolderName(folderName);
-        folderEntity.setFolderOwner(folderOwner);
         folderEntity.setFolderParent(parentFolder);
+        folderEntity.setFolderOwner(folderOwner);
+        folderEntity.setFolderResourceType(resourceType.getValue());
         folderEntity.setFolderDelFlg(Code.DEL_FLG_1.getValue());
         folderEntity.setFolderCreateTime(nowTime);
         folderEntity.setFolderCreateUser(operator);
@@ -236,8 +234,8 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
 
         SFolderEntity folderQueryEntity = new SFolderEntity();
         folderQueryEntity.setFolderOwner(userId);
-        QueryWrapper<SFolderEntity> folderQueayWrapper = new QueryWrapper<SFolderEntity>(folderQueryEntity);
-        return list(folderQueayWrapper);
+        QueryWrapper<SFolderEntity> folderQueryWrapper = new QueryWrapper<SFolderEntity>(folderQueryEntity);
+        return list(folderQueryWrapper);
     }
 
     @Override
@@ -309,19 +307,22 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
     }
 
     @Override
+    @Transactional
     public SFolderEntityEx updateFolderName(String folderId, SFolderEntityEx folderEntityEx, String operator) {
         SFolderEntity folderInfo = getById(folderId);
         if (folderInfo == null) {
             return null;
         }
+        if(Code.RESOURCE_TYPE_SYSTEM.getValue().equals(folderInfo.getFolderResourceType())){
+            throw new CustomException(ExecptionType.FOLDER, null, "系统资源无法修改");
+        } else if(Code.RESOURCE_TYPE_ROOT.getValue().equals(folderInfo.getFolderResourceType())){
+            throw new CustomException(ExecptionType.FOLDER, null, "用户根目录无法修改");
+        }
 
         // aa 当前时间
         LocalDateTime nowTime = DateUtil.getLocalDateTime();
 
-        if (StrUtil.isNotEmpty(folderEntityEx.getFolderName())) {
-            folderInfo.setFolderName(folderEntityEx.getFolderName());
-        }
-
+        folderInfo.setFolderName(folderEntityEx.getFolderName());
         folderInfo.setFolderModifyTime(nowTime);
         folderInfo.setFolderModifyUser(operator);
         if (!updateById(folderInfo)) {
@@ -332,27 +333,81 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
     }
 
     @Override
+    @Transactional
     public boolean deleteFolder(String folderId, String operator) {
 
+        SFolderEntity folderInfo = getById(folderId);
+        if(Code.RESOURCE_TYPE_SYSTEM.getValue().equals(folderInfo.getFolderResourceType())){
+            throw new CustomException(ExecptionType.FOLDER, null, "系统资源无法删除");
+        } else if(Code.RESOURCE_TYPE_ROOT.getValue().equals(folderInfo.getFolderResourceType())){
+            throw new CustomException(ExecptionType.FOLDER, null, "用户根目录无法删除");
+        }
+
         String folderPath = getFolderPath(folderId, operator);
-        if (StrUtil.isEmpty(folderPath)){
+        if (StrUtil.isEmpty(folderPath)) {
             return false;
         }
 
-        // 删除文件夹信息
-        if(!removeById(folderId)){
-            throw new CustomException(ExecptionType.FOLDER, null, "文件夹信息删除失败");
+        // 删除文件夹下的全部资源信息--文件夹，文件
+        List<SFolderEntity> allFolder = getFolderListByUser(operator);
+        if (ListUtil.isEmpty(allFolder)){
+            return false;
+        }
+        Map<String, SFolderEntity> folderMap = new HashMap<>();
+        for (SFolderEntity folderEntity : allFolder) {
+            String folderId1 = folderEntity.getFolderId();
+            String folderParent = folderEntity.getFolderParent();
+            if (StrUtil.isEmpty(folderParent)){
+                continue;
+            }
+            folderMap.put(folderParent+"-"+folderId1, folderEntity);
         }
 
-        // 删除文件夹下的文件信息
-        if (!fileService.removeByParentFolderInfo(folderId)){
-            throw new CustomException(ExecptionType.FOLDER, null, "文件信息删除失败");
-        }
+        List<SFolderEntity> childrenFolder = getChildrenFolder(folderMap, folderId);
+        childrenFolder.add(folderInfo);
+        removeFolderAndFile(childrenFolder);
 
         // 删除文件夹以及文件夹下的文件
         FileUtil.deleteFile(folderPath);
 
         return true;
+    }
+
+    private List<SFolderEntity> getChildrenFolder(Map<String, SFolderEntity> folderMap, String folderId){
+        List<SFolderEntity> resultList = new ArrayList<>();
+        List<SFolderEntity> list = MapUtil.get(folderMap, folderId + "-");
+        for (SFolderEntity folderEntity : list) {
+            resultList.addAll(getChildrenFolder(folderMap, folderEntity.getFolderId()));
+        }
+        resultList.addAll(list);
+        return resultList;
+    }
+
+    @Transactional
+    void removeFolderAndFile(List<SFolderEntity> folderList){
+        if (ListUtil.isNotEmpty(folderList)){
+
+            boolean removeFolder = removeByIds(folderList.stream().map(SFolderEntity::getFolderId).collect(Collectors.toList()));
+            if(!removeFolder){
+                throw new CustomException(ExecptionType.FOLDER, null, "文件夹信息删除失败");
+            }
+
+            for (SFolderEntity folderEntity : folderList) {
+                fileService.removeByParentFolderInfo(folderEntity.getFolderId());
+                removeFolderAndFile(getFolders(folderEntity.getFolderId()));
+            }
+        }
+    }
+
+    @Override
+    public List<SFolderEntity> getFolders(String parentFolder){
+        if(StrUtil.isEmpty(parentFolder)){
+            return null;
+        }
+        SFolderEntity folder_query = new SFolderEntity();
+        folder_query.setFolderParent(parentFolder);
+        QueryWrapper<SFolderEntity> folderQueryWrapper = new QueryWrapper<>(folder_query);
+        return list(folderQueryWrapper);
     }
 
 }

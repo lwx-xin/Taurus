@@ -113,6 +113,16 @@ public interface SFileService extends IService<SFileEntity> {
     public boolean insert(String fileFolder, MultipartFile[] files, String owner);
 
     /**
+     * 修改文件名称
+     *
+     * @param fileId
+     * @param fileEntityEx
+     * @param operator
+     * @return
+     */
+    public SFileEntityEx updateFileName(String fileId, SFileEntityEx fileEntityEx, String operator);
+
+    /**
      * 验证文件夹下是否存在同名的文件
      *
      * @param fileFolder 文件夹
@@ -150,9 +160,27 @@ public interface SFileService extends IService<SFileEntity> {
 
     /**
      * 删除当前目录下的全部文件信息(删db不删文件)
+     *
      * @param folderId
      * @return
      */
-    public boolean removeByParentFolderInfo(String folderId);
+    public int removeByParentFolderInfo(String folderId);
+
+    /**
+     * 获取文件夹下的文件(不递归)
+     *
+     * @param parentFolder
+     * @return
+     */
+    public List<SFileEntity> getFiles(String parentFolder);
+
+    /**
+     * 删除文件
+     *
+     * @param fileId
+     * @param operator
+     * @return
+     */
+    public void deleteFile(String fileId, String operator);
 
 }

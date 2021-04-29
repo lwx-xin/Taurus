@@ -1,6 +1,13 @@
 
 $(function(){
+	
+	// 显示cookie中的异常信息
 	showCookieErrMsg();
+	
+	// 取消默认右键菜单
+	document.oncontextmenu = function(){
+	　　return false;
+	}
 });
 
 /**
