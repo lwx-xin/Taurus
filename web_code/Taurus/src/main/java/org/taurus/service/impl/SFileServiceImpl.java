@@ -67,12 +67,13 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
 
         // 当前时间
         LocalDateTime nowTime = DateUtil.getLocalDateTime();
+        // 文件夹路径
+        String folderPath = folderService.getFolderPath(folderId, fileOwner);
 
-        SFileEntity fileEntity = FileUtil.getInfoByFile(file, nowTime);
+        SFileEntity fileEntity = FileUtil.getInfoByFile(file, nowTime, folderPath);
         fileEntity.setFileFolder(folderId);
         fileEntity.setFileOwner(fileOwner);
-        fileEntity.setFilePath(
-                folderService.getFolderRelativePath(folderId, fileOwner) + fileEntity.getFileNameTimestamp());
+        fileEntity.setFilePath(folderService.getFolderRelativePath(folderId, fileOwner) + fileEntity.getFileNameTimestamp());
         fileEntity.setFileCreateUser(fileOwner);
         fileEntity.setFileModifyUser(operator);
 
@@ -80,18 +81,15 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
             throw new CustomException(ExecptionType.FILE, null, "保存文件信息失败");
         }
 
-        // 文件夹路径
-        String folderPath = folderService.getFolderPath(folderId, fileOwner);
-
         try {
             // 上传文件
             String path = folderPath + fileEntity.getFileNameTimestamp();
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File(path));
 
             // 上传的是图片的话，额外生成略缩图
-            String thumbnailsPath = folderPath + ImageUtil.getThumbnailsName(fileEntity.getFileNameTimestamp());
+            String thumbnailsPath = folderPath + FileUtil.getFileCoverImgName(fileEntity.getFileNameTimestamp());
             if (Code.FILE_TYPE_PICTURE.getValue().equals(fileEntity.getFileType())) {
-                ImageUtil.createThumbnails(file.getInputStream(), 198, 132, thumbnailsPath);
+                FileUtil.createThumbnails(file.getInputStream(), 198, 132, thumbnailsPath);
             }
 
         } catch (IOException e) {
@@ -190,22 +188,6 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
     }
 
     @Override
-    public String getFileThumbnailsUrl(String filePath) {
-        if (StrUtil.isNotEmpty(filePath)) {
-            String virtualPath = taurusProperties.getFolderRootVirtual().substring(0,
-                    taurusProperties.getFolderRootVirtual().lastIndexOf("**"));
-            //不带文件名的路径
-            String fullPath = FilenameUtils.getFullPath(filePath);
-            //不带路径的文件名
-            String name = FilenameUtils.getName(filePath);
-            //略缩图文件名
-            String thumbnailsName = ImageUtil.getThumbnailsName(name);
-            return virtualPath + fullPath + thumbnailsName;
-        }
-        return "";
-    }
-
-    @Override
     public List<SFileEntity> getList(SFileEntity fileEntity) {
         QueryWrapper<SFileEntity> queryWrapper = new QueryWrapper<>(fileEntity);
         return list(queryWrapper);
@@ -227,12 +209,13 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
 //                    String fileUrl = getFileUrl(fileEntityEx.getFilePath());
 //                    fileEntityEx.setFileUrl(fileUrl);
 
-                    // 略缩图路径
-                    if (Code.FILE_TYPE_PICTURE.getValue().equals(fileEntityEx.getFileType())) {
-                        // 图片略缩图的请求路径
-                        String fileThumbnailsUrl = getFileThumbnailsUrl(fileEntityEx.getFilePath());
-                        fileEntityEx.setFileThumbnailsUrl(fileThumbnailsUrl);
-                    }
+                    String fileDetailInfo = fileEntityEx.getFileDetailInfo();
+                    String filePath = fileEntityEx.getFilePath();
+                    String fileType = fileEntityEx.getFileType();
+
+                    // 获取封面请求地址
+                    String fileCoverImgUrl = FileUtil.getFileCoverImgUrl(filePath, fileType, fileDetailInfo, taurusProperties);
+                    fileEntityEx.setFileCoverUrl(fileCoverImgUrl);
                     fileList.add(fileEntityEx);
                 }
             }
@@ -248,12 +231,19 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
             return null;
         }
 
-        // 获取文件请求地址
-        String fileUrl = getFileUrl(fileId, owner);
-
         SFileEntityEx fileEntityEx = JsonUtil.toEntity(fileDetail, SFileEntityEx.class);
         if (fileEntityEx != null) {
+            // 获取文件请求地址
+            String fileUrl = getFileUrl(fileId, owner);
             fileEntityEx.setFileUrl(fileUrl);
+
+            String fileDetailInfo = fileEntityEx.getFileDetailInfo();
+            String filePath = fileEntityEx.getFilePath();
+            String fileType = fileEntityEx.getFileType();
+
+            // 获取封面请求地址
+            String fileCoverImgUrl = FileUtil.getFileCoverImgUrl(filePath, fileType, fileDetailInfo, taurusProperties);
+            fileEntityEx.setFileCoverUrl(fileCoverImgUrl);
         }
         return fileEntityEx;
     }
@@ -325,8 +315,7 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
                 .collect(Collectors.toList());
 
         for (MultipartFile file : files) {
-            SFileEntity fileEntityInfo = FileUtil.getInfoByFile(file, null);
-            if (fileNameListByFolder.contains(fileEntityInfo.getFileName())) {
+            if (fileNameListByFolder.contains(file.getOriginalFilename())) {
                 return false;
             }
         }

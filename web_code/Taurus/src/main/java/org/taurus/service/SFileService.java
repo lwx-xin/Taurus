@@ -70,14 +70,6 @@ public interface SFileService extends IService<SFileEntity> {
     public String getFileUrl(String filePath);
 
     /**
-     * 获取图片略缩图的请求路径
-     *
-     * @param filePath 文件路径
-     * @return /f/xxx/xxxx/xx_thumbnails.png
-     */
-    public String getFileThumbnailsUrl(String filePath);
-
-    /**
      * 获取文件列表
      *
      * @param fileEntity 过滤条件

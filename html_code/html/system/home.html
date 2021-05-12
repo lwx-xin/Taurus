@@ -15,6 +15,7 @@
     <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
     <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
     <link rel="shortcut icon" href="../../img/logo.ico"> 
+	<link href="../../css/plugins/QPlayer/player.css" rel="stylesheet">
 
 	<style type="text/css">
 		.head-img{
@@ -606,16 +607,77 @@
             </a>
         </div>
         <!--mini聊天窗口结束-->
+		
+		<!-- 音乐播放器 -->
+		<div id="QPlayer" style="display:none;">
+			<div id="pContent">
+				<div class="ssBtn">
+						<div class="adf"></div>
+				</div>
+				<div id="player">
+					<span class="cover"></span>
+					<div class="ctrl">
+						<div class="musicTag marquee">
+							<strong>Title</strong>
+							 <span> - </span>
+							<span class="artist">Artist</span>
+						</div>
+						<div class="Q-progress">
+							<div class="timer left">0:00</div>
+							<div class="contr">
+								<div class="rewind icon"></div>
+								<div class="playback icon"></div>
+								<div class="fastforward icon"></div>
+							</div>
+							<div class="right">
+								<div class="liebiao icon"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<ol id="playlist"></ol>
+		</div>
     </div>
 
 </body>
 <script src="../../js/common/base.js?"></script>
+<script>
+	// 音频播放器设置
+	var playlist = [
+	];// 播放列表
+	var isRotate = false;// 图片是否旋转
+	var autoplay = false;// 是否自动播放
+	
+</script>
+<script src="../../js/plugins/QPlayer/player.js"></script>
+<script src="../../js/plugins/QPlayer/jquery.marquee.min.js"></script>
 <script type="text/javascript">
 	$(function(){
 		initEvent();
 		initData();
 		drawElement();
 	});
+	
+	function addMusic(item){
+		var b = true;
+		$.each(playlist, function(i, v){
+			if(JSON.stringify(v)==JSON.stringify(item)){
+				b = false;
+				return false;
+			}
+		});
+		if(b){
+			showInformation("提示", "《"+item.title+"》已添加到播放列表", "info");
+			$.addMusic(item);
+		} else {
+			showInformation("提示", "《"+item.title+"》已在列表中", "warning");
+		}
+	}
+	
+	function getPaylist(){
+		console.log(playlist)
+	}
 	
 	//初始化click,update,change等事件
 	function initEvent(){

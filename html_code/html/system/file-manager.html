@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
 	<meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
-    <meta http-equiv="expires" content="-1">
+
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
 
     <title>H+ 后台主题UI框架 - 主页</title>
 
@@ -500,8 +501,34 @@
 		switch (fileType){
 			case Code.FILE_TYPE_AUDIO.value:
 				/** 文件类型-音频*/
-				//parent.addMenuTab("show-file.html?fileId="+fileId, fileName, 1);
-				showInformation("提示", "《"+fileName+"》已添加到播放列表", "info");
+				var fileInfo = getFileInfo(fileId);
+				if(fileInfo == null){
+					showInformation("警告","文件不存在","warning");
+					return false;
+				}
+				var fileUrl = fileInfo.fileUrl;
+				var fileDetailInfo = fileInfo.fileDetailInfo;
+				var fileCoverUrl = fileInfo.fileCoverUrl;
+				var song = "未知"; // 歌名
+				var singer = "未知"; //歌手
+				// var album = ""; // 专辑
+				// var cover = ""; // 封面图片名
+				if(isNotNull(fileDetailInfo)){
+					var fileDetailInfoObj = JSON.parse(fileDetailInfo);
+					song = fileDetailInfoObj.song;
+					singer = fileDetailInfoObj.singer;
+					// album = fileDetailInfoObj.album;
+					// cover = fileDetailInfoObj.cover;
+				}
+				
+				var musicInfo = new Object();
+				musicInfo["title"] = song;//歌名
+				musicInfo["artist"] = singer;//歌手
+				musicInfo["mp3"] = fileUrl;//歌曲地址
+				musicInfo["cover"] = fileCoverUrl;//封面
+				parent.addMusic(musicInfo);
+				
+				// showInformation("提示", "《"+fileName+"》已添加到播放列表", "info");
 				break;
 			case Code.FILE_TYPE_VIDEO.value:
 				/** 文件类型-视频*/
@@ -526,6 +553,27 @@
 		}
 	}
 	
+	/**
+	 * 获取文件详细信息
+	 * @param {String} fileId
+	 */
+	function getFileInfo(fileId){
+		var fileInfo="";
+		ajax({
+			url: requestPath.fileDetail.url,
+			data: {"fileId": fileId},
+			type: requestPath.fileDetail.type,
+			success: function(data){
+				if(data.status){
+					fileInfo = data.data;
+				}
+			},
+			error: function(data){
+			}
+		});
+		return fileInfo;
+	}
+	
 	function initData(){
 		// 加载文件夹以及文件
 		initFolderAndFile();
@@ -547,11 +595,11 @@
 		// 最后一次修改时间
 		var fileModifyTime = fileEntityEx.fileModifyTime;
 		// 文件的请求路径
-		var fileUrl = fileEntityEx.fileUrl;
-		// 略缩图的请求路径（不是图片的文件该字段为空）
-		var fileThumbnailsUrl = fileEntityEx.fileThumbnailsUrl;
+		// var fileUrl = fileEntityEx.fileUrl;
+		// 文件封面的请求路径（只有图片，音频，视频才有该字段）
+		var fileCoverUrl = fileEntityEx.fileCoverUrl;
 		
-		var fileTypeDiv = getFileTypeDiv(fileType, fileThumbnailsUrl);
+		var fileTypeDiv = getFileCoverImg(fileType, fileCoverUrl);
 		
 		var html = "<div class='file-box' resource-id='"+ fileId +"' resource-type='"+ fileType +"' resource-name='"+ fileName +"' title='"+fileName+"'>"+
 			"	<a href='javascript:void(0);'>"+
@@ -582,7 +630,7 @@
 		// 文件类型--文件夹
 		var fileType = Code.FILE_TYPE_FOLDER.value;
 		
-		var fileTypeDiv = getFileTypeDiv(fileType, "");
+		var fileTypeDiv = getFileCoverImg(fileType, "");
 		
 		var html = "<div class='file-box' resource-id='"+ folderId +"' resource-type='"+ fileType +"' resource-name='"+ folderName +"' title='"+folderName+"'>"+
 			"	<a href='javascript:void(0);'>"+
@@ -602,10 +650,16 @@
 	/**
 	 * 获取文件分類样式
 	 * @param {String} fileType 文件類型
-	 * @param {String} fileThumbnailsUrl 略缩图的请求路径（不是图片的文件该字段为空）
+	 * @param {String} fileCoverUrl 文件封面图片请求路径
 	 */
-	function getFileTypeDiv(fileType, fileThumbnailsUrl){
+	function getFileCoverImg(fileType, fileCoverUrl){
 		var fileTypeDiv = "";
+		
+		if(isNotNull(fileCoverUrl)){
+			fileTypeDiv = "<div class='image' align='center'><img alt='image' style='height:100px;' class='img-responsive' src='"+fileCoverUrl+"'></div>";
+			return fileTypeDiv;
+		}
+		
 		switch (fileType){
 			case Code.FILE_TYPE_FOLDER.value:
 				/** 文件类型-文件夹*/
@@ -629,8 +683,7 @@
 				break;
 			case Code.FILE_TYPE_PICTURE.value:
 				/** 文件类型-图片*/
-				// fileTypeDiv = "<div class='icon'><i class='fa fa-file-text-o'></i></div>";
-				fileTypeDiv = "<div class='image' align='center'><img alt='image' class='img-responsive' src='"+fileThumbnailsUrl+"'></div>";
+				fileTypeDiv = "<div class='icon'><i class='fa fa-file-image-o'></i></div>";
 				break;
 			default:
 				/** 文件类型-其它*/
@@ -772,6 +825,6 @@
 			}
 		});
 	}
-
+	
 </script>
 </html>

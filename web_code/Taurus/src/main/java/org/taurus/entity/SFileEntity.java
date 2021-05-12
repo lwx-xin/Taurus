@@ -2,8 +2,11 @@ package org.taurus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.time.LocalDateTime;
+
 import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +21,69 @@ import java.io.Serializable;
 public class SFileEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public static class Audio{
+        /**
+         * 歌手
+         */
+        private String singer;
+        /**
+         * 歌名
+         */
+        private String song;
+        /**
+         * 专辑
+         */
+        private String album;
+        /**
+         * 封面
+         */
+        private String cover;
+
+        public String getSinger() {
+            return singer;
+        }
+
+        public void setSinger(String singer) {
+            this.singer = singer;
+        }
+
+        public String getSong() {
+            return song;
+        }
+
+        public void setSong(String song) {
+            this.song = song;
+        }
+
+        public String getAlbum() {
+            return album;
+        }
+
+        public void setAlbum(String album) {
+            this.album = album;
+        }
+
+        public String getCover() {
+            return cover;
+        }
+
+        public void setCover(String cover) {
+            this.cover = cover;
+        }
+    }
+
+    public static class Image{
+        private String cover;
+
+        public String getCover() {
+            return cover;
+        }
+
+        public void setCover(String cover) {
+            this.cover = cover;
+        }
+    }
 
     /**
      * 文件id
@@ -68,6 +134,12 @@ public class SFileEntity implements Serializable {
     private String filePath;
 
     /**
+     * 文件额外信息
+     */
+    @TableField("FILE_DETAIL_INFO")
+    private String fileDetailInfo;
+
+    /**
      * 删除标识
      */
     @TableField("FILE_DEL_FLG")
@@ -104,6 +176,7 @@ public class SFileEntity implements Serializable {
     public void setFileId(String fileId) {
         this.fileId = fileId;
     }
+
     public String getFileName() {
         return fileName;
     }
@@ -111,6 +184,7 @@ public class SFileEntity implements Serializable {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
     public String getFileNameTimestamp() {
         return fileNameTimestamp;
     }
@@ -118,6 +192,7 @@ public class SFileEntity implements Serializable {
     public void setFileNameTimestamp(String fileNameTimestamp) {
         this.fileNameTimestamp = fileNameTimestamp;
     }
+
     public String getFileSize() {
         return fileSize;
     }
@@ -125,6 +200,7 @@ public class SFileEntity implements Serializable {
     public void setFileSize(String fileSize) {
         this.fileSize = fileSize;
     }
+
     public String getFileType() {
         return fileType;
     }
@@ -132,6 +208,7 @@ public class SFileEntity implements Serializable {
     public void setFileType(String fileType) {
         this.fileType = fileType;
     }
+
     public String getFileFolder() {
         return fileFolder;
     }
@@ -139,6 +216,7 @@ public class SFileEntity implements Serializable {
     public void setFileFolder(String fileFolder) {
         this.fileFolder = fileFolder;
     }
+
     public String getFileOwner() {
         return fileOwner;
     }
@@ -146,6 +224,7 @@ public class SFileEntity implements Serializable {
     public void setFileOwner(String fileOwner) {
         this.fileOwner = fileOwner;
     }
+
     public String getFilePath() {
         return filePath;
     }
@@ -153,6 +232,15 @@ public class SFileEntity implements Serializable {
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
+
+    public String getFileDetailInfo() {
+        return fileDetailInfo;
+    }
+
+    public void setFileDetailInfo(String fileDetailInfo) {
+        this.fileDetailInfo = fileDetailInfo;
+    }
+
     public String getFileDelFlg() {
         return fileDelFlg;
     }
@@ -160,6 +248,7 @@ public class SFileEntity implements Serializable {
     public void setFileDelFlg(String fileDelFlg) {
         this.fileDelFlg = fileDelFlg;
     }
+
     public LocalDateTime getFileCreateTime() {
         return fileCreateTime;
     }
@@ -167,6 +256,7 @@ public class SFileEntity implements Serializable {
     public void setFileCreateTime(LocalDateTime fileCreateTime) {
         this.fileCreateTime = fileCreateTime;
     }
+
     public String getFileCreateUser() {
         return fileCreateUser;
     }
@@ -174,6 +264,7 @@ public class SFileEntity implements Serializable {
     public void setFileCreateUser(String fileCreateUser) {
         this.fileCreateUser = fileCreateUser;
     }
+
     public LocalDateTime getFileModifyTime() {
         return fileModifyTime;
     }
@@ -181,6 +272,7 @@ public class SFileEntity implements Serializable {
     public void setFileModifyTime(LocalDateTime fileModifyTime) {
         this.fileModifyTime = fileModifyTime;
     }
+
     public String getFileModifyUser() {
         return fileModifyUser;
     }
@@ -192,19 +284,20 @@ public class SFileEntity implements Serializable {
     @Override
     public String toString() {
         return "SFileEntity{" +
-            "fileId=" + fileId +
-            ", fileName=" + fileName +
-            ", fileNameTimestamp=" + fileNameTimestamp +
-            ", fileSize=" + fileSize +
-            ", fileType=" + fileType +
-            ", fileFolder=" + fileFolder +
-            ", fileOwner=" + fileOwner +
-            ", filePath=" + filePath +
-            ", fileDelFlg=" + fileDelFlg +
-            ", fileCreateTime=" + fileCreateTime +
-            ", fileCreateUser=" + fileCreateUser +
-            ", fileModifyTime=" + fileModifyTime +
-            ", fileModifyUser=" + fileModifyUser +
-        "}";
+                "fileId=" + fileId +
+                ", fileName=" + fileName +
+                ", fileNameTimestamp=" + fileNameTimestamp +
+                ", fileSize=" + fileSize +
+                ", fileType=" + fileType +
+                ", fileFolder=" + fileFolder +
+                ", fileOwner=" + fileOwner +
+                ", filePath=" + filePath +
+                ", FILE_DETAIL_INFO=" + fileDetailInfo +
+                ", fileDelFlg=" + fileDelFlg +
+                ", fileCreateTime=" + fileCreateTime +
+                ", fileCreateUser=" + fileCreateUser +
+                ", fileModifyTime=" + fileModifyTime +
+                ", fileModifyUser=" + fileModifyUser +
+                "}";
     }
 }

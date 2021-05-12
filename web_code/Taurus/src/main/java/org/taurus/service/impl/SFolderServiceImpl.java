@@ -213,12 +213,13 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
                     continue;
                 }
 
-                // 略缩图路径
-                if (Code.FILE_TYPE_PICTURE.getValue().equals(fileEntityEx.getFileType())) {
-                    // 图片略缩图的请求路径
-                    String fileThumbnailsUrl = fileService.getFileThumbnailsUrl(fileEntityEx.getFilePath());
-                    fileEntityEx.setFileThumbnailsUrl(fileThumbnailsUrl);
-                }
+                String fileDetailInfo = fileEntityEx.getFileDetailInfo();
+                String filePath = fileEntityEx.getFilePath();
+                String fileType = fileEntityEx.getFileType();
+
+                // 获取封面请求地址
+                String fileCoverImgUrl = FileUtil.getFileCoverImgUrl(filePath, fileType, fileDetailInfo, taurusProperties);
+                fileEntityEx.setFileCoverUrl(fileCoverImgUrl);
                 fileFilterList.add(fileEntityEx);
             }
 
@@ -313,9 +314,9 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
         if (folderInfo == null) {
             return null;
         }
-        if(Code.RESOURCE_TYPE_SYSTEM.getValue().equals(folderInfo.getFolderResourceType())){
+        if (Code.RESOURCE_TYPE_SYSTEM.getValue().equals(folderInfo.getFolderResourceType())) {
             throw new CustomException(ExecptionType.FOLDER, null, "系统资源无法修改");
-        } else if(Code.RESOURCE_TYPE_ROOT.getValue().equals(folderInfo.getFolderResourceType())){
+        } else if (Code.RESOURCE_TYPE_ROOT.getValue().equals(folderInfo.getFolderResourceType())) {
             throw new CustomException(ExecptionType.FOLDER, null, "用户根目录无法修改");
         }
 
@@ -337,9 +338,9 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
     public boolean deleteFolder(String folderId, String operator) {
 
         SFolderEntity folderInfo = getById(folderId);
-        if(Code.RESOURCE_TYPE_SYSTEM.getValue().equals(folderInfo.getFolderResourceType())){
+        if (Code.RESOURCE_TYPE_SYSTEM.getValue().equals(folderInfo.getFolderResourceType())) {
             throw new CustomException(ExecptionType.FOLDER, null, "系统资源无法删除");
-        } else if(Code.RESOURCE_TYPE_ROOT.getValue().equals(folderInfo.getFolderResourceType())){
+        } else if (Code.RESOURCE_TYPE_ROOT.getValue().equals(folderInfo.getFolderResourceType())) {
             throw new CustomException(ExecptionType.FOLDER, null, "用户根目录无法删除");
         }
 
@@ -350,17 +351,17 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
 
         // 删除文件夹下的全部资源信息--文件夹，文件
         List<SFolderEntity> allFolder = getFolderListByUser(operator);
-        if (ListUtil.isEmpty(allFolder)){
+        if (ListUtil.isEmpty(allFolder)) {
             return false;
         }
         Map<String, SFolderEntity> folderMap = new HashMap<>();
         for (SFolderEntity folderEntity : allFolder) {
             String folderId1 = folderEntity.getFolderId();
             String folderParent = folderEntity.getFolderParent();
-            if (StrUtil.isEmpty(folderParent)){
+            if (StrUtil.isEmpty(folderParent)) {
                 continue;
             }
-            folderMap.put(folderParent+"-"+folderId1, folderEntity);
+            folderMap.put(folderParent + "-" + folderId1, folderEntity);
         }
 
         List<SFolderEntity> childrenFolder = getChildrenFolder(folderMap, folderId);
@@ -373,7 +374,7 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
         return true;
     }
 
-    private List<SFolderEntity> getChildrenFolder(Map<String, SFolderEntity> folderMap, String folderId){
+    private List<SFolderEntity> getChildrenFolder(Map<String, SFolderEntity> folderMap, String folderId) {
         List<SFolderEntity> resultList = new ArrayList<>();
         List<SFolderEntity> list = MapUtil.get(folderMap, folderId + "-");
         for (SFolderEntity folderEntity : list) {
@@ -384,11 +385,11 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
     }
 
     @Transactional
-    void removeFolderAndFile(List<SFolderEntity> folderList){
-        if (ListUtil.isNotEmpty(folderList)){
+    void removeFolderAndFile(List<SFolderEntity> folderList) {
+        if (ListUtil.isNotEmpty(folderList)) {
 
             boolean removeFolder = removeByIds(folderList.stream().map(SFolderEntity::getFolderId).collect(Collectors.toList()));
-            if(!removeFolder){
+            if (!removeFolder) {
                 throw new CustomException(ExecptionType.FOLDER, null, "文件夹信息删除失败");
             }
 
@@ -400,8 +401,8 @@ public class SFolderServiceImpl extends ServiceImpl<SFolderDao, SFolderEntity> i
     }
 
     @Override
-    public List<SFolderEntity> getFolders(String parentFolder){
-        if(StrUtil.isEmpty(parentFolder)){
+    public List<SFolderEntity> getFolders(String parentFolder) {
+        if (StrUtil.isEmpty(parentFolder)) {
             return null;
         }
         SFolderEntity folder_query = new SFolderEntity();

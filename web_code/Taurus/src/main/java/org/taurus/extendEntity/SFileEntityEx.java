@@ -13,20 +13,20 @@ public class SFileEntityEx extends SFileEntity {
     private String fileUrl;
 
     /**
-     * 略缩图请求路径
+     * 文件封面图请求路径
      */
-    private String fileThumbnailsUrl;
+    private String fileCoverUrl;
 
     public String getFileUrl() {
         return fileUrl;
     }
 
-    public String getFileThumbnailsUrl() {
-        return fileThumbnailsUrl;
+    public String getFileCoverUrl() {
+        return fileCoverUrl;
     }
 
-    public void setFileThumbnailsUrl(String fileThumbnailsUrl) {
-        this.fileThumbnailsUrl = fileThumbnailsUrl;
+    public void setFileCoverUrl(String fileCoverUrl) {
+        this.fileCoverUrl = fileCoverUrl;
     }
 
     public void setFileUrl(String fileUrl) {
