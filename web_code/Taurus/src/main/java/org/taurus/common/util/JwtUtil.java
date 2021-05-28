@@ -10,6 +10,8 @@ import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.taurus.common.code.CheckCode;
 import org.taurus.common.result.TokenVerifyResult;
 import org.taurus.common.token_entity.UserToken;
@@ -23,6 +25,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 
 public class JwtUtil {
+
+	private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
 	/**
 	 * 秘钥
@@ -130,16 +134,16 @@ public class JwtUtil {
 			code = CheckCode.TOKEN_SUCCESS;
 		} catch (ExpiredJwtException e) {
 			//令牌过期
-			System.err.println(e);
+			logger.error(e.getMessage());
 			body = e.getClaims();
 			code = CheckCode.TOKEN_OVERDUE;
 		} catch (SignatureException e) {
 			// 令牌验证失败
-			System.err.println(e);
+			logger.error(e.getMessage());
 			code = CheckCode.TOKEN_ERR;
 		} catch (Exception e) {
 			// 令牌验证失败
-			System.err.println(e);
+			logger.error(e.getMessage());
 			code = CheckCode.TOKEN_ERR;
 		}
 		//(List<String>) body.get("authList");
@@ -170,8 +174,8 @@ public class JwtUtil {
 		token.setAuthIdList(authList);
 
 		String tokenStr = createToken(token, Calendar.SECOND,3);
-		System.err.println(tokenStr);
-		System.err.println("========================");
+		logger.error(tokenStr);
+		logger.error("========================");
 		Thread.sleep(1000);
 		System.err.println(parseToken(tokenStr));
 	}

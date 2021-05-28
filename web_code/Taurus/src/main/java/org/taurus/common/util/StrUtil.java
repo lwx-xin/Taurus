@@ -1,10 +1,15 @@
 package org.taurus.common.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.UUID;
 
 public class StrUtil {
+
+	private static final Logger logger = LoggerFactory.getLogger(StrUtil.class);
 
 	/**
 	 * 获取UUID
@@ -81,7 +86,7 @@ public class StrUtil {
 		try {
 			return URLEncoder.encode(toAscii(str), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 			return "";
 		}
 	}
@@ -89,7 +94,7 @@ public class StrUtil {
 	/**
 	 * 转换编码格式，前端使用fromCharCode()还原编码
 	 * 
-	 * @param str
+	 * @param value
 	 * @return
 	 */
 	public static String toAscii(String value) {

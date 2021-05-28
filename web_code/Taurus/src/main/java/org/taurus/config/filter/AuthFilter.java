@@ -62,7 +62,6 @@ public class AuthFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         logger.info("------------------------------------初始化AuthFilter权限过滤器------------------------------------");
-        Filter.super.init(filterConfig);
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
@@ -97,13 +96,12 @@ public class AuthFilter implements Filter {
             String redirectUrl = authCheck.getValue();
             String errMessage = authCheck.getName();
 
-            String msg = "异常请求\n:" +
+            String msg = "\n异常请求:" +
                     "{\"参数\":\"" + JsonUtil.toJson(parameterMap) + "\"," +
                     "\"请求地址\":\""+url+"\"," +
                     "\"请求方法\":\""+method+"\"," +
                     "\"重定向\":\""+redirectUrl+"\"," +
                     "\"错误消息\":\""+errMessage+"\"}";
-            System.err.println(msg);
             logger.error(msg);
 
             String redirectUrl_utf8 = StrUtil.toUTF8(redirectUrl);
@@ -149,7 +147,6 @@ public class AuthFilter implements Filter {
     @Override
     public void destroy() {
         logger.info("------------------------------------销毁AuthFilter权限过滤器------------------------------------");
-        Filter.super.destroy();
     }
 
     @SuppressWarnings("unchecked")
@@ -161,7 +158,7 @@ public class AuthFilter implements Filter {
 
         // aa 从session中获取用户信息
         SUserEntity userInfo_session = SessionUtil.getUser(request);
-        System.err.println("session-id:::" + request.getSession().getId());
+        logger.info("session-id:::" + request.getSession().getId());
 
         if (userInfo_session == null) {
             returnMap.put("code", CheckCode.USER_ERR);
@@ -366,7 +363,7 @@ public class AuthFilter implements Filter {
                     }
                     errCode = CheckCode.TOKEN_SUCCESS;
                 } catch (Exception e) {
-                    System.err.println(e);
+                    logger.error(e.getMessage());
                 }
             } else if (CheckCode.TOKEN_ERR.getValue().equals(token.getErrCode())) {
                 // aa 令牌解析失败

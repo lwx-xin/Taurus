@@ -5,8 +5,12 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JsonUtil {
+
+	private static final Logger logger = LoggerFactory.getLogger(JsonUtil.class);
 
 	/**
 	 * 字符串转实体 / Map
@@ -20,7 +24,7 @@ public class JsonUtil {
 		try {
 			return JSON.parseObject(jsonStr, clazz);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -38,7 +42,7 @@ public class JsonUtil {
 		try {
 			return JSONObject.parseObject(JSONObject.toJSONString(map), clazz);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -56,7 +60,7 @@ public class JsonUtil {
 			String json = toJson(entity);
 			return toEntity(json, clazz);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -74,7 +78,7 @@ public class JsonUtil {
 		try {
 			return JSON.parseArray(jsonStr, clazz);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -91,7 +95,7 @@ public class JsonUtil {
 		try {
 			return JSON.parseArray(JsonUtil.toJson(list), clazz);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -107,7 +111,7 @@ public class JsonUtil {
 		try {
 			return JSON.parseObject(JSON.toJSONString(obj));
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -123,7 +127,7 @@ public class JsonUtil {
 		try {
 			return JSON.toJSONString(list);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -138,7 +142,7 @@ public class JsonUtil {
 		try {
 			return JSON.toJSONString(obj);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}

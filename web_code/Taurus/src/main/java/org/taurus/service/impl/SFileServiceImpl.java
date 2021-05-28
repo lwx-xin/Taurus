@@ -1,6 +1,8 @@
 package org.taurus.service.impl;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.taurus.common.util.*;
@@ -46,6 +48,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> implements SFileService {
 
+    private static final Logger logger = LoggerFactory.getLogger(SFileServiceImpl.class);
+
     @Autowired
     private TaurusProperties taurusProperties;
 
@@ -53,7 +57,7 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
     private SFolderService folderService;
 
     @Autowired
-    SFileDao fileDao;
+    private SFileDao fileDao;
 
     @Override
     @Transactional
@@ -424,7 +428,7 @@ public class SFileServiceImpl extends ServiceImpl<SFileDao, SFileEntity> impleme
                 outputStream.close();
 
             } catch (Exception e) {
-                System.err.println(e.getMessage());
+                logger.error(e.getMessage());
             }
         }
     }
